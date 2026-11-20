@@ -149,11 +149,19 @@ bun run typecheck
 bun run test         # unit tests
 bun run e2e          # local challenge pages and real vendor test widgets × {extension, Playwright, Puppeteer}, mock model
 bun run check        # all of the above
-bun run live         # real vendor widgets over the network (third parties: not part of check)
+bun run live         # real widgets over the network (third parties: not part of check)
 bun run explore --vendor recaptcha   # every frame's element tree, HTML and a screenshot → out/explore/
+bun run explore <url> --fill "input[name=email]=a@example.com" --click "a.get_code"
 ```
 
-`explore` is where a new adapter starts. Its vendor recipes (`src/tools/vendor-pages.ts`) open each vendor's real challenge: the reCAPTCHA and hCaptcha demos, Turnstile forced interactive, and Tencent under its own domain (vendors bind site keys to domains, so our page is served at a URL of that domain). `capture --vendor <name>` uses the same recipes.
+`explore` is where a new adapter starts. Its vendor recipes (`src/tools/vendor-pages.ts`) bring up each real challenge:
+
+- the reCAPTCHA and hCaptcha demos, and Turnstile forced interactive;
+- Tencent under its own domain (vendors bind site keys to domains, so our page is served at a URL of that domain);
+- Aliyun's `nc` slider with the public test appkey of Aliyun's demos;
+- the forms that guard GNAME's and Eranet's sliders (filled with a black-hole address).
+
+`capture --vendor <name>` and the live tests use the same recipes. The live suite currently solves the real Tencent puzzle (valid ticket), Aliyun's `nc` slider (Aliyun's server passes the first slide), and GNAME's and Eranet's form sliders (accepted and closed).
 
 The e2e tests run headful local Chrome. Branded Chrome ignores `--load-extension`, so the harness loads the extension through CDP `Extensions.loadUnpacked`.
 

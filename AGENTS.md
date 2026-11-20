@@ -67,7 +67,7 @@ Work from facts, never from guesses: every fix starts from a captured failure an
    - **Wrong view** (targets, selection state, instruction, errors): adapter selectors in `src/core/adapters.ts` or the scanner in `src/page/`. Check against `dom.html`.
    - **Right view, wrong answer:** the prompt in `src/core/prompt.ts`, what the image shows (labels, frames, scale in `src/core/engine.ts`), or a model limit. Prefer giving the model better evidence over adding rules.
    - **Right answer, wrong effect:** the coordinates, timing or gestures (`src/core/engine.ts`, `src/core/mouse.ts`, the drivers).
-   - **Unknown challenge:** look at it with `bun run explore <url> --click <selector that opens it>`, which saves every frame's element tree (closed shadow roots included), its HTML and a screenshot to `out/explore/`. Then add an adapter, plus a local e2e page in `test/support/server.ts` that copies its structure. For a widget whose site key is bound to a domain, add the page to `src/tools/vendor-pages.ts` and add a live test in `test/live/`.
+   - **Unknown challenge:** look at it with `bun run explore <url> [--fill selector=value] --click <selector that opens it>`, which saves every frame's element tree (closed shadow roots included), its HTML and a screenshot to `out/explore/`. Then add an adapter, plus a local e2e page in `test/support/server.ts` that copies its structure. For a widget whose site key is bound to a domain, add the page to `src/tools/vendor-pages.ts` and add a live test in `test/live/`.
 6. **Prove it.**
    - `bun run eval` (all fixtures: no regressions).
    - `bun run check` (typecheck, unit, e2e on extension, Playwright and Puppeteer).

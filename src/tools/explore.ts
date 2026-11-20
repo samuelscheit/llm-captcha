@@ -3,10 +3,11 @@
  * roots included), its HTML, and a screenshot, saved under out/explore/<name>-<time>/.
  *
  *   bun run explore --vendor recaptcha|hcaptcha|turnstile|tencent
- *   bun run explore <url> [--click selector]... [--wait ms]
+ *   bun run explore <url> [--fill selector=value]... [--click selector]... [--wait ms]
  *
- * --vendor opens one of src/tools/vendor-pages.ts and clicks through to its challenge; --click
- * clicks selectors (in any frame, in order) on a page of your own.
+ * --vendor opens one of src/tools/vendor-pages.ts and clicks through to its challenge. On other
+ * pages, --fill types into fields and --click clicks (in any frame), in that order: what it takes
+ * for a form to show its challenge.
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
@@ -18,7 +19,12 @@ import { clickInAnyFrame, openVendorPage, vendorPage } from "./vendor-pages";
 
 const { values, positionals } = parseArgs({
   allowPositionals: true,
-  options: { click: { type: "string", multiple: true, default: [] }, wait: { type: "string", default: "4000" }, vendor: { type: "string" } },
+  options: {
+    fill: { type: "string", multiple: true, default: [] },
+    click: { type: "string", multiple: true, default: [] },
+    wait: { type: "string", default: "4000" },
+    vendor: { type: "string" },
+  },
 });
 const url = positionals[0];
 if (!values.vendor && !url) throw new Error("Usage: bun run explore --vendor <name> | <url> [--click selector]... [--wait ms]");
@@ -28,6 +34,12 @@ const page = browser.context.pages()[0] ?? (await browser.context.newPage());
 try {
   if (values.vendor) await openVendorPage(browser.context, page, vendorPage(values.vendor), { reveal: true });
   else await page.goto(url!);
+  for (const assignment of values.fill!) {
+    // Selectors often contain "=" ([name=email]); values rarely do.
+    const split = assignment.lastIndexOf("=");
+    if (split < 1) throw new Error(`--fill takes selector=value, got "${assignment}"`);
+    await page.locator(assignment.slice(0, split)).first().fill(assignment.slice(split + 1));
+  }
   for (const selector of values.click!) {
     await clickInAnyFrame(page, selector);
     await page.waitForTimeout(1000);

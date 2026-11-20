@@ -125,6 +125,8 @@ export const BUILTIN_ADAPTERS: AdapterSpec[] = [
     root: ".nc_scale",
     instruction: [".nc_scale .scale_text"],
     solved: ".nc_scale .btn_ok, [data-nc-lang='_yesTEXT']",
+    // After a slide, while Aliyun's verdict loads: sliding again would restart the check.
+    waiting: ".nc_scale .nc-loading-circle",
     targets: [
       { id: "handle", selector: ".nc_scale .btn_slide", optional: true },
       { id: "rail", selector: ".nc_scale" },
@@ -152,6 +154,18 @@ export const BUILTIN_ADAPTERS: AdapterSpec[] = [
     targets: [
       { id: "handle", selector: "#captcha__frame.simple .slider" },
       { id: "rail", selector: "#captcha__frame.simple .sliderContainer" },
+    ],
+  },
+  {
+    // The common open-source "drag verify" slider (#dragContainer / #dragHandler / #dragText),
+    // e.g. Eranet's "Security Verification" before it mails a code.
+    id: "drag-verify",
+    kind: "slider",
+    root: "#dragContainer:has(#dragHandler)",
+    instruction: ["#dragText"],
+    targets: [
+      { id: "handle", selector: "#dragContainer #dragHandler" },
+      { id: "rail", selector: "#dragContainer:has(#dragHandler)" },
     ],
   },
   {

@@ -10,7 +10,9 @@ export interface VendorPage {
   url: string;
   /** Our own page, served at `url`; without it the real page at `url` loads. */
   html?: string;
-  /** Clicked to open the widget at all (a "Verify" button). */
+  /** Typed into fields before the trigger: [selector, value]. */
+  fill?: [string, string][];
+  /** Clicked to open the widget at all (a "Verify" or "Send code" button). */
   trigger?: string;
   /** Clicked, in any frame, to bring the challenge itself up for inspection (the solver does this live). */
   reveal?: string[];
@@ -39,6 +41,42 @@ export const VENDOR_PAGES = {
       `<button id="go">Verify</button><script>go.onclick = () => new TencentCaptcha('2070586963', (r) => { document.title = 'cb:' + JSON.stringify(r) }).show()</script>`,
     ),
     trigger: "#go",
+  },
+  /**
+   * GNAME's abuse form: "Send code" opens its GnSliderVerify slider (scored at /request/slideverify).
+   * The address is a black hole: the code goes nowhere.
+   */
+  gname: {
+    url: "https://www.gname.com/abuse/category/2",
+    fill: [["input[name=email]", "captcha-solver-test@example.com"]],
+    trigger: "a.get_code",
+  },
+  /**
+   * Alibaba Cloud's sign-in, with an account that does not exist: its risk control puts the
+   * "nocaptcha" (nc_) slider into the form when it wants a check.
+   */
+  alibaba: {
+    url: "https://account.alibabacloud.com/login/login.htm",
+    fill: [
+      ["iframe#alibaba-login-box >> internal:control=enter-frame >> #fm-login-id", "captcha-solver-test@example.com"],
+      ["iframe#alibaba-login-box >> internal:control=enter-frame >> #fm-login-password", "not-a-real-password-1"],
+    ],
+    trigger: "#fm-login-submit",
+  },
+  /** Aliyun's "nocaptcha" (nc_) slider itself, with the public test appkey of Aliyun's own demos. */
+  "aliyun-nc": {
+    url: "https://nc-test.example.com/",
+    html: widgetPage(
+      '<script src="https://g.alicdn.com/AWSC/AWSC/awsc.js"></script>',
+      `<div id="nc"></div><script>AWSC.use("nc", (state, module) => { window.nc = module.init({ appkey: "CF_APP_1", scene: "nc_login", renderTo: "nc",
+  success: (data) => { document.title = "ok:" + JSON.stringify(data) }, fail: (code) => { document.title = "fail:" + code }, error: (e) => { document.title = "error:" + e } }) })</script>`,
+    ),
+  },
+  /** Eranet's phishing report form: "Send Code" opens its slider. Same black-hole address. */
+  eranet: {
+    url: "https://www.eranet.com/panel/abuse/report/phishing-report/index",
+    fill: [["#phishingReport_email", "captcha-solver-test@example.com"]],
+    trigger: "button.send-code-btn",
   },
 } satisfies Record<string, VendorPage>;
 
@@ -69,6 +107,7 @@ export async function clickInAnyFrame(page: Page, selector: string, timeoutMs = 
 export async function openVendorPage(context: BrowserContext, page: Page, vendor: VendorPage, options: { reveal?: boolean } = {}): Promise<void> {
   if (vendor.html) await context.route(vendor.url, (route) => route.fulfill({ contentType: "text/html", body: vendor.html! }));
   await page.goto(vendor.url);
+  for (const [selector, value] of vendor.fill ?? []) await page.locator(selector).first().fill(value);
   for (const selector of [...(vendor.trigger ? [vendor.trigger] : []), ...(options.reveal ? (vendor.reveal ?? []) : [])]) {
     await clickInAnyFrame(page, selector);
     await page.waitForTimeout(1000);
