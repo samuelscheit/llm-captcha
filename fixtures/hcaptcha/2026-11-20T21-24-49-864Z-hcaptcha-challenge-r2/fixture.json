@@ -1,0 +1,132 @@
+{
+  "source": "https://accounts.hcaptcha.com/demo",
+  "capturedAt": "2026-11-20T21:24:49.864Z",
+  "view": {
+    "adapter": "hcaptcha-challenge",
+    "kind": "point",
+    "status": "pending",
+    "region": {
+      "x": 90,
+      "y": 11,
+      "width": 520,
+      "height": 570
+    },
+    "instruction": "Please click on the TWO icons that break the pattern",
+    "errors": [],
+    "targets": [
+      {
+        "id": "submit",
+        "rect": {
+          "x": 516,
+          "y": 532,
+          "width": 84,
+          "height": 39
+        },
+        "label": "Verify"
+      },
+      {
+        "id": "refresh",
+        "rect": {
+          "x": 145,
+          "y": 531.5,
+          "width": 37,
+          "height": 37
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "C27FB979F56192FC7E9299B897F809BF"
+  },
+  "history": [
+    {
+      "instruction": "Please click on the TWO icons that break the pattern",
+      "decision": {
+        "reasoning": "Among the many lavender/pink rocket icons, two stand out by color: the orange rocket near (282,237) and the yellow rocket near (327,318). I click both, then submit.",
+        "actions": [
+          {
+            "kind": "clickPoint",
+            "target": null,
+            "text": null,
+            "x": 282,
+            "y": 237,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "clickPoint",
+            "target": null,
+            "text": null,
+            "x": 327,
+            "y": 318,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "submit",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          }
+        ]
+      },
+      "errorsAfter": []
+    }
+  ],
+  "expected": {
+    "clicks": [
+      "submit"
+    ],
+    "points": [
+      {
+        "x": 377,
+        "y": 285,
+        "r": 25
+      },
+      {
+        "x": 190,
+        "y": 315,
+        "r": 25
+      }
+    ]
+  },
+  "notes": "Accepted by the vendor (accounts.hcaptcha.com, session passed, no error after this round): auto-labeled with the answer claude-opus-5-5 gave.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "This is a new challenge image. Most of the rockets are lavender/white, and two stand out by color: the orange rocket at about (377,285) and the yellow/tan rocket at about (190,315). I click both, then submit.",
+      "actions": [
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 377,
+          "y": 285,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 190,
+          "y": 315,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "submit",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

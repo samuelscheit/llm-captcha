@@ -1,0 +1,96 @@
+{
+  "source": "https://captcha-api.yandex.ru/demo",
+  "capturedAt": "2026-11-20T21:20:21.439Z",
+  "view": {
+    "adapter": "yandex-text",
+    "kind": "text",
+    "status": "pending",
+    "region": {
+      "x": 490,
+      "y": 210.5,
+      "width": 300,
+      "height": 120
+    },
+    "instruction": "Enter the code from the image",
+    "errors": [
+      "Try again. Additional check"
+    ],
+    "targets": [
+      {
+        "id": "input",
+        "rect": {
+          "x": 490,
+          "y": 390.5,
+          "width": 300,
+          "height": 36
+        },
+        "value": ""
+      },
+      {
+        "id": "submit",
+        "rect": {
+          "x": 638,
+          "y": 457.5,
+          "width": 152,
+          "height": 44
+        }
+      },
+      {
+        "id": "reload",
+        "rect": {
+          "x": 490,
+          "y": 457.5,
+          "width": 44,
+          "height": 44
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "1508E5E65E9E1C51A77BC82141CE3CA6"
+  },
+  "history": [
+    {
+      "instruction": "Enter the code from the image",
+      "decision": {
+        "reasoning": "The code is curved text. I read it as \"handles disagree\", but the first word is uncertain: its top letters could be \"bla\" rather than \"ha\". I'm typing my best reading.",
+        "actions": [
+          {
+            "kind": "type",
+            "target": "input",
+            "text": "handles disagree",
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          }
+        ]
+      },
+      "errorsAfter": [
+        "Try again. Additional check"
+      ]
+    }
+  ],
+  "expected": {
+    "text": "apt samba",
+    "caseSensitive": false
+  },
+  "notes": "Accepted by the vendor (captcha-api.yandex.ru, session passed, no error after this round): auto-labeled with the answer claude-opus-5-5 gave.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "The task is to type the code shown in the image. The curved text reads \"apt samba\": \"apt\" is written upside-down on the left and \"samba\" follows on the right. Round 1's \"handles disagree\" was wrong, and this is a new image after the additional check.",
+      "actions": [
+        {
+          "kind": "type",
+          "target": "input",
+          "text": "apt samba",
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

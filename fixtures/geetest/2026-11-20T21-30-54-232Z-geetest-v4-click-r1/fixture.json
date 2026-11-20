@@ -1,0 +1,123 @@
+{
+  "source": "https://gt4.geetest.com/",
+  "capturedAt": "2026-11-20T21:30:54.232Z",
+  "view": {
+    "adapter": "geetest-v4-click",
+    "kind": "point",
+    "status": "pending",
+    "region": {
+      "x": 720,
+      "y": 259.5,
+      "width": 340,
+      "height": 385
+    },
+    "instruction": "请按语序依次点击",
+    "errors": [],
+    "targets": [
+      {
+        "id": "submit",
+        "rect": {
+          "x": 739.984375,
+          "y": 528.796875,
+          "width": 300.03125,
+          "height": 50.3125
+        },
+        "label": "确定"
+      },
+      {
+        "id": "refresh",
+        "rect": {
+          "x": 775.859375,
+          "y": 599,
+          "width": 25,
+          "height": 25
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "4ACB472D53254A2665EF5CC2409B5AED"
+  },
+  "history": [],
+  "expected": {
+    "clicks": [
+      "submit"
+    ],
+    "points": [
+      {
+        "x": 122,
+        "y": 205,
+        "r": 25
+      },
+      {
+        "x": 240,
+        "y": 103,
+        "r": 25
+      },
+      {
+        "x": 113,
+        "y": 92,
+        "r": 25
+      },
+      {
+        "x": 268,
+        "y": 162,
+        "r": 25
+      }
+    ]
+  },
+  "notes": "Accepted by the vendor (gt4.geetest.com, session passed, no error after this round): auto-labeled with the answer claude-opus-5-5 gave.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "Characters: 流, 远, 长, 源. Phrase in order: 源远流长. Click 源 (120,205), 远 (240,103), 流 (113,92), 长 (270,162), then submit.",
+      "actions": [
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 122,
+          "y": 205,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 240,
+          "y": 103,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 113,
+          "y": 92,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 268,
+          "y": 162,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "submit",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

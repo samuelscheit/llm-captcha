@@ -93,7 +93,9 @@ export function scanAdapter(spec: AdapterSpec, doc: Document = document, url = l
     status: statusOf(spec, doc, root, targets, pierce),
     region,
     instruction: visibleText(doc, spec.instruction, pierce).join(" "),
-    errors: [...new Set([...visibleText(doc, spec.errors, pierce), ...anyText(doc, spec.errorsHidden, pierce)])],
+    errors: [...new Set([...visibleText(doc, spec.errors, pierce), ...anyText(doc, spec.errorsHidden, pierce)])].filter(
+      (text) => !spec.errorsMatch || new RegExp(spec.errorsMatch, "i").test(text),
+    ),
     targets,
     visible: true,
   };

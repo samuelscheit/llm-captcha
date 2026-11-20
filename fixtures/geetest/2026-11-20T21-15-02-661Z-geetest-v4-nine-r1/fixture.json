@@ -1,0 +1,165 @@
+{
+  "source": "https://gt4.geetest.com/",
+  "capturedAt": "2026-11-20T21:15:02.661Z",
+  "view": {
+    "adapter": "geetest-v4-nine",
+    "kind": "select",
+    "status": "pending",
+    "region": {
+      "x": 720,
+      "y": 259.5,
+      "width": 340,
+      "height": 385
+    },
+    "instruction": "Select 3 images with",
+    "errors": [],
+    "targets": [
+      {
+        "id": "t1",
+        "rect": {
+          "x": 739.984375,
+          "y": 319.5,
+          "width": 96,
+          "height": 83.0625
+        },
+        "selected": false
+      },
+      {
+        "id": "t2",
+        "rect": {
+          "x": 841.984375,
+          "y": 319.5,
+          "width": 96,
+          "height": 83.0625
+        },
+        "selected": false
+      },
+      {
+        "id": "t3",
+        "rect": {
+          "x": 943.984375,
+          "y": 319.5,
+          "width": 96,
+          "height": 83.0625
+        },
+        "selected": false
+      },
+      {
+        "id": "t4",
+        "rect": {
+          "x": 739.984375,
+          "y": 408.5625,
+          "width": 96,
+          "height": 83.0625
+        },
+        "selected": false
+      },
+      {
+        "id": "t5",
+        "rect": {
+          "x": 841.984375,
+          "y": 408.5625,
+          "width": 96,
+          "height": 83.0625
+        },
+        "selected": false
+      },
+      {
+        "id": "t6",
+        "rect": {
+          "x": 943.984375,
+          "y": 408.5625,
+          "width": 96,
+          "height": 83.0625
+        },
+        "selected": false
+      },
+      {
+        "id": "t7",
+        "rect": {
+          "x": 739.984375,
+          "y": 497.625,
+          "width": 96,
+          "height": 83.0625
+        },
+        "selected": false
+      },
+      {
+        "id": "t8",
+        "rect": {
+          "x": 841.984375,
+          "y": 497.625,
+          "width": 96,
+          "height": 83.0625
+        },
+        "selected": false
+      },
+      {
+        "id": "t9",
+        "rect": {
+          "x": 943.984375,
+          "y": 497.625,
+          "width": 96,
+          "height": 83.0625
+        },
+        "selected": false
+      },
+      {
+        "id": "refresh",
+        "rect": {
+          "x": 775.859375,
+          "y": 599,
+          "width": 25,
+          "height": 25
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "D15EDD69F37B6D5425A7C535D325549B"
+  },
+  "history": [],
+  "expected": {
+    "clicks": [
+      "t4",
+      "t7",
+      "t8"
+    ]
+  },
+  "notes": "Accepted by the vendor (gt4.geetest.com, session passed, no error after this round): auto-labeled with the answer claude-opus-5-5 gave.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "The instruction shows a refrigerator icon, so the task is to pick the 3 refrigerator tiles. Refrigerators appear in t4, t7 and t8; the other tiles show pens and hats. No verify target is listed, so this round only clicks the three tiles.",
+      "actions": [
+        {
+          "kind": "click",
+          "target": "t4",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t7",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t8",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

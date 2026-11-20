@@ -1,6 +1,8 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { fixtureFiles, roundDir, type Fixture, type FixtureFile } from "../core/fixture";
+import type { SlideRecord } from "../core/engine";
+import { fixtureFiles, providerOf, roundDir, type Fixture, type FixtureFile } from "../core/fixture";
+import type { Expected } from "../core/score";
 import type { RoundRecord } from "../core/types";
 
 /** fixtures/<provider>/<name>/ for labeled ones, fixtures/captured/<provider>/<time>-…/ for new captures. */
@@ -29,10 +31,13 @@ export function writeFiles(dir: string, files: FixtureFile[]): void {
   }
 }
 
-/** Write a live round as an unlabeled fixture under fixtures/captured/<provider>/. */
-export function saveRound(record: RoundRecord, model: string): string {
-  const dir = path.join(CAPTURED_DIR, roundDir(record));
-  writeFiles(dir, fixtureFiles(record, model));
+/**
+ * Write a live round as a fixture: unlabeled under fixtures/captured/<provider>/, or, with a
+ * label, straight into fixtures/<provider>/ where eval and bench replay it.
+ */
+export function saveRound(record: RoundRecord, model: string, label?: { expected: Expected; notes: string }): string {
+  const dir = path.join(label ? FIXTURES_DIR : CAPTURED_DIR, roundDir(record));
+  writeFiles(dir, fixtureFiles(record, model, label));
   return dir;
 }
 
@@ -109,6 +114,25 @@ export function loadPageFixtures(filter?: string): PageFixture[] {
       dir,
       html: readFileSync(path.join(dir, "page.html"), "utf8"),
     }));
+}
+
+/**
+ * Write a slide the vendor accepted as a slider fixture, fixtures/<provider>/<adapter>-<time>/:
+ * the images as measured, where the piece started, and the offset that passed.
+ */
+export function saveSlide(slide: SlideRecord, notes: string): string {
+  const stamp = new Date(slide.time).toISOString().replace(/[:.]/g, "-");
+  const dir = path.join(FIXTURES_DIR, providerOf(slide.adapter), `${slide.adapter}-${stamp}`);
+  writeFiles(dir, [
+    { path: "background.png", content: slide.background, encoding: "base64" },
+    { path: "piece.png", content: slide.piece, encoding: "base64" },
+    {
+      path: "fixture.json",
+      content: `${JSON.stringify({ kind: "slider", source: slide.url, origin: slide.origin, expected: { offset: Math.round(slide.offset) }, notes }, null, 2)}\n`,
+      encoding: "utf-8",
+    },
+  ]);
+  return dir;
 }
 
 export function loadSliderFixtures(filter?: string): SliderFixture[] {

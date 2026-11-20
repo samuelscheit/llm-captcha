@@ -1,0 +1,109 @@
+{
+  "source": "https://gt4.geetest.com/",
+  "capturedAt": "2026-11-20T21:15:47.056Z",
+  "view": {
+    "adapter": "geetest-v4-click",
+    "kind": "point",
+    "status": "pending",
+    "region": {
+      "x": 720,
+      "y": 259.5,
+      "width": 340,
+      "height": 385
+    },
+    "instruction": "Select in this order",
+    "errors": [],
+    "targets": [
+      {
+        "id": "submit",
+        "rect": {
+          "x": 739.984375,
+          "y": 528.796875,
+          "width": 300.03125,
+          "height": 50.3125
+        },
+        "label": "OK"
+      },
+      {
+        "id": "refresh",
+        "rect": {
+          "x": 775.859375,
+          "y": 599,
+          "width": 25,
+          "height": 25
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "D15EDD69F37B6D5425A7C535D325549B"
+  },
+  "history": [],
+  "expected": {
+    "clicks": [
+      "submit"
+    ],
+    "points": [
+      {
+        "x": 160,
+        "y": 171,
+        "r": 25
+      },
+      {
+        "x": 56,
+        "y": 207,
+        "r": 25
+      },
+      {
+        "x": 225,
+        "y": 155,
+        "r": 25
+      }
+    ]
+  },
+  "notes": "Accepted by the vendor (gt4.geetest.com, session passed, no error after this round): auto-labeled with the answer claude-opus-5-5 gave.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "Order: crossed alarm clock (~158,172), circle with exclamation/key icon (~56,207), shield with moon (~226,155). Then submit.",
+      "actions": [
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 160,
+          "y": 171,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 56,
+          "y": 207,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 225,
+          "y": 155,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "submit",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

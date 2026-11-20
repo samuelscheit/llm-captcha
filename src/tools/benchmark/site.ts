@@ -99,6 +99,7 @@ a{color:inherit}
 <main>
 <h1>Captcha solving leaderboard</h1>
 <p>How often each vision model solves real reCAPTCHA, hCaptcha and other challenges. Every challenge is a fixture captured from a live page and labeled by hand, and is replayed exactly as the solver asks live: same screenshots, target labels, motion analysis and prompt. A run passes when its answer equals the labeled one; every run counts.</p>
+<p>Most labels are answers the vendor itself accepted live, given by the model that captured them (claude-opus-5-5): another equally valid answer (a different click order, a point off the item's centre) can count as a miss. The rest were labeled by hand from the screenshots.</p>
 <p class="meta">${fixtures.length} fixtures · updated ${updatedOf(rows)} · solver <code>${esc(solverHash)}</code></p>
 <div class="card">
 <table>

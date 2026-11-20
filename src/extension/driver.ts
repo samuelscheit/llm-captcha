@@ -2,6 +2,7 @@ import { CdpInput } from "../core/cdp-input";
 import type { Driver, ImageTools } from "../core/driver";
 import type { AdapterSpec, ChallengeView, PageState } from "../core/types";
 import type { AssistRequest } from "../page/assist";
+import type { PuzzleMeasure } from "../page/puzzle";
 import { compose, crop, label, motion } from "../page/image";
 import type { ContentApi } from "./content";
 
@@ -45,13 +46,13 @@ export class ExtensionDriver implements Driver {
     await this.inFrame(Number(view.frame), (spec: AdapterSpec) => (globalThis as unknown as { __captcha: Api }).__captcha.reveal(spec), adapter);
   }
 
-  async puzzle(view: ChallengeView, adapter: AdapterSpec): Promise<{ distance: number; margin: number } | null> {
+  async puzzle(view: ChallengeView, adapter: AdapterSpec, withImages = false): Promise<PuzzleMeasure | null> {
     const [result] = await chrome.scripting.executeScript({
       target: { tabId: this.tabId, frameIds: [Number(view.frame)] },
-      func: (spec: AdapterSpec) => (globalThis as unknown as { __captcha: Api }).__captcha.measurePuzzle(spec),
-      args: [adapter],
+      func: (spec: AdapterSpec, images: boolean) => (globalThis as unknown as { __captcha: Api }).__captcha.measurePuzzle(spec, images),
+      args: [adapter, withImages],
     });
-    return (result?.result as { distance: number; margin: number } | null | undefined) ?? null;
+    return (result?.result as PuzzleMeasure | null | undefined) ?? null;
   }
 
   async snapshot(view: ChallengeView): Promise<string> {

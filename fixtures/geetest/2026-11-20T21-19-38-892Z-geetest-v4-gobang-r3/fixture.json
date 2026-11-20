@@ -1,0 +1,352 @@
+{
+  "source": "https://gt4.geetest.com/",
+  "capturedAt": "2026-11-20T21:19:38.892Z",
+  "view": {
+    "adapter": "geetest-v4-gobang",
+    "kind": "select",
+    "status": "pending",
+    "region": {
+      "x": 720,
+      "y": 259.5,
+      "width": 340,
+      "height": 385
+    },
+    "instruction": "Click and drop to line up five identical items in a row",
+    "errors": [],
+    "targets": [
+      {
+        "id": "t1",
+        "rect": {
+          "x": 748.984375,
+          "y": 329.875,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t2",
+        "rect": {
+          "x": 808.984375,
+          "y": 329.875,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t3",
+        "rect": {
+          "x": 868.984375,
+          "y": 329.875,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t4",
+        "rect": {
+          "x": 929,
+          "y": 329.875,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t5",
+        "rect": {
+          "x": 989,
+          "y": 329.875,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t6",
+        "rect": {
+          "x": 748.984375,
+          "y": 379.203125,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t7",
+        "rect": {
+          "x": 808.984375,
+          "y": 379.203125,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t8",
+        "rect": {
+          "x": 868.984375,
+          "y": 379.203125,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t9",
+        "rect": {
+          "x": 929,
+          "y": 379.203125,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t10",
+        "rect": {
+          "x": 989,
+          "y": 379.203125,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t11",
+        "rect": {
+          "x": 748.984375,
+          "y": 428.53125,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t12",
+        "rect": {
+          "x": 808.984375,
+          "y": 428.53125,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t13",
+        "rect": {
+          "x": 868.984375,
+          "y": 428.53125,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t14",
+        "rect": {
+          "x": 929,
+          "y": 428.53125,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t15",
+        "rect": {
+          "x": 989,
+          "y": 428.53125,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t16",
+        "rect": {
+          "x": 748.984375,
+          "y": 477.859375,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t17",
+        "rect": {
+          "x": 808.984375,
+          "y": 477.859375,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t18",
+        "rect": {
+          "x": 868.984375,
+          "y": 477.859375,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t19",
+        "rect": {
+          "x": 929,
+          "y": 477.859375,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t20",
+        "rect": {
+          "x": 989,
+          "y": 477.859375,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t21",
+        "rect": {
+          "x": 748.984375,
+          "y": 527.1875,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t22",
+        "rect": {
+          "x": 808.984375,
+          "y": 527.1875,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t23",
+        "rect": {
+          "x": 868.984375,
+          "y": 527.1875,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t24",
+        "rect": {
+          "x": 929,
+          "y": 527.1875,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "t25",
+        "rect": {
+          "x": 989,
+          "y": 527.1875,
+          "width": 41,
+          "height": 41
+        },
+        "selected": false
+      },
+      {
+        "id": "refresh",
+        "rect": {
+          "x": 775.859375,
+          "y": 599,
+          "width": 25,
+          "height": 25
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "D15EDD69F37B6D5425A7C535D325549B"
+  },
+  "history": [
+    {
+      "instruction": "Click and drop to line up five identical items in a row",
+      "decision": {
+        "reasoning": "Bottom row has blue pieces at t22–t25 with t21 empty; there is an extra blue piece at t18. Dragging the t18 piece to t21 completes five in a row.",
+        "actions": [
+          {
+            "kind": "drag",
+            "target": null,
+            "text": null,
+            "x": 169,
+            "y": 238,
+            "toX": 49,
+            "toY": 288
+          }
+        ]
+      },
+      "errorsAfter": []
+    },
+    {
+      "instruction": "Click and drop to line up five identical items in a row",
+      "decision": {
+        "reasoning": "The current screen looks the same as before round 1: the bottom row has blue pieces at t22–t25, t21 is empty, and there is an extra blue piece at t18. The round 1 drag apparently did not register, since no error was shown and the board is unchanged. I'll repeat the drag from the t18 piece to t21, with slightly adjusted coordinates.",
+        "actions": [
+          {
+            "kind": "drag",
+            "target": null,
+            "text": null,
+            "x": 170,
+            "y": 240,
+            "toX": 50,
+            "toY": 289
+          }
+        ]
+      },
+      "errorsAfter": []
+    }
+  ],
+  "expected": {
+    "clicks": [
+      "t18",
+      "t21"
+    ]
+  },
+  "notes": "Accepted by the vendor (gt4.geetest.com, session passed, no error after this round): auto-labeled with the answer claude-opus-5-5 gave.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "The board is unchanged: blue pieces sit at t22–t25, t21 is empty, and an extra blue piece is at t18. Two drags in earlier rounds did not register. Since the instruction says \"click and drop\", this round I will click the t18 piece and then click the empty t21 cell to complete five in a row.",
+      "actions": [
+        {
+          "kind": "click",
+          "target": "t18",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t21",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

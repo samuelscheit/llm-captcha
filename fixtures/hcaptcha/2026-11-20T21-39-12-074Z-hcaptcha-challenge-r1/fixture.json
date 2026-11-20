@@ -1,0 +1,81 @@
+{
+  "source": "https://accounts.hcaptcha.com/demo",
+  "capturedAt": "2026-11-20T21:39:12.074Z",
+  "view": {
+    "adapter": "hcaptcha-challenge",
+    "kind": "point",
+    "status": "pending",
+    "region": {
+      "x": 90,
+      "y": 11,
+      "width": 520,
+      "height": 570
+    },
+    "instruction": "Click on the shape that does not match the others",
+    "errors": [],
+    "targets": [
+      {
+        "id": "submit",
+        "rect": {
+          "x": 516,
+          "y": 532,
+          "width": 84,
+          "height": 39
+        },
+        "label": "Skip"
+      },
+      {
+        "id": "refresh",
+        "rect": {
+          "x": 145,
+          "y": 531.5,
+          "width": 37,
+          "height": 37
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "DDE6CCABBCBAC64FE31FEA593F633EC3"
+  },
+  "history": [],
+  "expected": {
+    "clicks": [
+      "submit"
+    ],
+    "points": [
+      {
+        "x": 376,
+        "y": 228,
+        "r": 25
+      }
+    ]
+  },
+  "notes": "Accepted by the vendor (accounts.hcaptcha.com, session passed, no error after this round): auto-labeled with the answer claude-opus-5-5 gave.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "Shapes fade in and out. The ones at m1, m2 and m3 have the same triangle-cluster shape. The top-right shape (m4) is narrower and arranged differently, so it is the odd one out.",
+      "actions": [
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 376,
+          "y": 228,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "submit",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

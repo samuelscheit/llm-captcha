@@ -3,6 +3,7 @@ import type { Driver, ImageTools } from "../core/driver";
 import type { RandomSource } from "../core/mouse";
 import type { AdapterSpec, ChallengeView, PageState } from "../core/types";
 import type { AssistRequest } from "../page/assist";
+import type { PuzzleMeasure } from "../page/puzzle";
 import { PAGE_SOURCE } from "./page-source.generated";
 
 /** One CDP session: the page's, or an out-of-process frame's. */
@@ -119,10 +120,10 @@ export class CdpDriver implements Driver {
     compose: async (r) => (await this.onMain((r) => (globalThis as any).__captcha.images.compose(r), r)) as string,
   };
 
-  async puzzle(view: ChallengeView, adapter: AdapterSpec): Promise<{ distance: number; margin: number } | null> {
+  async puzzle(view: ChallengeView, adapter: AdapterSpec, withImages = false): Promise<PuzzleMeasure | null> {
     const frame = this.frames.get(view.frame ?? "");
     if (!frame) return null;
-    return (await this.call(frame, (spec: AdapterSpec) => (globalThis as any).__captcha.measurePuzzle(spec), adapter)) as { distance: number; margin: number } | null;
+    return (await this.call(frame, (spec: AdapterSpec, images: boolean) => (globalThis as any).__captcha.measurePuzzle(spec, images), adapter, withImages)) as PuzzleMeasure | null;
   }
 
   /** Every frame's URL, visible element tree and HTML (closed shadow roots included), for writing adapters. */

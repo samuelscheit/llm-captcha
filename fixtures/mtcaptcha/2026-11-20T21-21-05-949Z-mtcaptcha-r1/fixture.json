@@ -1,0 +1,65 @@
+{
+  "source": "https://service.mtcaptcha.com/mtcv1/demo/index.html/",
+  "capturedAt": "2026-11-20T21:21:05.949Z",
+  "view": {
+    "adapter": "mtcaptcha",
+    "kind": "text",
+    "status": "pending",
+    "region": {
+      "x": 284.1875,
+      "y": 274.9375,
+      "width": 342,
+      "height": 125
+    },
+    "instruction": "",
+    "errors": [],
+    "targets": [
+      {
+        "id": "input",
+        "rect": {
+          "x": 290.1875,
+          "y": 358.9375,
+          "width": 293,
+          "height": 33
+        },
+        "value": ""
+      },
+      {
+        "id": "reload",
+        "rect": {
+          "x": 584.1875,
+          "y": 358.9375,
+          "width": 37,
+          "height": 35
+        },
+        "value": "\ue900"
+      }
+    ],
+    "visible": true,
+    "frame": "07875715DEF4EA5637ED25C74E60E310"
+  },
+  "history": [],
+  "expected": {
+    "text": "RSEW",
+    "caseSensitive": false
+  },
+  "notes": "Accepted by the vendor (service.mtcaptcha.com, session passed on this round): auto-labeled with the answer claude-opus-5-5 gave. Relabeled by hand: the status text \"captcha verified successfully.\" had been read as an error.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "The captcha image reads \"RSEW\", which I'll type into the input field.",
+      "actions": [
+        {
+          "kind": "type",
+          "target": "input",
+          "text": "RSEW",
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

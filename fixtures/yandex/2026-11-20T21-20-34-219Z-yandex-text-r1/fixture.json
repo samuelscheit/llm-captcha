@@ -1,0 +1,73 @@
+{
+  "source": "https://captcha-api.yandex.ru/demo",
+  "capturedAt": "2026-11-20T21:20:34.219Z",
+  "view": {
+    "adapter": "yandex-text",
+    "kind": "text",
+    "status": "pending",
+    "region": {
+      "x": 490,
+      "y": 210.5,
+      "width": 300,
+      "height": 120
+    },
+    "instruction": "Enter the code from the image",
+    "errors": [],
+    "targets": [
+      {
+        "id": "input",
+        "rect": {
+          "x": 490,
+          "y": 390.5,
+          "width": 300,
+          "height": 36
+        },
+        "value": ""
+      },
+      {
+        "id": "submit",
+        "rect": {
+          "x": 638,
+          "y": 457.5,
+          "width": 152,
+          "height": 44
+        }
+      },
+      {
+        "id": "reload",
+        "rect": {
+          "x": 490,
+          "y": 457.5,
+          "width": 44,
+          "height": 44
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "47963C2616E4F82B853070939151C73E"
+  },
+  "history": [],
+  "expected": {
+    "text": "unclear eyelids",
+    "caseSensitive": false
+  },
+  "notes": "Accepted by the vendor (captcha-api.yandex.ru, session passed, no error after this round): auto-labeled with the answer claude-opus-5-5 gave.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "The image shows curved text that wraps around the frame. It starts at the lower left with 'un', runs across the top as 'clear', then descends to the right as 'eyelids'. I read it as 'unclear eyelids' and will type that into the input.",
+      "actions": [
+        {
+          "kind": "type",
+          "target": "input",
+          "text": "unclear eyelids",
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

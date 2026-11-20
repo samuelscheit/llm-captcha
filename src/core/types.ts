@@ -104,6 +104,8 @@ export interface AdapterSpec {
   errors?: string[];
   /** Like `errors`, for widgets that only say so in hidden (screen-reader) text. */
   errorsHidden?: string[];
+  /** Regex an error text must match: status elements that also announce success ("verified"). */
+  errorsMatch?: string;
   /** Selector that matches anywhere in the document when solved. */
   solved?: string;
   /** Regex matched against visible leaf texts when solved. */

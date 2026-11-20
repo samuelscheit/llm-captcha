@@ -1,0 +1,73 @@
+{
+  "source": "https://captcha-api.yandex.ru/demo",
+  "capturedAt": "2026-11-20T21:19:54.041Z",
+  "view": {
+    "adapter": "yandex-text",
+    "kind": "text",
+    "status": "pending",
+    "region": {
+      "x": 490,
+      "y": 210.5,
+      "width": 300,
+      "height": 120
+    },
+    "instruction": "Enter the code from the image",
+    "errors": [],
+    "targets": [
+      {
+        "id": "input",
+        "rect": {
+          "x": 490,
+          "y": 390.5,
+          "width": 300,
+          "height": 36
+        },
+        "value": ""
+      },
+      {
+        "id": "submit",
+        "rect": {
+          "x": 638,
+          "y": 457.5,
+          "width": 152,
+          "height": 44
+        }
+      },
+      {
+        "id": "reload",
+        "rect": {
+          "x": 490,
+          "y": 457.5,
+          "width": 44,
+          "height": 44
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "5BCD2E1ADE1E2DFA8C2384235259B340"
+  },
+  "history": [],
+  "expected": {
+    "text": "amends aspiring",
+    "caseSensitive": false
+  },
+  "notes": "Accepted by the vendor (captcha-api.yandex.ru, session passed, no error after this round): auto-labeled with the answer claude-opus-5-5 gave.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "The image shows two words written along a curve. Reading the letters in order gives 'amends' and 'aspiring'.",
+      "actions": [
+        {
+          "kind": "type",
+          "target": "input",
+          "text": "amends aspiring",
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

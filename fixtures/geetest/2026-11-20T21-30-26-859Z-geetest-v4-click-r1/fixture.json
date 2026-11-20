@@ -1,0 +1,109 @@
+{
+  "source": "https://gt4.geetest.com/",
+  "capturedAt": "2026-11-20T21:30:26.859Z",
+  "view": {
+    "adapter": "geetest-v4-click",
+    "kind": "point",
+    "status": "pending",
+    "region": {
+      "x": 720,
+      "y": 259.5,
+      "width": 340,
+      "height": 385
+    },
+    "instruction": "请在下图依次点击,看不清可刷新",
+    "errors": [],
+    "targets": [
+      {
+        "id": "submit",
+        "rect": {
+          "x": 739.984375,
+          "y": 528.796875,
+          "width": 300.03125,
+          "height": 50.3125
+        },
+        "label": "确定"
+      },
+      {
+        "id": "refresh",
+        "rect": {
+          "x": 775.859375,
+          "y": 599,
+          "width": 25,
+          "height": 25
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "4ACB472D53254A2665EF5CC2409B5AED"
+  },
+  "history": [],
+  "expected": {
+    "clicks": [
+      "submit"
+    ],
+    "points": [
+      {
+        "x": 275,
+        "y": 130,
+        "r": 25
+      },
+      {
+        "x": 88,
+        "y": 162,
+        "r": 25
+      },
+      {
+        "x": 205,
+        "y": 190,
+        "r": 25
+      }
+    ]
+  },
+  "notes": "Accepted by the vendor (gt4.geetest.com, session passed, no error after this round): auto-labeled with the answer claude-opus-5-5 gave.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "The task asks me to click the characters 耕, 之, 灵 in order. In the image, 耕 is at about (275,130), 之 is the swirl near (88,160), and 灵 is at about (205,190). 糕 and 血 are distractors.",
+      "actions": [
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 275,
+          "y": 130,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 88,
+          "y": 162,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 205,
+          "y": 190,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "submit",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

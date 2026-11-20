@@ -61,7 +61,23 @@ async function resample(pixels: Pixels, width: number, height: number): Promise<
  * as shown (resampled to their rendered size), so widgets that scale the piece unlike the
  * background, stretch an image, or start the piece away from the edge all come out in CSS px.
  */
-export async function measurePuzzle(spec: AdapterSpec): Promise<{ distance: number; margin: number } | null> {
+export interface PuzzleMeasure {
+  distance: number;
+  margin: number;
+  /** With `withImages`: the images as shown (PNG base64) and the piece's origin on the background, for slider fixtures. */
+  images?: { background: string; piece: string; origin: { x: number; y: number } };
+}
+
+async function png(pixels: Pixels): Promise<string> {
+  const canvas = new OffscreenCanvas(pixels.width, pixels.height);
+  canvas.getContext("2d")!.putImageData(new ImageData(new Uint8ClampedArray(pixels.data), pixels.width, pixels.height), 0, 0);
+  const bytes = new Uint8Array(await (await canvas.convertToBlob({ type: "image/png" })).arrayBuffer());
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  return btoa(binary);
+}
+
+export async function measurePuzzle(spec: AdapterSpec, withImages = false): Promise<PuzzleMeasure | null> {
   const find = (id: string) => {
     const target = spec.targets.find((t) => t.id === id);
     return target && queryAll(document, target.selector, !!spec.pierce).find(isVisible);
@@ -77,6 +93,9 @@ export async function measurePuzzle(spec: AdapterSpec): Promise<{ distance: numb
     resample(bg, Math.round(b.width), Math.round(b.height)),
     resample(pc, Math.round(p.width), Math.round(p.height)),
   ]);
-  const gap = findPuzzleGap(shownBg, shownPiece, { x: Math.round(p.x - b.x), y: Math.round(p.y - b.y) });
-  return { distance: gap.offset, margin: gap.margin };
+  const origin = { x: Math.round(p.x - b.x), y: Math.round(p.y - b.y) };
+  const gap = findPuzzleGap(shownBg, shownPiece, origin);
+  const measure: PuzzleMeasure = { distance: gap.offset, margin: gap.margin };
+  if (withImages) measure.images = { background: await png(shownBg), piece: await png(shownPiece), origin };
+  return measure;
 }

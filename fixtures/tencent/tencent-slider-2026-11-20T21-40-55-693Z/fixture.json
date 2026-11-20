@@ -1,0 +1,12 @@
+{
+  "kind": "slider",
+  "source": "https://www.tencentcloud.com/__captcha_test",
+  "origin": {
+    "x": 26,
+    "y": 28
+  },
+  "expected": {
+    "offset": 212
+  },
+  "notes": "Accepted by the vendor (www.tencentcloud.com, session passed on this slide): offset as measured, margin 0.31."
+}

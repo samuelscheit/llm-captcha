@@ -1,0 +1,12 @@
+{
+  "kind": "slider",
+  "source": "https://www.dingxiang-inc.com/business/captcha",
+  "origin": {
+    "x": 20,
+    "y": 72
+  },
+  "expected": {
+    "offset": 220
+  },
+  "notes": "Accepted by the vendor (www.dingxiang-inc.com, session passed on this slide): offset as measured, margin 0.42."
+}

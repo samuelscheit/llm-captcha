@@ -1,0 +1,81 @@
+{
+  "source": "https://accounts.hcaptcha.com/demo",
+  "capturedAt": "2026-11-20T21:40:14.934Z",
+  "view": {
+    "adapter": "hcaptcha-challenge",
+    "kind": "point",
+    "status": "pending",
+    "region": {
+      "x": 90,
+      "y": 11,
+      "width": 520,
+      "height": 570
+    },
+    "instruction": "Select the shape that is different",
+    "errors": [],
+    "targets": [
+      {
+        "id": "submit",
+        "rect": {
+          "x": 516,
+          "y": 532,
+          "width": 84,
+          "height": 39
+        },
+        "label": "Skip"
+      },
+      {
+        "id": "refresh",
+        "rect": {
+          "x": 145,
+          "y": 531.5,
+          "width": 37,
+          "height": 37
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "E9DDE33CE8D907F697B0E908691A22C2"
+  },
+  "history": [],
+  "expected": {
+    "clicks": [
+      "submit"
+    ],
+    "points": [
+      {
+        "x": 408,
+        "y": 378,
+        "r": 25
+      }
+    ]
+  },
+  "notes": "Accepted by the vendor (accounts.hcaptcha.com, session passed, no error after this round): auto-labeled with the answer claude-opus-5-5 gave.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "Across the frames the shapes fade in and out. In the first frame the top-left and top-right shapes are the same chevron made of triangles. The bottom-right shape (m4) is a zigzag arrangement of triangles instead, so it is the one that is different. I click its center and then submit.",
+      "actions": [
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 408,
+          "y": 378,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "submit",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

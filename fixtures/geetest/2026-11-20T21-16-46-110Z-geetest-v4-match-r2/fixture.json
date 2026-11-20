@@ -1,0 +1,183 @@
+{
+  "source": "https://gt4.geetest.com/",
+  "capturedAt": "2026-11-20T21:16:46.110Z",
+  "view": {
+    "adapter": "geetest-v4-match",
+    "kind": "select",
+    "status": "pending",
+    "region": {
+      "x": 720,
+      "y": 259.5,
+      "width": 340,
+      "height": 385
+    },
+    "instruction": "Click and swap to line up three identical items in a row",
+    "errors": [],
+    "targets": [
+      {
+        "id": "t1",
+        "rect": {
+          "x": 739.984375,
+          "y": 319.5,
+          "width": 97.796875,
+          "height": 83.84375
+        },
+        "selected": false
+      },
+      {
+        "id": "t2",
+        "rect": {
+          "x": 739.984375,
+          "y": 406.203125,
+          "width": 97.796875,
+          "height": 83.84375
+        },
+        "selected": false
+      },
+      {
+        "id": "t3",
+        "rect": {
+          "x": 739.984375,
+          "y": 492.90625,
+          "width": 97.796875,
+          "height": 83.84375
+        },
+        "selected": false
+      },
+      {
+        "id": "t4",
+        "rect": {
+          "x": 840.1875,
+          "y": 319.5,
+          "width": 97.796875,
+          "height": 83.84375
+        },
+        "selected": false
+      },
+      {
+        "id": "t5",
+        "rect": {
+          "x": 840.1875,
+          "y": 406.203125,
+          "width": 97.796875,
+          "height": 83.84375
+        },
+        "selected": false
+      },
+      {
+        "id": "t6",
+        "rect": {
+          "x": 840.1875,
+          "y": 492.90625,
+          "width": 97.796875,
+          "height": 83.84375
+        },
+        "selected": false
+      },
+      {
+        "id": "t7",
+        "rect": {
+          "x": 940.390625,
+          "y": 319.5,
+          "width": 97.796875,
+          "height": 83.84375
+        },
+        "selected": false
+      },
+      {
+        "id": "t8",
+        "rect": {
+          "x": 940.390625,
+          "y": 406.203125,
+          "width": 97.796875,
+          "height": 83.84375
+        },
+        "selected": false
+      },
+      {
+        "id": "t9",
+        "rect": {
+          "x": 940.390625,
+          "y": 492.90625,
+          "width": 97.796875,
+          "height": 83.84375
+        },
+        "selected": false
+      },
+      {
+        "id": "refresh",
+        "rect": {
+          "x": 775.859375,
+          "y": 599,
+          "width": 25,
+          "height": 25
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "D15EDD69F37B6D5425A7C535D325549B"
+  },
+  "history": [
+    {
+      "instruction": "Click and swap to line up three identical items in a row",
+      "decision": {
+        "reasoning": "Top row is worried/blush/blush and middle row is worried/blush/worried. Swapping t1 (worried) with t5 (blush) makes the top row three blush faces and the middle row three worried faces.",
+        "actions": [
+          {
+            "kind": "click",
+            "target": "t1",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t5",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          }
+        ]
+      },
+      "errorsAfter": []
+    }
+  ],
+  "expected": {
+    "clicks": [
+      "t3",
+      "t6"
+    ]
+  },
+  "notes": "Accepted by the vendor (gt4.geetest.com, session passed, no error after this round): auto-labeled with the answer claude-opus-5-5 gave.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "Rows: top is worried/blush/blush, middle is worried/blush/worried, bottom is blush/tongue/grin. The last round's diagonal swap (t1 with t5) didn't change anything, so swaps likely have to be between neighbouring tiles. The middle column is blush/blush/tongue. Swapping t6 (tongue) with its neighbour t3 (blush) gives three blush faces in that column.",
+      "actions": [
+        {
+          "kind": "click",
+          "target": "t3",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t6",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

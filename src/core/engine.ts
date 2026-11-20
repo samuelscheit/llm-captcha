@@ -27,6 +27,20 @@ export interface EngineOptions {
   signal?: AbortSignal;
   /** Every model round, with the screenshot, e.g. to save it as a fixture. */
   onRound?: (record: RoundRecord) => void;
+  /** Every slide of a puzzle, with the images as measured, e.g. to save it as a slider fixture. */
+  onSlide?: (slide: SlideRecord) => void;
+}
+
+/** One slide of a puzzle, as measured: the images as shown, where the piece started, the gap found. */
+export interface SlideRecord {
+  time: number;
+  url: string;
+  adapter: string;
+  background: string;
+  piece: string;
+  origin: { x: number; y: number };
+  offset: number;
+  margin: number;
 }
 
 export interface SolveResult {
@@ -407,7 +421,7 @@ async function solveLoop(
           await sleep(600, signal);
           continue;
         }
-        const gap = await driver.puzzle(view, spec);
+        const gap = await driver.puzzle(view, spec, !!options.onSlide);
         if (!gap) {
           await sleep(400, signal);
           continue;
@@ -429,10 +443,12 @@ async function solveLoop(
         await driver.input.mouse([...pressSteps(from, random, pointer), ...heldSteps(from, nudged, random, { release: false })]);
         await sleep(150, signal);
         const pieceNow = (await scan()).find((v) => keyOf(v) === key)?.targets.find((t) => t.id === "piece")?.rect.x;
-        const moved = pieceNow === undefined ? nudge : pieceNow - pieceStart;
+        // A piece drawn into a fixed canvas (GeeTest v3) does not move as an element: assume 1:1.
+        const moved = pieceNow === undefined || Math.abs(pieceNow - pieceStart) < 1 ? nudge : pieceNow - pieceStart;
         const steps = heldSteps(nudged, { x: nudged.x + gap.distance - moved, y: nudged.y }, random);
         await driver.input.mouse(steps);
         pointer = steps.at(-1)!;
+        if (gap.images) options.onSlide?.({ time: Date.now(), url: await driver.url(), adapter: view.adapter, ...gap.images, offset: gap.distance, margin: gap.margin });
         lastGap.set(key, gap.distance);
         lastClick.set(key, Date.now());
         slides.set(key, (slides.get(key) ?? 0) + 1);

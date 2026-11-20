@@ -1,0 +1,155 @@
+{
+  "source": "https://accounts.hcaptcha.com/demo",
+  "capturedAt": "2026-11-20T21:25:15.973Z",
+  "view": {
+    "adapter": "hcaptcha-challenge",
+    "kind": "point",
+    "status": "pending",
+    "region": {
+      "x": 90,
+      "y": 11,
+      "width": 520,
+      "height": 570
+    },
+    "instruction": "Tap on gadgets you can recharge",
+    "errors": [],
+    "targets": [
+      {
+        "id": "submit",
+        "rect": {
+          "x": 516,
+          "y": 532,
+          "width": 84,
+          "height": 39
+        },
+        "label": "Verify"
+      },
+      {
+        "id": "refresh",
+        "rect": {
+          "x": 145,
+          "y": 531.5,
+          "width": 37,
+          "height": 37
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "A19624A528049FA29CE68A76CA59687F"
+  },
+  "history": [
+    {
+      "instruction": "Tap on gadgets you can recharge",
+      "decision": {
+        "reasoning": "The task asks for gadgets you can recharge. The rechargeable items are the three pairs of headphones: one at the top left (~70,212), one at the middle left (~85,345) and one at the bottom right (~428,407). The dish rack, the tomatoes and the nesting dolls cannot be recharged, so I tap the three headphones and then submit.",
+        "actions": [
+          {
+            "kind": "clickPoint",
+            "target": null,
+            "text": null,
+            "x": 75,
+            "y": 212,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "clickPoint",
+            "target": null,
+            "text": null,
+            "x": 85,
+            "y": 345,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "clickPoint",
+            "target": null,
+            "text": null,
+            "x": 428,
+            "y": 407,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "submit",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          }
+        ]
+      },
+      "errorsAfter": []
+    }
+  ],
+  "expected": {
+    "clicks": [
+      "submit"
+    ],
+    "points": [
+      {
+        "x": 297,
+        "y": 210,
+        "r": 25
+      },
+      {
+        "x": 407,
+        "y": 210,
+        "r": 25
+      },
+      {
+        "x": 310,
+        "y": 385,
+        "r": 25
+      }
+    ]
+  },
+  "notes": "Accepted by the vendor (accounts.hcaptcha.com, session passed, no error after this round): auto-labeled with the answer claude-opus-5-5 gave.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "This is a new screen for the same task, gadgets you can recharge. There are three pairs of headphones: one at the top middle (~297,210), one at the top right (~407,210) and one at the bottom middle (~310,385). The nesting dolls and the dish rack cannot be recharged, so I tap the three headphones and then submit.",
+      "actions": [
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 297,
+          "y": 210,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 407,
+          "y": 210,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 310,
+          "y": 385,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "submit",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

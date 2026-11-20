@@ -1,0 +1,12 @@
+{
+  "kind": "slider",
+  "source": "https://gt4.geetest.com/",
+  "origin": {
+    "x": 0,
+    "y": 113
+  },
+  "expected": {
+    "offset": 178
+  },
+  "notes": "Accepted by the vendor (gt4.geetest.com, session passed on this slide): offset as measured, margin 0.16."
+}

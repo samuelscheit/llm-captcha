@@ -1,0 +1,109 @@
+{
+  "source": "https://gt4.geetest.com/",
+  "capturedAt": "2026-11-20T21:29:53.102Z",
+  "view": {
+    "adapter": "geetest-v4-click",
+    "kind": "point",
+    "status": "pending",
+    "region": {
+      "x": 720,
+      "y": 259.5,
+      "width": 340,
+      "height": 385
+    },
+    "instruction": "请在下图依次点击,看不清可刷新",
+    "errors": [],
+    "targets": [
+      {
+        "id": "submit",
+        "rect": {
+          "x": 739.984375,
+          "y": 528.796875,
+          "width": 300.03125,
+          "height": 50.3125
+        },
+        "label": "确定"
+      },
+      {
+        "id": "refresh",
+        "rect": {
+          "x": 775.859375,
+          "y": 599,
+          "width": 25,
+          "height": 25
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "4ACB472D53254A2665EF5CC2409B5AED"
+  },
+  "history": [],
+  "expected": {
+    "clicks": [
+      "submit"
+    ],
+    "points": [
+      {
+        "x": 265,
+        "y": 110,
+        "r": 25
+      },
+      {
+        "x": 165,
+        "y": 186,
+        "r": 25
+      },
+      {
+        "x": 266,
+        "y": 160,
+        "r": 25
+      }
+    ]
+  },
+  "notes": "Accepted by the vendor (gt4.geetest.com, session passed, no error after this round): auto-labeled with the answer claude-opus-5-5 gave.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "The challenge asks for the characters 茨, 实, 果 to be clicked in that order. In the image, 茨 is at the upper right, 果 is below it on the right, and 实 is at the lower middle. 大 is a distractor.",
+      "actions": [
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 265,
+          "y": 110,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 165,
+          "y": 186,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 266,
+          "y": 160,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "submit",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

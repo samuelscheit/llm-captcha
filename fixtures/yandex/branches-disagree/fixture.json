@@ -1,0 +1,75 @@
+{
+  "source": "https://captcha-api.yandex.ru/demo",
+  "capturedAt": "2026-11-20T21:20:07.604Z",
+  "view": {
+    "adapter": "yandex-text",
+    "kind": "text",
+    "status": "pending",
+    "region": {
+      "x": 490,
+      "y": 210.5,
+      "width": 300,
+      "height": 120
+    },
+    "instruction": "Enter the code from the image",
+    "errors": [],
+    "targets": [
+      {
+        "id": "input",
+        "rect": {
+          "x": 490,
+          "y": 390.5,
+          "width": 300,
+          "height": 36
+        },
+        "value": ""
+      },
+      {
+        "id": "submit",
+        "rect": {
+          "x": 638,
+          "y": 457.5,
+          "width": 152,
+          "height": 44
+        }
+      },
+      {
+        "id": "reload",
+        "rect": {
+          "x": 490,
+          "y": 457.5,
+          "width": 44,
+          "height": 44
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "1508E5E65E9E1C51A77BC82141CE3CA6"
+  },
+  "history": [],
+  "expected": {
+    "text": "branches disagree",
+    "caseSensitive": false
+  },
+  "notes": "Rejected live: the model typed \"handles disagree\". Labeled by hand from a 3x zoom: the curved first word is \"branches\". Hard case: a word bent into a U.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "The code is curved text. I read it as \"handles disagree\", but the first word is uncertain: its top letters could be \"bla\" rather than \"ha\". I'm typing my best reading.",
+      "actions": [
+        {
+          "kind": "type",
+          "target": "input",
+          "text": "handles disagree",
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": [
+      "Try again. Additional check"
+    ]
+  }
+}

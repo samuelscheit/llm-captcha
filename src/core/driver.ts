@@ -1,4 +1,5 @@
 import type { AssistRequest } from "../page/assist";
+import type { PuzzleMeasure } from "../page/puzzle";
 import type { MouseStep } from "./mouse";
 import type { AdapterSpec, ChallengeView, PageState, Rect } from "./types";
 
@@ -53,8 +54,11 @@ export interface Driver {
   /** Scroll the challenge's root into view. */
   reveal(view: ChallengeView, adapter: AdapterSpec): Promise<void>;
   readonly images: ImageTools;
-  /** Slide puzzle of a `slider` view: how far (CSS px) to drag, and how sure; null while its images load. */
-  puzzle(view: ChallengeView, adapter: AdapterSpec): Promise<{ distance: number; margin: number } | null>;
+  /**
+   * Slide puzzle of a `slider` view: how far (CSS px) the piece must go, and how sure; null while
+   * its images load. `withImages` also returns the images as measured (slider fixtures).
+   */
+  puzzle(view: ChallengeView, adapter: AdapterSpec, withImages?: boolean): Promise<PuzzleMeasure | null>;
   /** HTML of the frame a view came from, closed shadow roots included (failure reports). */
   snapshot(view: ChallengeView): Promise<string>;
   /**

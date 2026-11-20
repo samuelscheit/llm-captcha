@@ -1,0 +1,65 @@
+{
+  "source": "https://service.mtcaptcha.com/mtcv1/demo/index.html/",
+  "capturedAt": "2026-11-20T21:20:47.396Z",
+  "view": {
+    "adapter": "mtcaptcha",
+    "kind": "text",
+    "status": "pending",
+    "region": {
+      "x": 284.1875,
+      "y": 274.9375,
+      "width": 342,
+      "height": 125
+    },
+    "instruction": "",
+    "errors": [],
+    "targets": [
+      {
+        "id": "input",
+        "rect": {
+          "x": 290.1875,
+          "y": 358.9375,
+          "width": 293,
+          "height": 33
+        },
+        "value": ""
+      },
+      {
+        "id": "reload",
+        "rect": {
+          "x": 584.1875,
+          "y": 358.9375,
+          "width": 37,
+          "height": 35
+        },
+        "value": "\ue900"
+      }
+    ],
+    "visible": true,
+    "frame": "DEE019852410BDAD852FDE3D904D6594"
+  },
+  "history": [],
+  "expected": {
+    "text": "CMYS",
+    "caseSensitive": false
+  },
+  "notes": "Accepted by the vendor (service.mtcaptcha.com, session passed on this round): auto-labeled with the answer claude-opus-5-5 gave. Relabeled by hand: the status text \"captcha verified successfully.\" had been read as an error.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "The captcha image shows the characters 'CMYS', so I'm typing that into the input field.",
+      "actions": [
+        {
+          "kind": "type",
+          "target": "input",
+          "text": "CMYS",
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

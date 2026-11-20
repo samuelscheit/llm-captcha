@@ -1,0 +1,430 @@
+{
+  "source": "https://www.google.com/recaptcha/api2/demo",
+  "capturedAt": "2026-11-20T21:26:45.582Z",
+  "view": {
+    "adapter": "recaptcha-images",
+    "kind": "select",
+    "status": "pending",
+    "region": {
+      "x": 85,
+      "y": 69,
+      "width": 400,
+      "height": 612
+    },
+    "instruction": "Select all squares with traffic lights If there are none, click skip",
+    "errors": [
+      "Please try again."
+    ],
+    "targets": [
+      {
+        "id": "t1",
+        "rect": {
+          "x": 91,
+          "y": 195,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t2",
+        "rect": {
+          "x": 188,
+          "y": 195,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t3",
+        "rect": {
+          "x": 285,
+          "y": 195,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t4",
+        "rect": {
+          "x": 382,
+          "y": 195,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t5",
+        "rect": {
+          "x": 91,
+          "y": 292,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t6",
+        "rect": {
+          "x": 188,
+          "y": 292,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t7",
+        "rect": {
+          "x": 285,
+          "y": 292,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t8",
+        "rect": {
+          "x": 382,
+          "y": 292,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t9",
+        "rect": {
+          "x": 91,
+          "y": 389,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t10",
+        "rect": {
+          "x": 188,
+          "y": 389,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t11",
+        "rect": {
+          "x": 285,
+          "y": 389,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t12",
+        "rect": {
+          "x": 382,
+          "y": 389,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t13",
+        "rect": {
+          "x": 91,
+          "y": 486,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t14",
+        "rect": {
+          "x": 188,
+          "y": 486,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t15",
+        "rect": {
+          "x": 285,
+          "y": 486,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t16",
+        "rect": {
+          "x": 382,
+          "y": 486,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "verify",
+        "rect": {
+          "x": 377,
+          "y": 629,
+          "width": 100,
+          "height": 42
+        },
+        "label": "SKIP"
+      },
+      {
+        "id": "reload",
+        "rect": {
+          "x": 91,
+          "y": 627,
+          "width": 48,
+          "height": 48
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "C28D9ABACAD44E61D51E70B230389A4A"
+  },
+  "history": [
+    {
+      "instruction": "Select all squares with motorcycles If there are none, click skip",
+      "decision": {
+        "reasoning": "A motorcycle is parked in the middle of the scene. Its body covers t10 and t11 and reaches into t12. The mirrors and handlebar reach up into t6 and t7.",
+        "actions": [
+          {
+            "kind": "click",
+            "target": "t6",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t7",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t10",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t11",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t12",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "verify",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          }
+        ]
+      },
+      "errorsAfter": []
+    },
+    {
+      "instruction": "Select all squares with traffic lights If there are none, click skip",
+      "decision": {
+        "reasoning": "Traffic lights are visible in three places. One hangs from the mast arm in t1. A second sits on the pole across t2 and t6. A small signal also appears lower in t6. I'll select t1, t2 and t6, then verify.",
+        "actions": [
+          {
+            "kind": "click",
+            "target": "t1",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t2",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t6",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "verify",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          }
+        ]
+      },
+      "errorsAfter": []
+    },
+    {
+      "instruction": "Select all squares with bicycles If there are none, click skip",
+      "decision": {
+        "reasoning": "The task asks for squares with bicycles. A black bicycle with a rear bag stands in the middle of the scene. Its handlebar reaches into t2 and its seat into t3. The frame covers t6 and t7, and the wheels reach down into t10 and t11. The metal racks on the left are not bicycles, so t5 and t9 are left out. I'll select those six tiles, then click the button.",
+        "actions": [
+          {
+            "kind": "click",
+            "target": "t2",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t3",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t6",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t7",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t10",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t11",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "verify",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          }
+        ]
+      },
+      "errorsAfter": [
+        "Please try again."
+      ]
+    }
+  ],
+  "expected": {
+    "clicks": [
+      "t3",
+      "t7",
+      "verify"
+    ]
+  },
+  "notes": "Accepted by the vendor (www.google.com, session passed, no error after this round): auto-labeled with the answer claude-opus-5-5 gave.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "A traffic light hangs from a mast arm, near the centre of the image. Its housing with the red light is in t3 and continues down into t7. The arm itself is not part of the light. I'll select t3 and t7, then verify.",
+      "actions": [
+        {
+          "kind": "click",
+          "target": "t3",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t7",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "verify",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

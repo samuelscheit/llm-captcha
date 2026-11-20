@@ -192,9 +192,15 @@ The model's accuracy is what matters most, so real challenges are kept as fixtur
 
 ```sh
 bun run capture --vendor recaptcha --sessions 3      # or any URL
+bun run capture --accept --vendor geetest-v4-nine --vendor yidun --sessions 3
 #   → fixtures/captured/<provider>/<time>-<adapter>-r<round>/
 #     fixture.json, frame-N.png, labeled.png
 ```
+
+With `--accept`, what the vendor itself accepted is labeled automatically and goes straight into `fixtures/<provider>/`, while everything else stays in `fixtures/captured/` for a person:
+
+- **Model rounds:** in a session the vendor passed, every round it did not object to, with the model's answer as the expected one.
+- **Slide puzzles:** the passing slide, as a slider fixture with both images as measured.
 
 Each captured round holds the view, the frames, what the model saw, its decision and the errors the widget showed afterwards. To label one, look at the frames, write `expected` and `notes` into `fixture.json`, and move the directory to `fixtures/<provider>/<name>/` (for example `fixtures/recaptcha/dynamic-bus-1/`). The provider is the first segment of the adapter id. Fixtures you are unsure about keep `"expected": null` and a note; eval skips them. The `expected` field is one of these forms:
 

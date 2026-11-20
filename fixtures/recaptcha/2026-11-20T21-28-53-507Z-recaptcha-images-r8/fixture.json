@@ -1,0 +1,284 @@
+{
+  "source": "https://www.google.com/recaptcha/api2/demo",
+  "capturedAt": "2026-11-20T21:28:53.507Z",
+  "view": {
+    "adapter": "recaptcha-images",
+    "kind": "select",
+    "status": "pending",
+    "region": {
+      "x": 85,
+      "y": 84,
+      "width": 400,
+      "height": 582
+    },
+    "instruction": "Select all images with crosswalks Click verify once there are none left.",
+    "errors": [],
+    "targets": [
+      {
+        "id": "t1",
+        "rect": {
+          "x": 90,
+          "y": 209,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t2",
+        "rect": {
+          "x": 220,
+          "y": 209,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t3",
+        "rect": {
+          "x": 350,
+          "y": 209,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t4",
+        "rect": {
+          "x": 90,
+          "y": 339,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t5",
+        "rect": {
+          "x": 220,
+          "y": 339,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t6",
+        "rect": {
+          "x": 350,
+          "y": 339,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t7",
+        "rect": {
+          "x": 90,
+          "y": 469,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t8",
+        "rect": {
+          "x": 220,
+          "y": 469,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t9",
+        "rect": {
+          "x": 350,
+          "y": 469,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "verify",
+        "rect": {
+          "x": 377,
+          "y": 614,
+          "width": 100,
+          "height": 42
+        },
+        "label": "VERIFY"
+      },
+      {
+        "id": "reload",
+        "rect": {
+          "x": 91,
+          "y": 612,
+          "width": 48,
+          "height": 48
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "8124FE4F17B59D97ED0B570DB1A0495D"
+  },
+  "history": [
+    {
+      "instruction": "Select all squares with buses If there are none, click skip",
+      "decision": {
+        "reasoning": "The task asks for every square containing a bus. A white and blue bus appears on the right side. Its roof starts around y=288, which falls in t7 and t8. The body continues through t11 and t12. The bottom of the bus and the wheel reach about y=430, which crosses into t15 and t16. The bus's left edge is near x=222, so it stays inside the t11 column and does not reach t10.",
+        "actions": [
+          {
+            "kind": "click",
+            "target": "t7",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t8",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t11",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t12",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t15",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t16",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "verify",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          }
+        ]
+      },
+      "errorsAfter": [
+        "Please try again."
+      ]
+    },
+    {
+      "instruction": "Select all images with crosswalks Click verify once there are none left.",
+      "decision": {
+        "reasoning": "The task asks for every tile with a crosswalk; matching tiles get replaced with new images, so I click tiles this round and do not press verify. Crosswalks are visible in t1 (white stripes on the road), t3 (wide zebra crossing) and t7 (stripes under the overpass). The other tiles show no crosswalk.",
+        "actions": [
+          {
+            "kind": "click",
+            "target": "t1",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t3",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t7",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          }
+        ]
+      },
+      "errorsAfter": []
+    },
+    {
+      "instruction": "Select all images with crosswalks Click verify once there are none left.",
+      "decision": {
+        "reasoning": "Crosswalks are tiles get replaced, so I click matching tiles this round and do not press verify. t7 clearly shows white zebra stripes across the street. The other tiles show a highway overpass, roads with cars, a bus, an intersection and a motorbike, with no visible crosswalk.",
+        "actions": [
+          {
+            "kind": "click",
+            "target": "t7",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          }
+        ]
+      },
+      "errorsAfter": []
+    }
+  ],
+  "expected": {
+    "clicks": [
+      "verify"
+    ]
+  },
+  "notes": "Accepted by the vendor (www.google.com, session passed, no error after this round): auto-labeled with the answer claude-opus-5-5 gave.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "Checking the current tiles for crosswalks. t1 is a highway overpass, t2 a road with a car, t3 cars and a motorbike, t4 a bus, t5 an intersection with no visible stripes, t6 a street with cars, t7 a street with motorbikes, t8 a motorbike and t9 a gas station. None shows a crosswalk, so I click verify.",
+      "actions": [
+        {
+          "kind": "click",
+          "target": "verify",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

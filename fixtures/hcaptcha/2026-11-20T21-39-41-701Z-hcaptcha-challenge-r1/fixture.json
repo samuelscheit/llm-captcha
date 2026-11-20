@@ -1,0 +1,81 @@
+{
+  "source": "https://accounts.hcaptcha.com/demo",
+  "capturedAt": "2026-11-20T21:39:41.701Z",
+  "view": {
+    "adapter": "hcaptcha-challenge",
+    "kind": "point",
+    "status": "pending",
+    "region": {
+      "x": 90,
+      "y": 11,
+      "width": 520,
+      "height": 570
+    },
+    "instruction": "Select the shape that is different",
+    "errors": [],
+    "targets": [
+      {
+        "id": "submit",
+        "rect": {
+          "x": 516,
+          "y": 532,
+          "width": 84,
+          "height": 39
+        },
+        "label": "Skip"
+      },
+      {
+        "id": "refresh",
+        "rect": {
+          "x": 145,
+          "y": 531.5,
+          "width": 37,
+          "height": 37
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "679C84C64C737AB22C5BAD765D0D12FA"
+  },
+  "history": [],
+  "expected": {
+    "clicks": [
+      "submit"
+    ],
+    "points": [
+      {
+        "x": 262,
+        "y": 225,
+        "r": 25
+      }
+    ]
+  },
+  "notes": "Accepted by the vendor (accounts.hcaptcha.com, session passed, no error after this round): auto-labeled with the answer claude-opus-5-5 gave.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "Four triangle-tile shapes appear across the frames. The top-left, bottom-left and bottom-right shapes share the same chunky outline. The middle shape (around 262,225) has a thinner, different arrangement, so it is the odd one out.",
+      "actions": [
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 262,
+          "y": 225,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "submit",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

@@ -29,9 +29,9 @@ export interface VendorPage {
   passed?: string;
 }
 
-/** Init script for GeeTest v4's demo: which challenge type it shows. */
-function geetestV4(riskType: string): string {
-  const config = JSON.stringify({ language: "en", riskType, product: "float", captchaId: "54088bb07d2df3c46b79f80300b0abbe" });
+/** Init script for GeeTest v4's demo: which challenge type it shows (word and phrase need Chinese). */
+function geetestV4(riskType: string, language = "en"): string {
+  const config = JSON.stringify({ language, riskType, product: "float", captchaId: "54088bb07d2df3c46b79f80300b0abbe" });
   return `if (location.host === "gt4.geetest.com") localStorage.setItem("geetest_config", ${JSON.stringify(config)});`;
 }
 
@@ -107,6 +107,18 @@ export const VENDOR_PAGES = {
     trigger: ".geetest_btn_click",
     passed: ".geetest_captcha.geetest_lock_success",
   },
+  /** GeeTest v4's icon task: click the icons in the order the header shows (model). */
+  "geetest-v4-icon": { url: "https://gt4.geetest.com/", init: geetestV4("icon"), trigger: ".geetest_btn_click", passed: ".geetest_captcha.geetest_lock_success" },
+  /** GeeTest v4's word task: click the characters in order (model, Chinese). */
+  "geetest-v4-word": { url: "https://gt4.geetest.com/", init: geetestV4("word", "zho"), trigger: ".geetest_btn_click", passed: ".geetest_captcha.geetest_lock_success" },
+  /** GeeTest v4's phrase task: click the characters of the phrase in order (model, Chinese). */
+  "geetest-v4-phrase": { url: "https://gt4.geetest.com/", init: geetestV4("phrase", "zho"), trigger: ".geetest_btn_click", passed: ".geetest_captcha.geetest_lock_success" },
+  /** GeeTest v3's click task: click the icons in the order shown, then confirm (model). */
+  "geetest-v3-click": { url: "https://demos.geetest.com/click-float.html", trigger: ".geetest_radar_tip", passed: ".geetest_radar_success" },
+  /** GeeTest v4's IconCrush: swap two items to line up three (model). */
+  "geetest-v4-match": { url: "https://gt4.geetest.com/", init: geetestV4("match"), trigger: ".geetest_btn_click", passed: ".geetest_captcha.geetest_lock_success" },
+  /** GeeTest v4's gobang: move one ball to line up five (model). */
+  "geetest-v4-gobang": { url: "https://gt4.geetest.com/", init: geetestV4("winlinze"), trigger: ".geetest_btn_click", passed: ".geetest_captcha.geetest_lock_success" },
   /** NetEase Yidun's jigsaw trial, in its default float mode (images show under the pointer). */
   yidun: { url: "https://dun.163.com/trial/jigsaw", passed: ".yidun.yidun--jigsaw.yidun--success" },
   /** Shumei's slider trial (float mode); a new puzzle follows each pass at once. */

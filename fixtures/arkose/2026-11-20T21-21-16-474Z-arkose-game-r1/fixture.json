@@ -1,0 +1,91 @@
+{
+  "source": "https://gitlab.com/__captcha_test",
+  "capturedAt": "2026-11-20T21:21:16.474Z",
+  "view": {
+    "adapter": "arkose-game",
+    "kind": "select",
+    "status": "pending",
+    "region": {
+      "x": 0,
+      "y": 0,
+      "width": 1218,
+      "height": 788
+    },
+    "instruction": "Use the arrows to move the train to the coordinates indicated in the left image (1 of 3) [The challenge shown once per option, o1 to o5. Click exactly the one option that answers it; it is submitted for you.]",
+    "errors": [],
+    "targets": [
+      {
+        "id": "o1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 398,
+          "height": 388
+        }
+      },
+      {
+        "id": "o2",
+        "rect": {
+          "x": 410,
+          "y": 0,
+          "width": 398,
+          "height": 388
+        }
+      },
+      {
+        "id": "o3",
+        "rect": {
+          "x": 820,
+          "y": 0,
+          "width": 398,
+          "height": 388
+        }
+      },
+      {
+        "id": "o4",
+        "rect": {
+          "x": 0,
+          "y": 400,
+          "width": 398,
+          "height": 388
+        }
+      },
+      {
+        "id": "o5",
+        "rect": {
+          "x": 410,
+          "y": 400,
+          "width": 398,
+          "height": 388
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "4A827ACB2007049977E2256F1173955F"
+  },
+  "history": [],
+  "expected": {
+    "clicks": [
+      "o4"
+    ]
+  },
+  "notes": "Accepted by the vendor (gitlab.com, session passed, no error after this round): auto-labeled with the answer claude-opus-5-5 gave.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "The target is the ice-skate row at column 10. In o4 the train sits at the intersection of the skate row and column 10; the other options show it at different positions.",
+      "actions": [
+        {
+          "kind": "click",
+          "target": "o4",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

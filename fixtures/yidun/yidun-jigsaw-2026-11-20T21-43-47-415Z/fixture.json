@@ -1,0 +1,12 @@
+{
+  "kind": "slider",
+  "source": "https://dun.163.com/trial/jigsaw",
+  "origin": {
+    "x": 0,
+    "y": 0
+  },
+  "expected": {
+    "offset": 101
+  },
+  "notes": "Accepted by the vendor (dun.163.com, session passed on this slide): offset as measured, margin 0.22."
+}

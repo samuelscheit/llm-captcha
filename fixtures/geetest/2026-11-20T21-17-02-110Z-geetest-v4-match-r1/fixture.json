@@ -1,0 +1,155 @@
+{
+  "source": "https://gt4.geetest.com/",
+  "capturedAt": "2026-11-20T21:17:02.110Z",
+  "view": {
+    "adapter": "geetest-v4-match",
+    "kind": "select",
+    "status": "pending",
+    "region": {
+      "x": 720,
+      "y": 259.5,
+      "width": 340,
+      "height": 385
+    },
+    "instruction": "Click and swap to line up three identical items in a row",
+    "errors": [],
+    "targets": [
+      {
+        "id": "t1",
+        "rect": {
+          "x": 739.984375,
+          "y": 319.5,
+          "width": 97.796875,
+          "height": 83.84375
+        },
+        "selected": false
+      },
+      {
+        "id": "t2",
+        "rect": {
+          "x": 739.984375,
+          "y": 406.203125,
+          "width": 97.796875,
+          "height": 83.84375
+        },
+        "selected": false
+      },
+      {
+        "id": "t3",
+        "rect": {
+          "x": 739.984375,
+          "y": 492.90625,
+          "width": 97.796875,
+          "height": 83.84375
+        },
+        "selected": false
+      },
+      {
+        "id": "t4",
+        "rect": {
+          "x": 840.1875,
+          "y": 319.5,
+          "width": 97.796875,
+          "height": 83.84375
+        },
+        "selected": false
+      },
+      {
+        "id": "t5",
+        "rect": {
+          "x": 840.1875,
+          "y": 406.203125,
+          "width": 97.796875,
+          "height": 83.84375
+        },
+        "selected": false
+      },
+      {
+        "id": "t6",
+        "rect": {
+          "x": 840.1875,
+          "y": 492.90625,
+          "width": 97.796875,
+          "height": 83.84375
+        },
+        "selected": false
+      },
+      {
+        "id": "t7",
+        "rect": {
+          "x": 940.390625,
+          "y": 319.5,
+          "width": 97.796875,
+          "height": 83.84375
+        },
+        "selected": false
+      },
+      {
+        "id": "t8",
+        "rect": {
+          "x": 940.390625,
+          "y": 406.203125,
+          "width": 97.796875,
+          "height": 83.84375
+        },
+        "selected": false
+      },
+      {
+        "id": "t9",
+        "rect": {
+          "x": 940.390625,
+          "y": 492.90625,
+          "width": 97.796875,
+          "height": 83.84375
+        },
+        "selected": false
+      },
+      {
+        "id": "refresh",
+        "rect": {
+          "x": 775.859375,
+          "y": 599,
+          "width": 25,
+          "height": 25
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "D15EDD69F37B6D5425A7C535D325549B"
+  },
+  "history": [],
+  "expected": {
+    "clicks": [
+      "t3",
+      "t6"
+    ]
+  },
+  "notes": "Accepted by the vendor (gt4.geetest.com, session passed, no error after this round): auto-labeled with the answer claude-opus-5-5 gave.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "Left column has tongue faces at t1 and t2, with a worried face at t3; another tongue face is at t6. Swapping t3 and t6 puts three tongue faces in the left column.",
+      "actions": [
+        {
+          "kind": "click",
+          "target": "t3",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t6",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

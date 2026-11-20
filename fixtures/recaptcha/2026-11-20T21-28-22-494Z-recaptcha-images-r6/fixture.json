@@ -1,0 +1,342 @@
+{
+  "source": "https://www.google.com/recaptcha/api2/demo",
+  "capturedAt": "2026-11-20T21:28:22.494Z",
+  "view": {
+    "adapter": "recaptcha-images",
+    "kind": "select",
+    "status": "pending",
+    "region": {
+      "x": 85,
+      "y": 69,
+      "width": 400,
+      "height": 612
+    },
+    "instruction": "Select all images with crosswalks Click verify once there are none left.",
+    "errors": [
+      "Please try again."
+    ],
+    "targets": [
+      {
+        "id": "t1",
+        "rect": {
+          "x": 90,
+          "y": 194,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t2",
+        "rect": {
+          "x": 220,
+          "y": 194,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t3",
+        "rect": {
+          "x": 350,
+          "y": 194,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t4",
+        "rect": {
+          "x": 90,
+          "y": 324,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t5",
+        "rect": {
+          "x": 220,
+          "y": 324,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t6",
+        "rect": {
+          "x": 350,
+          "y": 324,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t7",
+        "rect": {
+          "x": 90,
+          "y": 454,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t8",
+        "rect": {
+          "x": 220,
+          "y": 454,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t9",
+        "rect": {
+          "x": 350,
+          "y": 454,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "verify",
+        "rect": {
+          "x": 377,
+          "y": 629,
+          "width": 100,
+          "height": 42
+        },
+        "label": "VERIFY"
+      },
+      {
+        "id": "reload",
+        "rect": {
+          "x": 91,
+          "y": 627,
+          "width": 48,
+          "height": 48
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "8124FE4F17B59D97ED0B570DB1A0495D"
+  },
+  "history": [
+    {
+      "instruction": "Select all squares with bicycles If there are none, click skip",
+      "decision": {
+        "reasoning": "Green bicycle with basket: the handlebars and basket are in t6, and the wheels sit in t5/t6 and t9/t10. The rear wheel reaches the left edge near x=65-100, which is in t5 and t9. The front wheel extends to about x=195, so it stays in t6/t10. The bats are in t7/t11, but those are not bicycles.",
+        "actions": [
+          {
+            "kind": "click",
+            "target": "t5",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t6",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t9",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t10",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "verify",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          }
+        ]
+      },
+      "errorsAfter": []
+    },
+    {
+      "instruction": "Select all squares with bicycles If there are none, click skip",
+      "decision": {
+        "reasoning": "The main vehicle is a scooter (motorcycle), not a bicycle. A red bicycle is partly visible behind it at the left edge: its frame is in t5 and its lower part and wheel likely reach t9. I'll select those two tiles, then verify.",
+        "actions": [
+          {
+            "kind": "click",
+            "target": "t5",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t9",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "verify",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          }
+        ]
+      },
+      "errorsAfter": []
+    },
+    {
+      "instruction": "Select all squares with buses If there are none, click skip",
+      "decision": {
+        "reasoning": "The task asks for every square containing a bus. A white and blue bus appears on the right side. Its roof starts around y=288, which falls in t7 and t8. The body continues through t11 and t12. The bottom of the bus and the wheel reach about y=430, which crosses into t15 and t16. The bus's left edge is near x=222, so it stays inside the t11 column and does not reach t10.",
+        "actions": [
+          {
+            "kind": "click",
+            "target": "t7",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t8",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t11",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t12",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t15",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t16",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "verify",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          }
+        ]
+      },
+      "errorsAfter": [
+        "Please try again."
+      ]
+    }
+  ],
+  "expected": {
+    "clicks": [
+      "t1",
+      "t3",
+      "t7"
+    ]
+  },
+  "notes": "Accepted by the vendor (www.google.com, session passed, no error after this round): auto-labeled with the answer claude-opus-5-5 gave.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "The task asks for every tile with a crosswalk; matching tiles get replaced with new images, so I click tiles this round and do not press verify. Crosswalks are visible in t1 (white stripes on the road), t3 (wide zebra crossing) and t7 (stripes under the overpass). The other tiles show no crosswalk.",
+      "actions": [
+        {
+          "kind": "click",
+          "target": "t1",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t3",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t7",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}
