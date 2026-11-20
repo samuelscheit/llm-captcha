@@ -7,6 +7,54 @@
     "passedAt": "2026-11-20T20:48:39.349Z",
     "passedBy": "slides AliyunCaptcha 2.0 on Alibaba Cloud's password reset until it reads Verified [aliyun-slide]"
   },
+  "altcha": {
+    "passedAt": "2026-11-20T21:07:35.823Z",
+    "passedBy": "without a model altcha [altcha]"
+  },
+  "anubis": {
+    "passedAt": "2026-11-20T21:07:35.823Z",
+    "passedBy": "without a model anubis [anubis]"
+  },
+  "arkose-game": {
+    "passedAt": "2026-11-20T21:07:35.823Z",
+    "passedBy": "with the live model arkose [arkose-game]"
+  },
+  "dingxiang-button": {
+    "passedAt": "2026-11-20T21:07:35.823Z",
+    "passedBy": "without a model dingxiang [dingxiang-button] [dingxiang-slider]"
+  },
+  "dingxiang-slider": {
+    "passedAt": "2026-11-20T21:07:35.823Z",
+    "passedBy": "without a model dingxiang [dingxiang-button] [dingxiang-slider]"
+  },
+  "friendlycaptcha-v1": {
+    "passedAt": "2026-11-20T21:07:35.823Z",
+    "passedBy": "without a model friendlycaptcha-v1 [friendlycaptcha-v1]"
+  },
+  "friendlycaptcha-v2": {
+    "passedAt": "2026-11-20T21:07:35.823Z",
+    "passedBy": "without a model friendlycaptcha-v2 [friendlycaptcha-v2]"
+  },
+  "geetest-v3-radar": {
+    "failedAt": "2026-11-20T21:07:35.823Z",
+    "failedBy": "without a model geetest-v3 [geetest-v3-radar] [geetest-v3-slide]"
+  },
+  "geetest-v3-slide": {
+    "failedAt": "2026-11-20T21:07:35.823Z",
+    "failedBy": "without a model geetest-v3 [geetest-v3-radar] [geetest-v3-slide]"
+  },
+  "geetest-v4-button": {
+    "passedAt": "2026-11-20T21:07:35.823Z",
+    "passedBy": "without a model geetest-v4 [geetest-v4-button] [geetest-v4-slide]"
+  },
+  "geetest-v4-nine": {
+    "passedAt": "2026-11-20T21:07:35.823Z",
+    "passedBy": "with the live model geetest-v4-nine [geetest-v4-nine]"
+  },
+  "geetest-v4-slide": {
+    "passedAt": "2026-11-20T21:07:35.823Z",
+    "passedBy": "without a model geetest-v4 [geetest-v4-button] [geetest-v4-slide]"
+  },
   "generic-drag-verify": {
     "passedAt": "2026-11-20T20:48:39.349Z",
     "passedBy": "slides eranet's real slider (#dragHandler) and the form goes on [generic-drag-verify]"
@@ -27,6 +75,18 @@
     "passedAt": "2026-11-20T21:38:46.323Z",
     "passedBy": "puppeteer driver on vendor test widgets clicks the hcaptcha checkbox and gets a token [hcaptcha-checkbox]"
   },
+  "human-press-hold": {
+    "failedAt": "2026-11-20T21:07:35.823Z",
+    "failedBy": "without a model human [human-press-hold]"
+  },
+  "mcaptcha": {
+    "passedAt": "2026-11-20T21:07:35.823Z",
+    "passedBy": "without a model mcaptcha [mcaptcha]"
+  },
+  "mtcaptcha": {
+    "passedAt": "2026-11-20T21:07:35.823Z",
+    "passedBy": "with the live model mtcaptcha [mtcaptcha]"
+  },
   "recaptcha-checkbox": {
     "passedAt": "2026-11-20T21:38:46.323Z",
     "passedBy": "puppeteer driver on vendor test widgets clicks the recaptcha checkbox and gets a token [recaptcha-checkbox]"
@@ -35,6 +95,10 @@
     "failedAt": "2026-11-20T20:48:39.349Z",
     "failedBy": "solves the recaptcha demo with the live model [recaptcha-checkbox] [recaptcha-images]"
   },
+  "shumei-slider": {
+    "passedAt": "2026-11-20T21:07:35.823Z",
+    "passedBy": "without a model shumei [shumei-slider]"
+  },
   "tencent-slider": {
     "passedAt": "2026-11-20T20:48:39.349Z",
     "passedBy": "solves the real Tencent slide puzzle and gets a ticket [tencent-slider]"
@@ -42,5 +106,13 @@
   "turnstile": {
     "passedAt": "2026-11-20T21:38:46.323Z",
     "passedBy": "puppeteer driver on vendor test widgets clicks the turnstile checkbox and gets a token [turnstile]"
+  },
+  "yandex-text": {
+    "passedAt": "2026-11-20T21:07:35.823Z",
+    "passedBy": "with the live model yandex [yandex-text]"
+  },
+  "yidun-jigsaw": {
+    "passedAt": "2026-11-20T21:07:35.823Z",
+    "passedBy": "without a model yidun [yidun-jigsaw]"
   }
 }
