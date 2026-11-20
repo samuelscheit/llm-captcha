@@ -338,21 +338,42 @@ async function solveLoop(
       if ((slides.get(key) ?? 0) >= maxRounds) return finish("failed", `${view.adapter}: not solved in ${maxRounds} slides`);
       // A person takes a moment to see the puzzle; the widget animates in meanwhile.
       if (last === undefined) await sleep(between(random, 700, 1300), signal);
-      const gap = await driver.puzzle(view, spec);
-      if (!gap) {
-        await sleep(400, signal);
-        continue;
-      }
+      const target = (id: string) => view.targets.find((t) => t.id === id)?.rect;
       const reload = view.targets.find((t) => RELOAD_TARGETS.includes(t.id));
-      lastClick.set(key, Date.now());
-      // An ambiguous gap is a guess, and failed slides count against the site: take another puzzle.
-      if (gap.margin < MIN_MARGIN && reload) {
-        pointer = await click(driver, center(reload.rect), 3, random, pointer);
+      const handle = target("handle");
+      // A refused slider hides its handle behind "error, click to refresh".
+      if (!handle) {
+        if (reload) {
+          lastClick.set(key, Date.now());
+          pointer = await click(driver, center(reload.rect), 3, random, pointer);
+        } else await sleep(400, signal);
         continue;
       }
-      const handle = view.targets.find((t) => t.id === "handle")!.rect;
+      let distance: number;
+      const rail = target("rail");
+      if (target("piece")) {
+        // Puzzle: drag the piece into its gap, found in the images.
+        const gap = await driver.puzzle(view, spec);
+        if (!gap) {
+          await sleep(400, signal);
+          continue;
+        }
+        // An ambiguous gap is a guess, and failed slides count against the site: take another puzzle.
+        if (gap.margin < MIN_MARGIN && reload) {
+          lastClick.set(key, Date.now());
+          pointer = await click(driver, center(reload.rect), 3, random, pointer);
+          continue;
+        }
+        distance = gap.distance;
+      } else if (rail) {
+        // Slide to end: a few pixels past the rail's end; the widget clamps the handle there.
+        distance = rail.x + rail.width - (handle.x + handle.width) + between(random, 4, 8);
+      } else {
+        return finish("failed", `${view.adapter}: a slider adapter needs a piece and background, or a rail`);
+      }
+      lastClick.set(key, Date.now());
       const from = { x: center(handle).x + between(random, -1, 1) * Math.min(6, handle.width / 4), y: center(handle).y + between(random, -1, 1) * Math.min(4, handle.height / 4) };
-      const steps = dragSteps(from, { x: from.x + gap.distance, y: from.y }, random, pointer);
+      const steps = dragSteps(from, { x: from.x + distance, y: from.y }, random, pointer);
       await driver.input.mouse(steps);
       pointer = steps.at(-1)!;
       slides.set(key, (slides.get(key) ?? 0) + 1);

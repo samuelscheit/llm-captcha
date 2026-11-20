@@ -1,6 +1,8 @@
 # LLM Captcha Solver
 
-Solves verification challenges (reCAPTCHA v2, hCaptcha, Cloudflare Turnstile, Tencent TCaptcha, text captchas, and anything you describe with an adapter) with a vision model of your choice, for AI agents that drive a browser.
+[![Captcha solving leaderboard](benchmarks/leaderboard.svg)](BENCHMARK.md)
+
+Solves verification challenges (reCAPTCHA v2, hCaptcha, Cloudflare Turnstile, Tencent TCaptcha, Aliyun captcha and nocaptcha sliders, GNAME, DataDome and phishing-kit "slide to verify" sliders, text captchas, and anything you describe with an adapter) with a vision model of your choice, for AI agents that drive a browser.
 
 It is built to be run and improved by agents. Unsolved challenges are reported as GitHub issues with replayable fixtures, fixes are proven against those fixtures, and installations update themselves. **Agents: start with [AGENTS.md](AGENTS.md).**
 
@@ -14,10 +16,10 @@ It ships as two things that share one engine:
 The top document publishes the state:
 
 ```html
-<html data-captcha-state="solving|solved|failed" data-captcha-detail="recaptcha-images">
+<html data-captcha-state="solving|solved|failed" data-captcha-detail="recaptcha-images"></html>
 ```
 
-A `captcha-state` event fires on `window` with every change. One line in the agent's prompt is enough: *"If `<html data-captcha-state>` is `solving`, wait until it is `solved` or `failed` before acting."*
+A `captcha-state` event fires on `window` with every change. One line in the agent's prompt is enough: _"If `<html data-captcha-state>` is `solving`, wait until it is `solved` or `failed` before acting."_
 
 ## Architecture
 
@@ -76,7 +78,7 @@ When a challenge goes wrong, the engine responds in steps:
 2. **Triage.** `bun run pull-reports` restores reported rounds into `fixtures/captured/`. You or an agent label them, reproduce with `bun run eval`, fix the root cause, and open a PR that carries the new fixtures.
 3. **Self-update.** `bun run update --install` checks hourly. It accepts only fast-forwards of a clean checkout, builds into a staging directory and swaps it in only when the unit tests pass, so a broken commit never reaches `dist/`. The extension notices the new `build.json` and reloads itself between solves.
 
-   Updates run code from the upstream branch in your browser: point the checkout at a repository you trust.
+    Updates run code from the upstream branch in your browser: point the checkout at a repository you trust.
 
 ## Model
 
@@ -92,8 +94,6 @@ Pick any provider through the AI SDK: OpenAI-compatible (xAI, Ollama, OpenRouter
 The extension turns the answer into precise trusted clicks, reports errors back, and handles the readiness waits and retries as with a model. Agents that decline CAPTCHAs by policy will decline this too.
 
 To choose one, see the **[leaderboard](BENCHMARK.md)**, also published on the project's GitHub Pages. It shows each model's pass rate per challenge type (provider × kind) on the labeled real-world fixtures, replayed exactly as the solver asks live.
-
-[![Captcha solving leaderboard](benchmarks/leaderboard.svg)](BENCHMARK.md)
 
 `bun run bench` updates it incrementally. It re-measures only (model, fixture) pairs whose fixture or solver code changed, so adding a fixture or a model costs a few calls. Provider outages are retried later instead of counted.
 
@@ -112,17 +112,17 @@ A challenge is described declaratively. These selectors are what the scanner use
 
 ```json
 {
-  "id": "my-grid",
-  "kind": "select",
-  "url": "widgets\\.example\\.com/challenge",
-  "root": "#challenge",
-  "instruction": [".prompt"],
-  "errors": [".error"],
-  "solved": ".success",
-  "targets": [
-    { "id": "t", "selector": ".tile", "all": true, "selected": ".is-selected" },
-    { "id": "verify", "selector": "button.verify", "labelFromText": true }
-  ]
+	"id": "my-grid",
+	"kind": "select",
+	"url": "widgets\\.example\\.com/challenge",
+	"root": "#challenge",
+	"instruction": [".prompt"],
+	"errors": [".error"],
+	"solved": ".success",
+	"targets": [
+		{ "id": "t", "selector": ".tile", "all": true, "selected": ".is-selected" },
+		{ "id": "verify", "selector": "button.verify", "labelFromText": true }
+	]
 }
 ```
 
@@ -132,7 +132,11 @@ The `kind` field takes one of four values:
 - `select`: pick targets.
 - `text`: read and type.
 - `point`: click or drag positions; captured as 3 frames by default, to see animations.
-- `slider`: drag the `handle` until the `piece` image fits the gap in the `background` image (Tencent TCaptcha). The gap is found by image analysis, not a model, since the drop must land within a few pixels. An ambiguous gap gets a new puzzle (`reload`) instead of a guess.
+- `slider`: drag the `handle`; no model involved. It has two modes:
+  - **Puzzle**: until the `piece` image fits the gap in the `background` image (Tencent TCaptcha, AliyunCaptcha puzzle). The gap is found by image analysis, since the drop must land within a few pixels. Dark and light gaps both work, and an ambiguous gap gets a new puzzle (`reload`) instead of a guess.
+  - **Slide to end**: without a piece, the handle goes past the end of its `rail` (Aliyun nocaptcha and slide, GNAME, DataDome simple, kit gates) on a human track that never goes back.
+
+  A refused slider that shows only a `reload` ("error, click to refresh") gets it clicked.
 
 Custom adapters go in the options page; the built-ins are in `src/core/adapters.ts`.
 
@@ -169,7 +173,10 @@ Each captured round holds the view, the frames, what the model saw, its decision
 - `{"text": "XK4P9"}`
 - `{"points": [{"x": 120, "y": 80, "r": 30}], "clicks": ["submit"]}` (CSS px relative to the region)
 
-Slide puzzles (`fixtures/tencent/`) are image-analysis fixtures instead: `background.png`, `piece.png`, and a `fixture.json` with `kind: "slider"`, the piece's `origin` and the `expected` gap `offset`, in background pixels. `eval` checks those too, without a model.
+Two more fixture kinds need no model:
+
+- **Slide puzzles** (`fixtures/tencent/`): `background.png`, `piece.png`, and a `fixture.json` with `kind: "slider"`, the piece's `origin` and the `expected` gap `offset`, in background pixels. `eval` checks them.
+- **Page fixtures** (`fixtures/generic/`): `page.html`, a real challenge page saved as captured (links to elsewhere rewritten to local stand-ins), and a `fixture.json` with `kind: "page"` and the `expected` outcome (`state`, `navigatesTo`). The e2e suite serves them and solves them under every driver.
 
 ```sh
 bun run eval                       # replay all labeled fixtures through the model, score them

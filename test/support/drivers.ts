@@ -20,6 +20,7 @@ export interface TestPage {
   inputValue(selector: string): Promise<string>;
   /** Value of a (possibly hidden) form field by name. */
   fieldValue(name: string): Promise<string>;
+  url(): string;
   click(selector: string): Promise<void>;
   textContent(selector: string): Promise<string | null>;
 }
@@ -48,11 +49,20 @@ export async function harness(kind: DriverKind, model: ModelConfig, adapters: Ad
   // Only the library drivers call the model from here; the extension gets it through its settings.
   const engine = () => ({ adapters: [...adapters, ...BUILTIN_ADAPTERS], models: [createModel(model)], maxRounds: 6, timeoutMs: 90_000 });
   if (kind === "puppeteer") {
-    const browser = await puppeteer.launch({ executablePath: CHROME, headless: false, defaultViewport: { width: 1280, height: 800 } });
+    // As an agent's browser runs: without announcing automation (navigator.webdriver), which
+    // pages check before they even look at a drag.
+    const browser = await puppeteer.launch({
+      executablePath: CHROME,
+      headless: false,
+      defaultViewport: { width: 1280, height: 800 },
+      ignoreDefaultArgs: ["--enable-automation"],
+      args: ["--disable-blink-features=AutomationControlled"],
+    });
     const page = (await browser.pages())[0] ?? (await browser.newPage());
     return {
       page: {
         inputValue: (s) => page.$eval(s, (el) => (el as HTMLInputElement).value),
+        url: () => page.url(),
         fieldValue: (name) => page.evaluate((n) => (document.querySelector(`[name="${n}"]`) as HTMLInputElement | null)?.value ?? "", name),
         click: (s) => page.click(s),
         textContent: (s) => page.$eval(s, (el) => el.textContent),
@@ -95,6 +105,7 @@ export async function harness(kind: DriverKind, model: ModelConfig, adapters: Ad
   return {
     page: {
       inputValue: (s) => page.inputValue(s),
+      url: () => page.url(),
       fieldValue: (name) => page.evaluate((n) => (document.querySelector(`[name="${n}"]`) as HTMLInputElement | null)?.value ?? "", name),
       click: (s) => page.click(s),
       textContent: (s) => page.textContent(s),

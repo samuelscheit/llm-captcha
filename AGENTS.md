@@ -25,6 +25,8 @@ Then pick the integration that fits your browser:
   const result = await solveCaptchas(host, { models: [createModel({ provider: "anthropic", baseURL: "", apiKey, model: "claude-opus-5-5" })] });
   ```
 
+Run the browser the way a person's runs: without announcing automation. Many challenges check `navigator.webdriver` before they even look at a click or a drag, and the solver cannot undo that from inside the page. patchright does this by default; for Puppeteer or Playwright, drop `--enable-automation` and add `--disable-blink-features=AutomationControlled` (`test/support/drivers.ts` shows the Puppeteer launch).
+
 Configure the extension in its options page, or write the settings straight into `chrome.storage.local` under `settings`, with the shape `Settings` in `src/core/types.ts`:
 
 - **Model:** any vision model through the AI SDK, plus optional fallback models.

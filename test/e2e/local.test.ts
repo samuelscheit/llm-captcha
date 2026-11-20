@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { harness, type DriverKind, type Harness } from "../support/drivers";
-import { startServer, TEST_ADAPTERS, type TestServer } from "../support/server";
+import { startServer, TEST_ADAPTERS, TEST_DATADOME, type TestServer } from "../support/server";
 
 let server: TestServer;
 beforeAll(async () => (server = await startServer()));
@@ -46,9 +46,21 @@ describe("extension without a model (assist mode)", () => {
 describe.each<DriverKind>(["extension", "playwright", "puppeteer"])("%s driver on local challenges", (kind) => {
   let h: Harness;
   beforeAll(async () => {
-    h = await harness(kind, { provider: "openai-compatible", baseURL: server.modelURL, apiKey: "mock", model: "mock" }, TEST_ADAPTERS);
+    h = await harness(kind, { provider: "openai-compatible", baseURL: server.modelURL, apiKey: "mock", model: "mock" }, [...TEST_ADAPTERS, TEST_DATADOME]);
   });
   afterAll(() => h?.close());
+
+  it.each(["nc", "gname", "datadome"])("slides the %s slider to the end on a track that never goes back", async (variant) => {
+    const calls = server.state.modelCalls.length;
+    const before = server.state.slides.length;
+    const result = await h.solve(`${server.origin}/slide/${variant}`);
+    expect(result.state, result.detail).toBe("solved");
+    const releases = server.state.slides.slice(before);
+    // Aliyun's slider refuses the first release; the solver clicks "refresh" and slides again.
+    expect(releases.map((r) => r.passed)).toEqual(variant === "nc" ? [false, true] : [true]);
+    for (const r of releases) expect(r).toMatchObject({ variant, backwards: false, short: 0 });
+    expect(server.state.modelCalls.length).toBe(calls);
+  });
 
   it("reads a text captcha below the fold, scrolls to it and types the answer", async () => {
     server.mock.wrongFirst = 0;

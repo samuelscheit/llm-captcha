@@ -56,7 +56,7 @@ function fixtureDirs(filter?: string) {
 /** Labeled model fixtures (a view, frames and a non-null `expected`), filtered by "<provider>/<name>" substring. */
 export function loadFixtures(filter?: string): StoredFixture[] {
   return fixtureDirs(filter)
-    .filter(({ json }) => json.kind !== "slider")
+    .filter(({ json }) => json.kind !== "slider" && json.kind !== "page")
     .map(({ name, dir, json }) => ({
       ...(json as unknown as Fixture),
       name,
@@ -80,6 +80,27 @@ export interface SliderFixture {
   /** PNG files. */
   background: Buffer;
   piece: Buffer;
+}
+
+/** A real page (sanitized) served as is and solved by every driver: page.html plus what must happen. */
+export interface PageFixture {
+  name: string;
+  dir: string;
+  source: string;
+  notes: string;
+  expected: { state: "solved"; navigatesTo?: string };
+  html: string;
+}
+
+export function loadPageFixtures(filter?: string): PageFixture[] {
+  return fixtureDirs(filter)
+    .filter(({ json }) => json.kind === "page")
+    .map(({ name, dir, json }) => ({
+      ...(json as unknown as Omit<PageFixture, "name" | "dir" | "html">),
+      name,
+      dir,
+      html: readFileSync(path.join(dir, "page.html"), "utf8"),
+    }));
 }
 
 export function loadSliderFixtures(filter?: string): SliderFixture[] {

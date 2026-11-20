@@ -30,6 +30,15 @@ describe("slide puzzle gap", () => {
     expect(Math.abs(findPuzzleGap({ ...background, data: worn }, piece, origin).offset - offset)).toBeLessThanOrEqual(2);
   });
 
+  // Aliyun draws its gap lighter than the surround, Tencent darker: both must be found.
+  it.each(puzzles)("$name with a light gap instead of a dark one (inverted image)", ({ background, piece, origin, offset }) => {
+    const inverted = new Uint8Array(background.data);
+    for (let i = 0; i < inverted.length; i += 4) for (let c = 0; c < 3; c++) inverted[i + c] = 255 - inverted[i + c]!;
+    const gap = findPuzzleGap({ ...background, data: inverted }, piece, origin);
+    expect(gap.offset).toBe(offset);
+    expect(gap.margin).toBeGreaterThan(0.05);
+  });
+
   it("a background without a gap gives no confident answer", () => {
     const { background, piece, origin } = puzzles[0]!;
     const flat = new Uint8Array(background.data.length).fill(120);

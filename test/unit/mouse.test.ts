@@ -42,6 +42,20 @@ describe("gesture plans", () => {
     expect(held.reduce((t, s) => t + s.delayMs, 0)).toBeGreaterThan(400);
   });
 
+  // Track-scoring sliders (GNAME, Aliyun) refuse a pointer that jitters back: a replayed curve.
+  it.each([1, 2, 3, 4, 5, 6, 7, 8])("drag never moves back along its direction before the overshoot (seed %i)", (seed) => {
+    const from = { x: 100, y: 300 };
+    const to = { x: 360, y: 300 };
+    const steps = dragSteps(from, to, seeded(seed));
+    const held = steps.slice(steps.findIndex((s) => s.type === "mousePressed") + 1, -1);
+    const peak = held.reduce((best, s, i) => (s.x > held[best]!.x ? i : best), 0);
+    for (let i = 1; i <= peak; i++) expect(held[i]!.x).toBeGreaterThanOrEqual(held[i - 1]!.x);
+    // The settle after the overshoot stays past the target.
+    for (const s of held.slice(peak)) expect(s.x).toBeGreaterThanOrEqual(to.x - 1e-9);
+    // Not a ruler-straight line.
+    expect(new Set(held.map((s) => s.y.toFixed(2))).size).toBeGreaterThan(5);
+  });
+
   it("drag works in any direction, including very short ones", () => {
     const steps = dragSteps({ x: 300, y: 300 }, { x: 298, y: 290 }, seeded(4));
     expect(steps.at(-1)).toMatchObject({ x: 298, y: 290 });

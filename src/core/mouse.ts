@@ -73,8 +73,10 @@ export function clickSteps(at: Point, random: RandomSource, from?: Point, spread
 }
 
 /**
- * Press at `from`, move to `to` with a minimum-jerk profile and slight wander, overshoot along the
- * drag direction by a few pixels, settle back, pause, release on `to`.
+ * Press at `from`, move to `to` with a minimum-jerk profile and slight sideways wander, overshoot
+ * along the drag direction by a few pixels, settle back, pause, release on `to`. Progress along the
+ * direction never decreases before the overshoot: track-scoring sliders refuse a pointer that
+ * jitters back.
  */
 export function dragSteps(from: Point, to: Point, random: RandomSource, hoverFrom?: Point): MouseStep[] {
   const steps = approach(from, random, hoverFrom);
@@ -84,17 +86,24 @@ export function dragSteps(from: Point, to: Point, random: RandomSource, hoverFro
   const dx = to.x - from.x;
   const dy = to.y - from.y;
   const length = Math.hypot(dx, dy) || 1;
+  // Along the drag (u) and across it (v).
+  const u = { x: dx / length, y: dy / length };
+  const v = { x: -u.y, y: u.x };
   const overshoot = Math.min(between(random, 3, 9), length / 4);
-  const peak = { x: to.x + (dx / length) * overshoot, y: to.y + (dy / length) * overshoot };
+  const peakS = length + overshoot;
+  const peak = { x: from.x + u.x * peakS, y: from.y + u.y * peakS };
   const moves = Math.round(clamp(length / 8, 20, 45));
   const duration = between(random, 500, 1100);
+  let s = 0;
+  let w = 0;
   for (let move = 1; move <= moves; move++) {
-    const p = minimumJerk(move / moves);
     const last = move === moves;
+    s = last ? peakS : clamp(peakS * minimumJerk(move / moves) + between(random, -0.6, 0.6), s, peakS);
+    w = last ? 0 : clamp(w + between(random, -0.8, 0.8), -2.5, 2.5);
     steps.push({
       type: "mouseMoved",
-      x: last ? peak.x : from.x + (peak.x - from.x) * p + between(random, -0.6, 0.6),
-      y: last ? peak.y : from.y + (peak.y - from.y) * p + between(random, -0.8, 0.8),
+      x: from.x + u.x * s + v.x * w,
+      y: from.y + u.y * s + v.y * w,
       buttons: 1,
       delayMs: (duration / moves) * between(random, 0.7, 1.3),
     });

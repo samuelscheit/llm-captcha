@@ -12,8 +12,9 @@ export interface Rect {
  * - select:   pick targets (image tiles, buttons) by id
  * - text:     read the image and type into the `input` target
  * - point:    click/drag free positions inside the region (canvas challenges)
- * - slider:   drag the `handle` until the `piece` image fits the gap in the `background` image;
- *             found by image analysis, no model involved
+ * - slider:   drag the `handle`, no model involved: until the `piece` image fits the gap in the
+ *             `background` image (found by image analysis), or, without a piece, to the end of
+ *             the `rail`. A visible `reload` without a handle (a refused slider) is clicked.
  */
 export type ChallengeKind = "checkbox" | "select" | "text" | "point" | "slider";
 

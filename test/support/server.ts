@@ -5,8 +5,9 @@
  */
 import http from "node:http";
 import type { AddressInfo } from "node:net";
+import { BUILTIN_ADAPTERS } from "../../src/core/adapters";
 import type { AdapterSpec, Decision } from "../../src/core/types";
-import { loadSliderFixtures } from "../../src/tools/fixtures";
+import { loadPageFixtures, loadSliderFixtures } from "../../src/tools/fixtures";
 
 type Shape = "circle" | "square" | "triangle";
 
@@ -23,6 +24,8 @@ export interface ServerState {
   animMisses: number[];
   /** Tencent slide puzzle: which real puzzle is shown, and each release's error in CSS px. */
   tencent: { puzzle: number; misses: number[]; solved: number };
+  /** Slide-to-end look-alikes: every release, with how far short of the end and whether the track went back. */
+  slides: { variant: string; short: number; backwards: boolean; passed: boolean }[];
   /** Model requests the mock received, newest last: prompt, last image, image count, time. */
   modelCalls: { prompt: string; image: string; images: number; at: number }[];
 }
@@ -77,6 +80,66 @@ body{font:15px system-ui;margin:24px} #challenge{width:420px;border:1px solid #c
 
 /** The real Tencent puzzles of fixtures/tencent/: piece origin and gap offset in image pixels. */
 const TENCENT_PUZZLES = loadSliderFixtures("tencent/");
+export const PAGE_FIXTURES = loadPageFixtures();
+
+/**
+ * Slide-to-end widgets with the DOM of each vendor. The same script drives them all: the handle
+ * follows the pointer along the rail, a release within 5 px of the end passes. `refuseFirst`
+ * refuses the first release like Aliyun's slider ("error, click to refresh").
+ */
+const SLIDES: Record<string, { dom: string; handle: string; rail: string; pass: string; refuseFirst?: boolean }> = {
+  nc: {
+    dom: `<div class="nc_wrapper"><div class="nc_scale" id="nc_1_n1t"><div class="nc_bg"></div><span class="nc_iconfont btn_slide" id="nc_1_n1z">›</span><div class="scale_text slidetounlock"><span class="nc-lang-cnt">Please slide to verify</span></div></div><div class="errloading" hidden>Oops, something went wrong. Click to refresh</div></div>`,
+    handle: ".btn_slide",
+    rail: ".nc_scale",
+    pass: "handle.classList.replace('btn_slide', 'btn_ok')",
+    refuseFirst: true,
+  },
+  gname: {
+    dom: `<div class="gn-slide-verify"><div class="gn-slide-rail"><div class="gn-slide-bar">⇢</div></div></div>`,
+    handle: ".gn-slide-bar",
+    rail: ".gn-slide-rail",
+    pass: "document.querySelector('.gn-slide-verify').remove()",
+  },
+  datadome: {
+    dom: `<div id="captcha__frame" class="simple"><div class="sliderContainer"><div class="sliderMask"></div><div class="slider">→</div><div class="sliderTarget"></div></div></div>`,
+    handle: ".slider",
+    rail: ".sliderContainer",
+    pass: "rail.classList.add('slider-success')",
+  },
+};
+
+const slidePage = (variant: string) => {
+  const s = SLIDES[variant]!;
+  return page(`Slide ${variant}`, `<style>
+${s.rail}{position:relative;width:300px;height:40px;background:#e5e5e5;border-radius:4px;user-select:none}
+${s.handle}{position:absolute;left:0;top:0;width:42px;height:40px;background:#1e6fff;color:#fff;display:flex;align-items:center;justify-content:center;cursor:grab}
+.btn_ok{position:absolute;left:258px;top:0;width:42px;height:40px;background:#1d7a46}
+.errloading{color:#c53030;cursor:pointer;margin-top:6px} .slider-success{background:#c8efd6}
+.sliderTarget{position:absolute;right:0;top:0;width:42px;height:40px;border:2px dashed #999;box-sizing:border-box}
+</style>
+<p>Verify you are human</p>${s.dom}
+<script>
+const rail = document.querySelector('${s.rail}'); let handle = document.querySelector('${s.handle}');
+const max = () => rail.clientWidth - handle.offsetWidth;
+let start = null, left = 0, furthest = 0, backwards = false, refuse = ${!!s.refuseFirst};
+function arm(h) { h.onmousedown = (e) => { start = e.clientX; left = 0; furthest = 0; backwards = false; }; }
+arm(handle);
+addEventListener('mousemove', (e) => { if (start === null) return; const x = e.clientX - start;
+  if (x < furthest - 0.5 && x < max()) backwards = true; furthest = Math.max(furthest, x); left = Math.max(0, Math.min(max(), x)); handle.style.left = left + 'px'; });
+addEventListener('mouseup', async () => { if (start === null) return; start = null;
+  const passed = left >= max() - 5 && !refuse;
+  await fetch('/slide/release', { method: 'POST', body: JSON.stringify({ variant: '${variant}', short: max() - left, backwards, passed }) });
+  if (passed) { ${s.pass}; return; }
+  handle.style.left = '0px';
+  if (refuse) { refuse = false; handle.hidden = true; const err = document.querySelector('.errloading'); err.hidden = false;
+    err.onclick = () => { err.hidden = true; handle.hidden = false; }; }
+});
+</script>`);
+};
+
+/** The DataDome adapter for the look-alike: same DOM selectors, the local frame's URL. */
+export const TEST_DATADOME: AdapterSpec = { ...BUILTIN_ADAPTERS.find((a) => a.id === "datadome-slider")!, id: "test-datadome", url: String.raw`/slide/datadome` };
 
 /** Official test sitekeys: the checkbox always passes (Turnstile's forces the interactive checkbox). */
 export const VENDORS = {
@@ -187,7 +250,7 @@ function mockDecision(state: ServerState, mock: MockBehaviour, prompt: string): 
 export async function startServer(): Promise<TestServer> {
   const state: ServerState = {
     text: newText(), textSubmitted: [], grid: newGrid(), gridVerified: 0, gridLoadedAt: 0, point: newPoint(), pointClicks: [], animMisses: [],
-    tencent: { puzzle: 0, misses: [], solved: 0 }, modelCalls: [],
+    tencent: { puzzle: 0, misses: [], solved: 0 }, slides: [], modelCalls: [],
   };
   const mock: MockBehaviour = { wrongFirst: 0 };
   let origin = "";
@@ -268,6 +331,11 @@ submit.onclick=()=>{document.querySelector('.error').hidden=hit;if(hit){done.hid
       state.animMisses.push(Number(await body(req)));
       return ["text/plain", "ok"];
     },
+    "/slide/release": async (req) => {
+      state.slides.push(JSON.parse(await body(req)));
+      return ["application/json", "true"];
+    },
+    "/landed": () => ["text/html", page("Landed", "<h1>Landed</h1>")],
     /** A real vendor widget with its official always-pass test sitekey. */
     "/vendor": (_req, url) => {
       const vendor = VENDORS[url.searchParams.get("kind") as keyof typeof VENDORS];
@@ -337,6 +405,12 @@ load();
 
   const server = http.createServer(async (req, res) => {
     const url = new URL(req.url!, "http://x");
+    const slide = /^\/slide\/(\w+)$/.exec(url.pathname);
+    if (slide && SLIDES[slide[1]!]) return void res.writeHead(200, { "content-type": "text/html" }).end(slidePage(slide[1]!));
+    // Page fixtures as they were captured: /fixture/<provider>/<name>.
+    const fixture = /^\/fixture\/([\w-]+\/[\w-]+)$/.exec(url.pathname);
+    const pageFixture = fixture && PAGE_FIXTURES.find((f) => f.name === fixture[1]);
+    if (pageFixture) return void res.writeHead(200, { "content-type": "text/html" }).end(pageFixture.html);
     const image = /^\/tencent\/img\/(\d+)\/(background|piece)\.png$/.exec(url.pathname);
     if (image) return void res.writeHead(200, { "content-type": "image/png" }).end(TENCENT_PUZZLES[Number(image[1])]![image[2] as "background" | "piece"]);
     const route = routes[url.pathname];

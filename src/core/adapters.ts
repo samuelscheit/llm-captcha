@@ -1,6 +1,6 @@
 import type { AdapterSpec } from "./types";
 
-const PROVIDER_FRAMES = String.raw`google\.com/recaptcha|recaptcha\.net/recaptcha|hcaptcha\.com/captcha|challenges\.cloudflare\.com|/cap_union_new_show`;
+const PROVIDER_FRAMES = String.raw`google\.com/recaptcha|recaptcha\.net/recaptcha|hcaptcha\.com/captcha|challenges\.cloudflare\.com|/cap_union_new_show|captcha-delivery\.com/captcha`;
 
 /** Built-in adapters. User adapters (settings) use the same format and are checked first. */
 export const BUILTIN_ADAPTERS: AdapterSpec[] = [
@@ -91,6 +91,78 @@ export const BUILTIN_ADAPTERS: AdapterSpec[] = [
       { id: "piece", selector: "#slideBlock" },
       { id: "handle", selector: "#tcaptcha_drag_button" },
       { id: "reload", selector: "#reload", optional: true },
+    ],
+  },
+  {
+    // AliyunCaptcha 2.0, puzzle: the piece is a full-height strip (shape in its alpha channel)
+    // dragged along by the handle; the gap is drawn lighter than its surround.
+    id: "aliyun-puzzle",
+    kind: "slider",
+    root: "#aliyunCaptcha-img",
+    instruction: ["#aliyunCaptcha-sliding-text"],
+    targets: [
+      { id: "background", selector: "#aliyunCaptcha-img" },
+      { id: "piece", selector: "#aliyunCaptcha-puzzle" },
+      { id: "handle", selector: "#aliyunCaptcha-sliding-slider" },
+    ],
+  },
+  {
+    // AliyunCaptcha 2.0, slide to the end ("Please slide to verify"): the rail holds the handle.
+    id: "aliyun-slide",
+    kind: "slider",
+    root: "body:not(:has(#aliyunCaptcha-puzzle)) :has(> #aliyunCaptcha-sliding-slider)",
+    instruction: ["#aliyunCaptcha-sliding-text"],
+    targets: [
+      { id: "handle", selector: "#aliyunCaptcha-sliding-slider" },
+      { id: "rail", selector: ":has(> #aliyunCaptcha-sliding-slider)" },
+    ],
+  },
+  {
+    // Alibaba's older "nocaptcha" (nc_) slider, rendered into login and registration forms. A
+    // refused drag replaces the handle with "error, click to refresh".
+    id: "aliyun-nc",
+    kind: "slider",
+    root: ".nc_scale",
+    instruction: [".nc_scale .scale_text"],
+    solved: ".nc_scale .btn_ok, [data-nc-lang='_yesTEXT']",
+    targets: [
+      { id: "handle", selector: ".nc_scale .btn_slide", optional: true },
+      { id: "rail", selector: ".nc_scale" },
+      { id: "reload", selector: ".nc_wrapper .errloading", optional: true },
+    ],
+  },
+  {
+    // GNAME's GnSliderVerify: slide to the end, scored by the track (`/request/slideverify`).
+    id: "gname-slider",
+    kind: "slider",
+    root: ".gn-slide-rail",
+    targets: [
+      { id: "handle", selector: ".gn-slide-bar" },
+      { id: "rail", selector: ".gn-slide-rail" },
+    ],
+  },
+  {
+    // DataDome's slider, the `simple` variant only (slide to the target at the end). The puzzle
+    // variant needs a gap in a canvas and is left alone.
+    id: "datadome-slider",
+    kind: "slider",
+    url: String.raw`captcha-delivery\.com/captcha`,
+    root: "#captcha__frame.simple .sliderContainer",
+    solved: ".sliderContainer.slider-success",
+    targets: [
+      { id: "handle", selector: "#captcha__frame.simple .slider" },
+      { id: "rail", selector: "#captcha__frame.simple .sliderContainer" },
+    ],
+  },
+  {
+    // "Slide to verify" gates of phishing kits and small sites: a thumb in a rounded rail.
+    id: "kit-slider",
+    kind: "slider",
+    root: "#sliderContainer, .slider-container:has(.slider-thumb)",
+    solvedText: "^verified$",
+    targets: [
+      { id: "handle", selector: "#sliderThumb, .slider-container .slider-thumb" },
+      { id: "rail", selector: "#sliderContainer, .slider-container:has(.slider-thumb)" },
     ],
   },
   {

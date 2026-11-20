@@ -58,11 +58,20 @@ function pieceRegions(piece: Pixels, backgroundWidth: number) {
   return { inside: Int32Array.from(inside), ring: Int32Array.from(ring), solidRight };
 }
 
+/** The best offset of one contrast polarity and how clearly it beats the best rival elsewhere. */
+function best(scores: [number, number][]): PuzzleGap & { x: number } {
+  const top = scores.reduce((a, b) => (b[1] > a[1] ? b : a));
+  let rival = 0;
+  for (const [x, score] of scores) if (Math.abs(x - top[0]) > RIVAL_DISTANCE_PX && score > rival) rival = score;
+  return { x: top[0], offset: 0, margin: Math.max(0, top[1] - rival) };
+}
+
 /**
  * Find the gap a piece fits into. The gap is the piece's outline cut into the background and
- * darkened, so at the right offset the pixels inside the outline are clearly darker than the ring
- * just outside it. Every offset right of the piece is scored by that contrast. The piece sits on
- * the background at `origin` (background pixels); the gap lies on the same rows.
+ * shaded, darker (Tencent) or lighter (Aliyun), so at the right offset the pixels inside the
+ * outline differ clearly from the ring just outside it. Every offset right of the piece is scored
+ * by that contrast in both directions; the direction whose best offset stands out more wins. The
+ * piece sits on the background at `origin` (background pixels); the gap lies on the same rows.
  */
 export function findPuzzleGap(background: Pixels, piece: Pixels, origin: { x: number; y: number }): PuzzleGap {
   const bg = grey(background);
@@ -73,7 +82,8 @@ export function findPuzzleGap(background: Pixels, piece: Pixels, origin: { x: nu
   for (const i of inside) [min, max] = [Math.min(min, i), Math.max(max, i)];
   for (const i of ring) [min, max] = [Math.min(min, i), Math.max(max, i)];
   if (rowBase + min < 0 || rowBase + max >= bg.length) throw new Error("The puzzle piece does not fit the background rows.");
-  const scores: [number, number][] = [];
+  const dark: [number, number][] = [];
+  const light: [number, number][] = [];
   for (let x = origin.x + 1; x + solidRight < background.width; x++) {
     let innerSum = 0;
     let ringSum = 0;
@@ -81,11 +91,11 @@ export function findPuzzleGap(background: Pixels, piece: Pixels, origin: { x: nu
     for (const i of ring) ringSum += bg[rowBase + x + i]!;
     const innerMean = innerSum / inside.length;
     const ringMean = ringSum / ring.length;
-    scores.push([x, (ringMean - innerMean) / (ringMean + LUMINANCE_FLOOR)]);
+    dark.push([x, (ringMean - innerMean) / (ringMean + LUMINANCE_FLOOR)]);
+    light.push([x, (innerMean - ringMean) / (innerMean + LUMINANCE_FLOOR)]);
   }
-  if (!scores.length) throw new Error("The puzzle background has no room right of the piece.");
-  const best = scores.reduce((a, b) => (b[1] > a[1] ? b : a));
-  let rival = 0;
-  for (const [x, score] of scores) if (Math.abs(x - best[0]) > RIVAL_DISTANCE_PX && score > rival) rival = score;
-  return { offset: best[0] - origin.x, margin: Math.max(0, best[1] - rival) };
+  if (!dark.length) throw new Error("The puzzle background has no room right of the piece.");
+  const [a, b] = [best(dark), best(light)];
+  const winner = a.margin >= b.margin ? a : b;
+  return { offset: winner.x - origin.x, margin: winner.margin };
 }
