@@ -35,3 +35,6 @@ export function publish(results: BenchResults = loadResults(), notMeasured: stri
   writeFileSync(path.join(ROOT, "out/site/index.html"), renderSite(rows, fixtures, hash, results.unsupported ?? {}, covered));
   return markdown;
 }
+
+// `bun src/tools/benchmark/publish.ts`: render from the committed results, no model calls (Pages).
+if (import.meta.main) publish();

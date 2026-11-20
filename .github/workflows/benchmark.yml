@@ -1,6 +1,7 @@
 name: Benchmark
 # Weekly: when the gateway offers models that were never measured, benchmark only those, commit
-# the leaderboard (BENCHMARK.md, benchmarks/leaderboard.svg for the README) and deploy the page.
+# the leaderboard (BENCHMARK.md, benchmarks/leaderboard.svg for the README) and deploy the page
+# (pages.yml; a push by this workflow's token triggers no other workflow, so it is called here).
 # Weeks without new models stop after one model-list request.
 on:
   schedule:
@@ -57,18 +58,8 @@ jobs:
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
             commit -m "chore(benchmark): measure new models"
           git push
-      - if: steps.new.outputs.found == 'true'
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: out/site
 
-  deploy:
+  pages:
     needs: bench
     if: needs.bench.outputs.found == 'true'
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+    uses: ./.github/workflows/pages.yml

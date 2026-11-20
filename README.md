@@ -103,7 +103,7 @@ Pick any provider through the AI SDK: OpenAI-compatible (xAI, Ollama, OpenRouter
 
 The extension turns the answer into precise trusted clicks, reports errors back, and handles the readiness waits and retries as with a model. Agents that decline CAPTCHAs by policy will decline this too.
 
-To choose one, see the **[leaderboard](BENCHMARK.md)**, also published on the project's GitHub Pages. It shows each model's pass rate per challenge type (provider × kind) on the labeled real-world fixtures, replayed exactly as the solver asks live.
+To choose one, see the **[leaderboard](BENCHMARK.md)**, also published at **[samuelscheit.github.io/llm-captcha](https://samuelscheit.github.io/llm-captcha/)**. It shows each model's pass rate per challenge type (provider × kind) on the labeled real-world fixtures, replayed exactly as the solver asks live.
 
 `bun run bench` updates it incrementally. It re-measures only (model, fixture) pairs whose fixture or solver code changed, so adding a fixture or a model costs a few calls. Provider outages are retried later instead of counted.
 
@@ -114,7 +114,7 @@ Models come from `benchmarks/models.json`:
 
 A model the gateway refuses for good (for example no image input) is recorded as unsupported and not tried again. A local `benchmarks/models.local.json` overrides the list.
 
-The weekly CI workflow checks the gateway for models that were never measured and stops right there if there are none. Otherwise it benchmarks just the new ones, commits the leaderboard and this chart, and deploys the page to GitHub Pages. For a prompt or engine change, run `bun run bench` locally and commit the result with the change.
+The weekly CI workflow checks the gateway for models that were never measured and stops right there if there are none. Otherwise it benchmarks just the new ones, commits the leaderboard and this chart, and deploys the page to GitHub Pages. For a prompt or engine change, run `bun run bench` locally and commit the result with the change; pushing new results deploys the page too. CI needs the secret `GATEWAY_KEY` and the variable `GATEWAY_URL` (or a provider's `*_API_KEY`).
 
 ## Adapters
 
