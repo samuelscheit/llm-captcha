@@ -70,7 +70,8 @@ await replay(jobs, (m: BenchModel) => createModel(m), {
       // Otherwise an outage is not the model's answer: leave the pair stale, the next run retries.
       return console.log(`SKIP ${r.model.name} ${r.fixture.name}: ${r.problems.join("; ").slice(0, 160)}`);
     }
-    record(results, r.model.name, r.fixture, solverHash, { pass: r.pass, ms: r.ms, at: new Date().toISOString(), ...(r.pass ? {} : { problems: r.problems }) });
+    const usage = r.decision?.usage;
+    record(results, r.model.name, r.fixture, solverHash, { pass: r.pass, ms: r.ms, at: new Date().toISOString(), ...(usage ? { usage } : {}), ...(r.pass ? {} : { problems: r.problems }) });
     save();
     console.log(`${r.pass ? "PASS" : "FAIL"} ${r.model.name} ${r.fixture.name} (${(r.ms / 1000).toFixed(1)}s)${r.pass ? "" : ` ${r.problems.join("; ")}`}`);
   },

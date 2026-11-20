@@ -2,10 +2,10 @@ import { createAnthropic } from "@ai-sdk/anthropic";
 import { createGoogle } from "@ai-sdk/google";
 import { createOpenAI } from "@ai-sdk/openai";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-import { generateText, NoObjectGeneratedError, Output, type LanguageModel } from "ai";
+import { generateText, NoObjectGeneratedError, Output, type LanguageModel, type LanguageModelUsage } from "ai";
 import { z } from "zod";
 import { buildPrompt, SYSTEM_PROMPT, type ImageFrame, type MotionHint } from "./prompt";
-import type { Action, ChallengeView, Decision, HistoryEntry, ModelConfig } from "./types";
+import type { Action, ChallengeView, Decision, HistoryEntry, ModelConfig, TokenUsage } from "./types";
 
 const ActionSchema = z.object({
   kind: z.enum(["click", "type", "clickPoint", "drag", "wait"]),
@@ -79,7 +79,19 @@ export function sanitize(decision: Decision, view: ChallengeView, image: ImageFr
         return true;
     }
   };
-  return { reasoning: decision.reasoning, actions: decision.actions.filter(valid) };
+  return { ...decision, actions: decision.actions.filter(valid) };
+}
+
+/** The SDK's usage in our shape; undefined when the provider reported none. */
+export function tokenUsage(usage: LanguageModelUsage | undefined): TokenUsage | undefined {
+  if (usage?.inputTokens === undefined && usage?.outputTokens === undefined) return undefined;
+  const { cacheReadTokens, cacheWriteTokens } = usage.inputTokenDetails ?? {};
+  return {
+    input: usage.inputTokens ?? 0,
+    output: usage.outputTokens ?? 0,
+    ...(cacheReadTokens ? { cacheRead: cacheReadTokens } : {}),
+    ...(cacheWriteTokens ? { cacheWrite: cacheWriteTokens } : {}),
+  };
 }
 
 export interface DecideInput {
@@ -108,11 +120,11 @@ export async function decide(model: LanguageModel, input: DecideInput, signal?: 
     maxRetries: 1,
     abortSignal: signal,
   }).then(
-    (result) => result.output,
+    (result) => ({ ...result.output, usage: tokenUsage(result.usage) }),
     (error) => {
       const recovered = NoObjectGeneratedError.isInstance(error) && error.text ? recoverDecision(error.text) : null;
       if (!recovered) throw error;
-      return recovered;
+      return { ...recovered, usage: tokenUsage(error.usage) };
     },
   );
   return sanitize(output, input.view, input.frame);

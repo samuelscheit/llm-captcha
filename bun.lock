@@ -13,6 +13,7 @@
         "zod": "4.6.7",
       },
       "devDependencies": {
+        "@pydantic/genai-prices": "0.2.5",
         "@types/bun": "1.4.4",
         "@types/chrome": "0.3.7",
         "@types/node": "26.6.6",
@@ -58,6 +59,8 @@
     "@oxc-project/types": ["@oxc-project/types@0.156.0", "", {}, "sha512-1Duyg48TdJNdyhEB8Xn1L36bT9Pv6GUtlKjHxOys8xkaF/rQq3XJE+bAurSK/AgIz5mGFsb77cn9Pb20+WCScw=="],
 
     "@puppeteer/browsers": ["@puppeteer/browsers@3.2.7", "", { "dependencies": { "modern-tar": "^0.8.6", "yargs": "^18.0.0" }, "peerDependencies": { "proxy-agent": ">=8.0.1", "yauzl": "^2.10.0 || ^3.4.0" }, "optionalPeers": ["proxy-agent", "yauzl"], "bin": { "browsers": "lib/main-cli.js" } }, "sha512-B3C/v8OEEaJYcN1IzzgbPmt+GbFANr4Mf/NrqNuGk/dIchrv6quNqxgT+A6qE0Ge0MN95NjKUddcR1JMpYRMWA=="],
+
+    "@pydantic/genai-prices": ["@pydantic/genai-prices@0.2.5", "", { "bin": { "genai-prices": "dist/cli.js" } }, "sha512-J6+m6CeB3KhO0PKVYXPmFmtsF8qJ0nxgTuQkQGO67fPeqAUsfw3hjkVC7L8pVdFfQfVSZFWbwj7geyl6kpA81A=="],
 
     "@rolldown/binding-android-arm-eabi": ["@rolldown/binding-android-arm-eabi@1.2.19", "", { "os": "android", "cpu": "arm" }, "sha512-e+Ebe0WT+9tbXmNKPIiC8YrWAHYwug3m6i4p3rZGGulfZri1jtI4HslT+OZnFf/OIHowWF71DTlHwXBP2SiA7A=="],
 

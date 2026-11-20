@@ -67,6 +67,16 @@ export interface Action {
 export interface Decision {
   reasoning: string;
   actions: Action[];
+  /** Tokens the model call took, as the provider reported them (absent for assist answers). */
+  usage?: TokenUsage;
+}
+
+/** Tokens of one model call. `input` includes the cached ones (`cacheRead`, `cacheWrite`). */
+export interface TokenUsage {
+  input: number;
+  output: number;
+  cacheRead?: number;
+  cacheWrite?: number;
 }
 
 /** An earlier round on the same challenge, fed back so the model can correct itself. */

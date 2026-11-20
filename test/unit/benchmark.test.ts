@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { categoryOf, expandSources, isPermanent, leaderboard, record, renderLeaderboard, resolveModels, staleJobs, untested, type BenchModel, type BenchResults } from "../../src/tools/benchmark/benchmark";
+import { categoryOf, count, expandSources, isPermanent, leaderboard, record, renderLeaderboard, resolveModels, staleJobs, untested, usd, type BenchModel, type BenchResults } from "../../src/tools/benchmark/benchmark";
+import { priceOf } from "../../src/tools/benchmark/pricing";
+import { tokenUsage } from "../../src/core/solver";
 import { renderSite, renderSvg } from "../../src/tools/benchmark/site";
 import type { StoredFixture } from "../../src/tools/fixtures";
 import type { ChallengeView } from "../../src/core/types";
@@ -103,9 +105,10 @@ describe("leaderboard", () => {
   it("renders a table with a column per category, fixture counts and solver versions", () => {
     const md = renderLeaderboard(leaderboard(results, ["fast", "good"], [grid, shape]), [grid, shape], "s", ["grok-4"]);
     expect(md).toContain("Updated 2026-11-21 · 2 fixtures · current solver `s`");
-    expect(md).toContain("| Model | Overall | hcaptcha/point (1) | recaptcha/select (1) | Median time | Solver |");
-    expect(md).toContain("| good | **100% (3/3)** | 100% (1/1) | 100% (2/2) | 9.0s | `s` |");
-    expect(md).toContain("| fast | **67% (2/3)** | 100% (1/1) | 50% (1/2) | 2.0s | `s` |");
+    expect(md).toContain("| Model | Overall | hcaptcha/point (1) | recaptcha/select (1) | Median time | Tokens in / out | Cost / run | Cost / solve | Solver |");
+    // Runs without usage (results from before it was recorded) show no tokens or cost.
+    expect(md).toContain("| good | **100% (3/3)** | 100% (1/1) | 100% (2/2) | 9.0s | – | – | – | `s` |");
+    expect(md).toContain("| fast | **67% (2/3)** | 100% (1/1) | 50% (1/2) | 2.0s | – | – | – | `s` |");
     expect(md).toContain("Not measured (no API key in this run): grok-4.");
   });
 
@@ -187,5 +190,55 @@ describe("published leaderboard", () => {
     expect(html).toContain("<td class=\"model\">a&#60;b&#62;</td>");
     expect(html).toContain("<b>gpt-oss-120b</b>: error: image input is not supported");
     expect(html).toContain("2 fixtures");
+  });
+});
+
+describe("tokens and cost", () => {
+  // $1 per 1k input tokens, $2 per 1k output: easy sums.
+  const flat = (_: string, u: { input: number; output: number }) => u.input / 1000 + (2 * u.output) / 1000;
+  const metered = (pass: boolean, input: number, output: number) => ({ ...run(pass), usage: { input, output } });
+
+  it("takes median tokens per run, mean cost per run, and everything spent per solved run", () => {
+    const results: BenchResults = { models: {} };
+    record(results, "m", grid, "s", metered(true, 1000, 100)); // $1.20
+    record(results, "m", grid, "s", metered(false, 3000, 300)); // $3.60
+    record(results, "m", shape, "s", metered(true, 2000, 200)); // $2.40
+    const [row] = leaderboard(results, ["m"], [grid, shape], flat);
+    expect(row!.tokens).toEqual({ input: 2000, output: 200 });
+    expect(row!.cost!.perRun).toBeCloseTo(7.2 / 3);
+    // The failed run's spend counts against the solves.
+    expect(row!.cost!.perSolve).toBeCloseTo(7.2 / 2);
+  });
+
+  it("only meters runs that reported usage, and prices nothing when the model is unknown or nothing passed", () => {
+    const results: BenchResults = { models: {} };
+    record(results, "m", grid, "s", run(true)); // before usage was recorded
+    record(results, "m", grid, "s", metered(false, 1000, 0));
+    expect(leaderboard(results, ["m"], [grid], flat)[0]).toMatchObject({ tokens: { input: 1000, output: 0 }, cost: { perRun: 1, perSolve: undefined } });
+    expect(leaderboard(results, ["m"], [grid], () => undefined)[0]).toMatchObject({ tokens: { input: 1000, output: 0 } });
+    expect(leaderboard(results, ["m"], [grid], () => undefined)[0]!.cost).toBeUndefined();
+  });
+
+  it("formats dollars without exponents and tokens compactly", () => {
+    expect([usd(0.000042), usd(0.0042), usd(0.0123), usd(0.5), usd(1.5), usd(0), usd(undefined)]).toEqual(["$0.000042", "$0.0042", "$0.012", "$0.50", "$1.50", "$0.00", "–"]);
+    expect([count(812), count(3412), count(999.6)]).toEqual(["812", "3.4k", "1000"]);
+  });
+
+  it("prices real models at list price as fresh requests, and knows no made-up model", () => {
+    const plain = priceOf("claude-opus-5-5", { input: 1_000_000, output: 0 })!;
+    expect(plain).toBeGreaterThan(0);
+    expect(priceOf("claude-opus-5-5", { input: 0, output: 1_000_000 })!).toBeGreaterThan(plain);
+    // A replay that hit the provider's cache costs what a live, uncached call would.
+    expect(priceOf("claude-opus-5-5", { input: 1_000_000, output: 0, cacheRead: 1_000_000 })).toBe(plain);
+    expect(priceOf("no-such-model-xyz", { input: 1, output: 1 })).toBeUndefined();
+  });
+
+  it("maps the SDK's usage, and reports none when the provider gave none", () => {
+    const sdk = (input?: number, output?: number, cacheRead?: number) =>
+      ({ inputTokens: input, outputTokens: output, inputTokenDetails: { noCacheTokens: undefined, cacheReadTokens: cacheRead, cacheWriteTokens: undefined } }) as Parameters<typeof tokenUsage>[0];
+    expect(tokenUsage(sdk(1200, 80, 1000))).toEqual({ input: 1200, output: 80, cacheRead: 1000 });
+    expect(tokenUsage(sdk(1200, undefined))).toEqual({ input: 1200, output: 0 });
+    expect(tokenUsage(sdk())).toBeUndefined();
+    expect(tokenUsage(undefined)).toBeUndefined();
   });
 });

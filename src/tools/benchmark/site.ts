@@ -2,7 +2,7 @@
  * The leaderboard as a static page (GitHub Pages) and as an SVG chart (README). Pure renderers
  * over the rows of `leaderboard()`.
  */
-import { categoryOf, type Cell, type Row } from "./benchmark";
+import { categoryOf, count, usd, type Cell, type Row } from "./benchmark";
 import { verificationLabel, type CoverageRow } from "./coverage";
 import type { StoredFixture } from "../fixtures";
 
@@ -20,16 +20,19 @@ function categories(fixtures: StoredFixture[]) {
 
 const updatedOf = (rows: Row[]) => rows.map((r) => r.measuredAt).sort().at(-1)?.slice(0, 10) ?? "never";
 
-/** README chart: one row per model, a bar for the overall pass rate, then each category. */
+/** README chart: one row per model, a bar for the overall pass rate, cost per solve, then each category. */
 export function renderSvg(rows: Row[], fixtures: StoredFixture[]): string {
   const cats = categories(fixtures);
   const nameW = 200;
   const barW = 220;
   const catW = 120;
+  const costW = 110;
   const rowH = 34;
   /** Baseline of the first row; title, subtitle and column heads sit above it. */
   const top = 106;
-  const width = nameW + barW + 70 + cats.length * catW + 24;
+  const costX = nameW + barW + 70;
+  const catX = costX + costW;
+  const width = catX + cats.length * catW + 24;
   const height = top - 22 + Math.max(rows.length, 1) * rowH + 12;
   const color = { good: "#1a7f4b", mid: "#b7791f", bad: "#c53030", none: "#8a8a85" };
   const body = rows.map((r, i) => {
@@ -41,9 +44,10 @@ export function renderSvg(rows: Row[], fixtures: StoredFixture[]): string {
       `<rect x="${nameW}" y="${y - 13}" width="${barW}" height="14" rx="7" fill="#e6e5e1"/>`,
       `<rect x="${nameW}" y="${y - 13}" width="${Math.max(barW * overall, 14)}" height="14" rx="7" fill="${color[tone(overall)]}"/>`,
       `<text x="${nameW + barW + 10}" y="${y}" class="value">${pct(r.overall)}</text>`,
+      `<text x="${costX + costW / 2}" y="${y}" text-anchor="middle" class="cell">${usd(r.cost?.perSolve)}</text>`,
       ...cats.map((c, j) => {
         const cell = r.categories[c.name];
-        return `<text x="${nameW + barW + 70 + j * catW + catW / 2}" y="${y}" text-anchor="middle" class="cell" fill="${color[tone(rate(cell))]}">${pct(cell)}</text>`;
+        return `<text x="${catX + j * catW + catW / 2}" y="${y}" text-anchor="middle" class="cell" fill="${color[tone(rate(cell))]}">${pct(cell)}</text>`;
       }),
     ].join("");
   });
@@ -55,10 +59,11 @@ text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,san
 </style>
 <rect width="${width}" height="${height}" rx="10" fill="#ffffff" stroke="#e3e2de"/>
 <text x="16" y="28" class="title">Captcha solving by model</text>
-<text x="16" y="47" class="sub">${esc(`${fixtures.length} real challenges, pass rate over all runs · updated ${updatedOf(rows)}`)}</text>
+<text x="16" y="47" class="sub">${esc(`${fixtures.length} real challenges, pass rate over all runs, cost at API list price · updated ${updatedOf(rows)}`)}</text>
 <text x="16" y="74" class="head">MODEL</text>
 <text x="${nameW}" y="74" class="head">OVERALL</text>
-${cats.map((c, j) => `<text x="${nameW + barW + 70 + j * catW + catW / 2}" y="74" text-anchor="middle" class="head">${esc(`${c.name} (${c.count})`)}</text>`).join("\n")}
+<text x="${costX + costW / 2}" y="74" text-anchor="middle" class="head">COST / SOLVE</text>
+${cats.map((c, j) => `<text x="${catX + j * catW + catW / 2}" y="74" text-anchor="middle" class="head">${esc(`${c.name} (${c.count})`)}</text>`).join("\n")}
 ${body.join("\n") || `<text x="16" y="${top}" class="sub">No results yet.</text>`}
 </svg>
 `;
@@ -103,14 +108,14 @@ a{color:inherit}
 <p class="meta">${fixtures.length} fixtures · updated ${updatedOf(rows)} · solver <code>${esc(solverHash)}</code></p>
 <div class="card">
 <table>
-<thead><tr><th></th><th>Model</th><th>Overall</th>${cats.map((c) => `<th>${esc(c.name)}<small>${c.count} fixtures</small></th>`).join("")}<th>Median time</th></tr></thead>
+<thead><tr><th></th><th>Model</th><th>Overall</th><th>Cost / solve<small>list price</small></th>${cats.map((c) => `<th>${esc(c.name)}<small>${c.count} fixtures</small></th>`).join("")}<th>Median time</th><th>Tokens<small>in / out per run</small></th><th>Cost / run</th></tr></thead>
 <tbody>
 ${rows
   .map(
     (r, i) =>
-      `<tr><td class="rank">${i + 1}</td><td class="model">${esc(r.model)}</td>${cell(r.overall).replace('<td class="', '<td class="overall ')}${cats.map((c) => cell(r.categories[c.name])).join("")}<td>${(r.medianMs / 1000).toFixed(1)}s</td></tr>`,
+      `<tr><td class="rank">${i + 1}</td><td class="model">${esc(r.model)}</td>${cell(r.overall).replace('<td class="', '<td class="overall ')}<td><b>${usd(r.cost?.perSolve)}</b></td>${cats.map((c) => cell(r.categories[c.name])).join("")}<td>${(r.medianMs / 1000).toFixed(1)}s</td><td>${r.tokens ? `${count(r.tokens.input)} / ${count(r.tokens.output)}` : "–"}</td><td>${usd(r.cost?.perRun)}</td></tr>`,
   )
-  .join("\n") || `<tr><td colspan="${cats.length + 4}">No results yet.</td></tr>`}
+  .join("\n") || `<tr><td colspan="${cats.length + 7}">No results yet.</td></tr>`}
 </tbody>
 </table>
 </div>
@@ -147,6 +152,7 @@ ${
 }
 <h2>Method</h2>
 <p>Models are measured once per version of the fixtures and of the solver code that shapes their input; new models offered by the gateway are measured weekly. Provider outages and rate limits are retried later, never counted as failures.</p>
+<p>Tokens are the median per run as the provider reported them (output includes reasoning). Cost is at the provider's API list price (<a href="https://github.com/pydantic/genai-prices">genai-prices</a>), not what a gateway or plan bills, with all input uncached as on a live challenge. Cost per solve is everything spent ÷ runs passed, so failed attempts count against it.</p>
 </main>
 </body>
 </html>

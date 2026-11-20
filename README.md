@@ -103,7 +103,7 @@ Pick any provider through the AI SDK: OpenAI-compatible (xAI, Ollama, OpenRouter
 
 The extension turns the answer into precise trusted clicks, reports errors back, and handles the readiness waits and retries as with a model. Agents that decline CAPTCHAs by policy will decline this too.
 
-To choose one, see the **[leaderboard](BENCHMARK.md)**, also published at **[samuelscheit.github.io/llm-captcha](https://samuelscheit.github.io/llm-captcha/)**. It shows each model's pass rate per challenge type (provider × kind) on the labeled real-world fixtures, replayed exactly as the solver asks live.
+To choose one, see the **[leaderboard](BENCHMARK.md)**, also published at **[samuelscheit.github.io/llm-captcha](https://samuelscheit.github.io/llm-captcha/)**. It shows each model's pass rate per challenge type (provider × kind) on the labeled real-world fixtures, replayed exactly as the solver asks live. It also shows what each model costs: median tokens in and out per run, and dollars per run and per solved challenge. The dollars are at the provider's API list price ([genai-prices](https://github.com/pydantic/genai-prices)), with input priced uncached, as on a live challenge.
 
 `bun run bench` updates it incrementally. It re-measures only (model, fixture) pairs whose fixture or solver code changed, so adding a fixture or a model costs a few calls. Provider outages are retried later instead of counted.
 

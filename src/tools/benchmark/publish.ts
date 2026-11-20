@@ -9,6 +9,7 @@ import { BUILTIN_ADAPTERS } from "../../core/adapters";
 import { loadFixtures } from "../fixtures";
 import { leaderboard, renderLeaderboard, sha, type BenchResults } from "./benchmark";
 import { coverage, renderCoverage, type Verified } from "./coverage";
+import { priceOf } from "./pricing";
 import { renderSite, renderSvg } from "./site";
 
 export const ROOT = path.resolve(import.meta.dirname, "../../..");
@@ -26,7 +27,7 @@ export const loadVerified = () => readJson<Verified>(VERIFIED_FILE, {});
 export function publish(results: BenchResults = loadResults(), notMeasured: string[] = []): string {
   const fixtures = loadFixtures();
   const hash = solverHash();
-  const rows = leaderboard(results, Object.keys(results.models), fixtures);
+  const rows = leaderboard(results, Object.keys(results.models), fixtures, priceOf);
   const covered = coverage(BUILTIN_ADAPTERS, loadVerified());
   const markdown = `${renderLeaderboard(rows, fixtures, hash, notMeasured.filter((name) => !rows.some((r) => r.model === name)))}\n${renderCoverage(covered)}`;
   writeFileSync(path.join(ROOT, "BENCHMARK.md"), markdown);
