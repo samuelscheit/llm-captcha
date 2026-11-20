@@ -29,6 +29,8 @@ actions of this round, executed in order:
 - clickPoint: click at image pixel ("x","y"), origin top-left of the screenshot.
 - drag: press at ("x","y"), move to ("toX","toY"), release; image pixels.
 - wait: do nothing this round (images still loading or animating).
+Answer as one JSON object, every field present, null where unused:
+{"reasoning": "...", "actions": [{"kind": "click", "target": "t1", "text": null, "x": null, "y": null, "toX": null, "toY": null}]}
 Leave fields an action does not use null.
 
 Previous rounds of this challenge are listed with the errors the challenge showed afterwards. An

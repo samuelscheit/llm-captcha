@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { imageFrame, labelsOf, pickChallenge, withSubmit } from "../../src/core/engine";
 import { buildPrompt } from "../../src/core/prompt";
 import { score } from "../../src/core/score";
-import { sanitize } from "../../src/core/solver";
+import { recoverDecision, sanitize } from "../../src/core/solver";
 import type { Action, ChallengeView } from "../../src/core/types";
 
 const act = (kind: Action["kind"], extra: Partial<Action> = {}): Action => ({ kind, target: null, text: null, x: null, y: null, toX: null, toY: null, ...extra });
@@ -133,5 +133,30 @@ describe("text answers are submitted", () => {
     expect(withSubmit(text(["input", "submit"]), [act("type", { target: "input", text: "ab" }), act("click", { target: "submit" })])).toHaveLength(2);
     expect(withSubmit(text(["input"]), [act("type", { target: "input", text: "ab" })])).toHaveLength(1);
     expect(withSubmit(grid, [act("click", { target: "t1" })])).toHaveLength(1);
+  });
+});
+
+// Some gateways drop the response format: the model then answers in prose around a JSON block.
+describe("recoverDecision", () => {
+  const decision = { reasoning: "reads CMYS", actions: [act("type", { target: "input", text: "CMYS" })] };
+  const json = JSON.stringify(decision);
+
+  it("finds a fenced block after prose", () => {
+    expect(recoverDecision(`The text reads CMYS.\n\n\`\`\`json\n${json}\n\`\`\``)).toEqual(decision);
+  });
+
+  it("finds a bare object inside prose", () => {
+    expect(recoverDecision(`Answer: ${json} done.`)).toEqual(decision);
+  });
+
+  it("takes the last valid block when an earlier one is a draft", () => {
+    const draft = JSON.stringify({ reasoning: "draft", actions: [] });
+    expect(recoverDecision(`\`\`\`json\n${draft}\n\`\`\`\nFixed:\n\`\`\`json\n${json}\n\`\`\``)).toEqual(decision);
+  });
+
+  it("refuses objects of another shape and non-JSON", () => {
+    expect(recoverDecision(`{"actions":[{"action":"type","target":"input","text":"CMYS"}]}`)).toBeNull();
+    expect(recoverDecision("I cannot solve this.")).toBeNull();
+    expect(recoverDecision("{not json}")).toBeNull();
   });
 });

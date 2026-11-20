@@ -2,7 +2,7 @@ import { createAnthropic } from "@ai-sdk/anthropic";
 import { createGoogle } from "@ai-sdk/google";
 import { createOpenAI } from "@ai-sdk/openai";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-import { generateText, Output, type LanguageModel } from "ai";
+import { generateText, NoObjectGeneratedError, Output, type LanguageModel } from "ai";
 import { z } from "zod";
 import { buildPrompt, SYSTEM_PROMPT, type ImageFrame, type MotionHint } from "./prompt";
 import type { Action, ChallengeView, Decision, HistoryEntry, ModelConfig } from "./types";
@@ -21,6 +21,24 @@ export const DecisionSchema = z.object({
   reasoning: z.string(),
   actions: z.array(ActionSchema),
 });
+
+/**
+ * The decision in a model's text when the provider ignored the requested response format (some
+ * gateways drop it): the last parseable JSON object, fenced or bare, with prose around it.
+ */
+export function recoverDecision(text: string): Decision | null {
+  const candidates = [...text.matchAll(/```(?:json)?\s*([\s\S]*?)```/g)].map((m) => m[1]!);
+  const start = text.indexOf("{");
+  const end = text.lastIndexOf("}");
+  if (start >= 0 && end > start) candidates.push(text.slice(start, end + 1));
+  for (const candidate of candidates.reverse()) {
+    try {
+      const parsed = DecisionSchema.safeParse(JSON.parse(candidate));
+      if (parsed.success) return parsed.data;
+    } catch {}
+  }
+  return null;
+}
 
 /**
  * The model of a configuration. `fetch` replaces the global one for the provider's requests, e.g.
@@ -74,7 +92,7 @@ export interface DecideInput {
 }
 
 export async function decide(model: LanguageModel, input: DecideInput, signal?: AbortSignal): Promise<Decision> {
-  const { output } = await generateText({
+  const output = await generateText({
     model,
     system: SYSTEM_PROMPT,
     messages: [
@@ -89,7 +107,14 @@ export async function decide(model: LanguageModel, input: DecideInput, signal?: 
     output: Output.object({ schema: DecisionSchema }),
     maxRetries: 1,
     abortSignal: signal,
-  });
+  }).then(
+    (result) => result.output,
+    (error) => {
+      const recovered = NoObjectGeneratedError.isInstance(error) && error.text ? recoverDecision(error.text) : null;
+      if (!recovered) throw error;
+      return recovered;
+    },
+  );
   return sanitize(output, input.view, input.frame);
 }
 
