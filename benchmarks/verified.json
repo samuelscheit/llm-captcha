@@ -1,0 +1,42 @@
+{
+  "aliyun-nc": {
+    "passedAt": "2026-11-20T20:48:39.349Z",
+    "passedBy": "slides Aliyun's real nocaptcha slider once, and Aliyun's server passes it [aliyun-nc]"
+  },
+  "aliyun-slide": {
+    "passedAt": "2026-11-20T20:48:39.349Z",
+    "passedBy": "slides AliyunCaptcha 2.0 on Alibaba Cloud's password reset until it reads Verified [aliyun-slide]"
+  },
+  "generic-drag-verify": {
+    "passedAt": "2026-11-20T20:48:39.349Z",
+    "passedBy": "slides eranet's real slider (#dragHandler) and the form goes on [generic-drag-verify]"
+  },
+  "gname-slider": {
+    "passedAt": "2026-11-20T20:48:39.349Z",
+    "passedBy": "slides gname's real slider (.gn-slide-rail) and the form goes on [gname-slider]"
+  },
+  "hcaptcha-challenge": {
+    "passedAt": "2026-11-20T20:48:39.349Z",
+    "passedBy": "solves the hcaptcha demo with the live model [hcaptcha-checkbox] [hcaptcha-challenge]"
+  },
+  "hcaptcha-checkbox": {
+    "passedAt": "2026-11-20T20:48:39.349Z",
+    "passedBy": "solves the hcaptcha demo with the live model [hcaptcha-checkbox] [hcaptcha-challenge]"
+  },
+  "recaptcha-checkbox": {
+    "passedAt": "2026-11-20T20:40:57.844Z",
+    "passedBy": "puppeteer driver on vendor test widgets clicks the recaptcha checkbox and gets a token [recaptcha-checkbox]"
+  },
+  "recaptcha-images": {
+    "failedAt": "2026-11-20T20:48:39.349Z",
+    "failedBy": "solves the recaptcha demo with the live model [recaptcha-checkbox] [recaptcha-images]"
+  },
+  "tencent-slider": {
+    "passedAt": "2026-11-20T20:48:39.349Z",
+    "passedBy": "solves the real Tencent slide puzzle and gets a ticket [tencent-slider]"
+  },
+  "turnstile": {
+    "passedAt": "2026-11-20T20:40:57.844Z",
+    "passedBy": "puppeteer driver on vendor test widgets clicks the turnstile checkbox and gets a token [turnstile]"
+  }
+}

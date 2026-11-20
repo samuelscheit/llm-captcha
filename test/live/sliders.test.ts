@@ -8,7 +8,7 @@ import { playwrightHost } from "../../src/cdp/playwright";
 import { launch } from "../../src/tools/browser";
 import { openVendorPage, VENDOR_PAGES } from "../../src/tools/vendor-pages";
 
-it("slides Aliyun's real nocaptcha slider once, and Aliyun's server passes it", async () => {
+it("slides Aliyun's real nocaptcha slider once, and Aliyun's server passes it [aliyun-nc]", async () => {
   const b = await launch();
   const page = b.context.pages()[0]!;
   // Aliyun judges the track server-side (analyze.jsonp): result.code 100 or 200 is a pass, 400
@@ -36,10 +36,30 @@ it("slides Aliyun's real nocaptcha slider once, and Aliyun's server passes it", 
   }
 });
 
+it("slides AliyunCaptcha 2.0 on Alibaba Cloud's password reset until it reads Verified [aliyun-slide]", async () => {
+  const b = await launch();
+  const page = b.context.pages()[0]!;
+  try {
+    await openVendorPage(b.context, page, VENDOR_PAGES["alibaba-reset"]);
+    await page.locator("#aliyunCaptcha-sliding-slider").waitFor({ timeout: 20_000 });
+    const host = await playwrightHost(page);
+    try {
+      const result = await solve(new CdpDriver(host), { adapters: BUILTIN_ADAPTERS, maxRounds: 3, timeoutMs: 60_000 });
+      expect(result.state, result.detail).toBe("solved");
+    } finally {
+      await host.dispose();
+    }
+    // The widget's own verdict, after Aliyun's verify call returned its security token.
+    await expect.poll(() => page.locator("#aliyunCaptcha-sliding-text").textContent()).toBe("Verified");
+  } finally {
+    await b.close();
+  }
+});
+
 it.each([
-  ["gname", ".gn-slide-rail"],
-  ["eranet", "#dragHandler"],
-] as const)("slides %s's real slider and the form goes on", async (name, slider) => {
+  ["gname", ".gn-slide-rail", "gname-slider"],
+  ["eranet", "#dragHandler", "generic-drag-verify"],
+] as const)("slides %s's real slider (%s) and the form goes on [%s]", async (name, slider, _adapter) => {
   const b = await launch();
   const page = b.context.pages()[0]!;
   try {

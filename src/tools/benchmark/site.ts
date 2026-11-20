@@ -3,6 +3,7 @@
  * over the rows of `leaderboard()`.
  */
 import { categoryOf, type Cell, type Row } from "./benchmark";
+import { verificationLabel, type CoverageRow } from "./coverage";
 import type { StoredFixture } from "../fixtures";
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
@@ -63,8 +64,8 @@ ${body.join("\n") || `<text x="16" y="${top}" class="sub">No results yet.</text>
 `;
 }
 
-/** The GitHub Pages leaderboard: the table, the categories explained, models that cannot take part. */
-export function renderSite(rows: Row[], fixtures: StoredFixture[], solverHash: string, unsupported: Record<string, string>): string {
+/** The GitHub Pages leaderboard: models per category, coverage per provider, models that cannot take part. */
+export function renderSite(rows: Row[], fixtures: StoredFixture[], solverHash: string, unsupported: Record<string, string>, covered: CoverageRow[] = []): string {
   const cats = categories(fixtures);
   const cell = (c: Cell | undefined) =>
     `<td class="${tone(rate(c))}">${c ? `<b>${pct(c)}</b><small>${c.passed}/${c.total}</small>` : "–"}</td>`;
@@ -112,6 +113,23 @@ ${rows
 </tbody>
 </table>
 </div>
+${
+  covered.length
+    ? `<h2>Coverage</h2>
+<p>Every challenge the solver recognizes, how it gets through it, and when that was last verified against the real widget.</p>
+<div class="card"><table>
+<thead><tr><th>Provider</th><th>Challenge</th><th>Solved by</th><th>Verified on the real widget</th></tr></thead>
+<tbody>
+${covered
+  .map((c) => {
+    const label = verificationLabel(c.verification);
+    const cls = label.startsWith("✅") ? "good" : label.startsWith("❌") ? "bad" : "none";
+    return `<tr><td>${esc(c.provider)}</td><td><code>${esc(c.adapter)}</code></td><td>${esc(c.method)}</td><td class="${cls}"><b>${esc(label)}</b></td></tr>`;
+  })
+  .join("\n")}
+</tbody></table></div>`
+    : ""
+}
 <h2>Categories</h2>
 <ul>
 <li><b>select</b>: pick image tiles (reCAPTCHA grids, including the dynamic ones whose tiles are replaced after each click).</li>

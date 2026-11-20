@@ -1,0 +1,9 @@
+{
+  "kind": "page",
+  "source": "https://geo.captcha-delivery.com/captcha/ (Leboncoin, 2026-11-20, from a datacenter IP)",
+  "path": "geo.captcha-delivery.com/captcha/",
+  "expected": {
+    "views": [{ "adapter": "datadome-slider", "status": "pending", "targets": ["handle", "rail"] }]
+  },
+  "notes": "DataDome's challenge frame as it was shown: the 'simple' slider ('Slide right to secure your access'), saved by `bun run explore` (scripts stripped, so it does not react; the scan is what is checked). DataDome later let the IP through, so the slider could not be brought up again to solve live."
+}

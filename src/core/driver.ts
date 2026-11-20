@@ -24,6 +24,8 @@ export interface ImageTools {
   label(request: { image: string; labels: ImageLabel[] }): Promise<string>;
   /** What moved across a burst of same-size frames. */
   motion(request: { frames: string[] }): Promise<Motion>;
+  /** One image of `width` × `height` with each part drawn into its rect (contact sheets). */
+  compose(request: { width: number; height: number; parts: ({ image: string } & Rect)[] }): Promise<string>;
 }
 
 /**

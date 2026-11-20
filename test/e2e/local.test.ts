@@ -70,7 +70,7 @@ describe.each<DriverKind>(["extension", "playwright", "puppeteer"])("%s driver o
     await h.page.click("button");
     await expect.poll(() => h.page.textContent("#result")).toBe("correct");
     const call = server.state.modelCalls.at(-1)!;
-    expect(call.prompt).toContain("Challenge type: text (text-image)");
+    expect(call.prompt).toContain("Challenge type: text (generic-text-image)");
     // 180x60 region is upscaled 2x for the model.
     expect(call.prompt).toContain("Screenshot: 360x120 px.");
     expect(call.image).toMatch(/^data:image\/png;base64,/);

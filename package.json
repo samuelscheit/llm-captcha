@@ -7,7 +7,7 @@
     "build": "bun build.ts",
     "typecheck": "bun build.ts && tsc --noEmit",
     "test": "vitest run test/unit",
-    "e2e": "bun run build && vitest run test/e2e",
+    "e2e": "bun run build && vitest run test/e2e --reporter=default --reporter=json --outputFile.json=out/reports/e2e.json; code=$?; bun src/tools/benchmark/record-verified.ts out/reports/e2e.json; exit $code",
     "eval": "bun run build && bun src/tools/eval.ts",
     "capture": "bun run build && bun src/tools/capture.ts",
     "check": "bun run typecheck && bun run test && bun run e2e",
@@ -15,7 +15,7 @@
     "pull-reports": "bun src/tools/pull-reports.ts",
     "bench": "bun run build && bun src/tools/benchmark/bench.ts",
     "explore": "bun run build && bun src/tools/explore.ts",
-    "live": "bun run build && vitest run test/live"
+    "live": "bun run build && vitest run test/live --reporter=default --reporter=json --outputFile.json=out/reports/live.json; code=$?; bun src/tools/benchmark/record-verified.ts out/reports/live.json; exit $code"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "4.0.107",

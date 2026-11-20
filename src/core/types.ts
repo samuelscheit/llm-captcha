@@ -15,8 +15,13 @@ export interface Rect {
  * - slider:   drag the `handle`, no model involved: until the `piece` image fits the gap in the
  *             `background` image (found by image analysis), or, without a piece, to the end of
  *             the `rail`. A visible `reload` without a handle (a refused slider) is clicked.
+ * - hold:     press the `handle` and keep holding (with slight pointer movement) until the
+ *             challenge leaves `pending` (HUMAN/PerimeterX "Press & Hold"); no model involved
+ *
+ * A `checkbox` adapter without targets only recognizes a challenge that runs by itself (proof
+ * of work interstitials such as Anubis): the session waits for it, or ends on `blocked`.
  */
-export type ChallengeKind = "checkbox" | "select" | "text" | "point" | "slider";
+export type ChallengeKind = "checkbox" | "select" | "text" | "point" | "slider" | "hold";
 
 /**
  * pending: something to do; waiting: in progress (spinner, checkbox gone), nothing to do;
@@ -97,6 +102,8 @@ export interface AdapterSpec {
   instruction?: string[];
   /** Selectors whose visible text reports a failed attempt. */
   errors?: string[];
+  /** Like `errors`, for widgets that only say so in hidden (screen-reader) text. */
+  errorsHidden?: string[];
   /** Selector that matches anywhere in the document when solved. */
   solved?: string;
   /** Regex matched against visible leaf texts when solved. */
@@ -114,6 +121,13 @@ export interface AdapterSpec {
    * widget again while it verifies restarts its check. Default 5000.
    */
   retryMs?: number;
+  /**
+   * The answer is one option of a carousel the widget pages through (Arkose): `options` is a
+   * target with `all` (the dots, `selected` on the current one), `next` the button that shows the
+   * next option, `submit` the button that answers with the current one. The engine pages through
+   * all options, shows the model a labeled contact sheet, goes to its choice and submits.
+   */
+  carousel?: { options: string; next: string; submit: string };
   /**
    * The challenge animates by design: each round captures 3 frames and the model gets them all
    * with the regions that moved. Otherwise any movement means the challenge has not settled yet

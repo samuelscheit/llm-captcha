@@ -36,10 +36,10 @@ describe("adapters", () => {
     ["tencent-slider", "https://t.captcha.qcloud.com/cap_union_new_show?aid=1", true],
     ["datadome-slider", "https://geo.captcha-delivery.com/captcha/?initialCid=x&hash=y", true],
     ["datadome-slider", "https://shop.example/captcha/", false],
-    ["text-image", "https://geo.captcha-delivery.com/captcha/?initialCid=x", false],
-    ["text-image", "https://turing.captcha.qcloud.com/cap_union_new_show?aid=1", false],
-    ["text-image", "https://shop.example/login", true],
-    ["text-image", "https://www.google.com/recaptcha/api2/bframe", false],
-    ["text-image", "https://challenges.cloudflare.com/x", false],
+    ["generic-text-image", "https://geo.captcha-delivery.com/captcha/?initialCid=x", false],
+    ["generic-text-image", "https://turing.captcha.qcloud.com/cap_union_new_show?aid=1", false],
+    ["generic-text-image", "https://shop.example/login", true],
+    ["generic-text-image", "https://www.google.com/recaptcha/api2/bframe", false],
+    ["generic-text-image", "https://challenges.cloudflare.com/x", false],
   ])("%s matches %s: %s", (id, url, match) => expect(urlOf(id).test(url)).toBe(match));
 });

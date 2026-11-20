@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { imageFrame, labelsOf, pickChallenge } from "../../src/core/engine";
+import { imageFrame, labelsOf, pickChallenge, withSubmit } from "../../src/core/engine";
 import { buildPrompt } from "../../src/core/prompt";
 import { score } from "../../src/core/score";
 import { sanitize } from "../../src/core/solver";
@@ -120,5 +120,18 @@ describe("score", () => {
       "point 1: 0 clicks inside, expected 1",
       "clicks outside every expected point: 100,50",
     ]);
+  });
+});
+
+describe("text answers are submitted", () => {
+  const text = (ids: string[]): ChallengeView => ({ ...grid, kind: "text", targets: ids.map((id) => ({ id, rect: { x: 0, y: 0, width: 10, height: 10 } })) });
+  it("presses the widget's submit after typing", () => {
+    expect(withSubmit(text(["input", "submit"]), [act("type", { target: "input", text: "ab" })]).map((a) => a.target)).toEqual(["input", "submit"]);
+    expect(withSubmit(text(["input", "verify"]), [act("type", { target: "input", text: "ab" })]).map((a) => a.target)).toEqual(["input", "verify"]);
+  });
+  it("leaves answers alone that already submit, have no button, or are not typed", () => {
+    expect(withSubmit(text(["input", "submit"]), [act("type", { target: "input", text: "ab" }), act("click", { target: "submit" })])).toHaveLength(2);
+    expect(withSubmit(text(["input"]), [act("type", { target: "input", text: "ab" })])).toHaveLength(1);
+    expect(withSubmit(grid, [act("click", { target: "t1" })])).toHaveLength(1);
   });
 });

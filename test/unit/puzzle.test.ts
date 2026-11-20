@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { seeded } from "../../src/core/mouse";
 import { findPuzzleGap, MIN_MARGIN, type Pixels } from "../../src/core/puzzle";
 import { loadSliderFixtures } from "../../src/tools/fixtures";
+import { backgroundUrl } from "../../src/page/puzzle";
 
 const puzzles = loadSliderFixtures().map((f) => ({
   name: f.name,
@@ -51,4 +52,14 @@ describe("slide puzzle gap", () => {
     expect(() => findPuzzleGap(background, clear, origin)).toThrow("no solid pixels");
     expect(() => findPuzzleGap(background, piece, { x: origin.x, y: 380 })).toThrow("does not fit");
   });
+});
+
+describe("puzzle images from CSS backgrounds", () => {
+  it.each([
+    ['url("https://static.geetest.com/pictures/bg.jpg")', "https://static.geetest.com/pictures/bg.jpg"],
+    ["url('data:image/png;base64,AAAA')", "data:image/png;base64,AAAA"],
+    ["url(/img/piece.png), linear-gradient(red, blue)", "/img/piece.png"],
+    ["none", undefined],
+    ["linear-gradient(red, blue)", undefined],
+  ])("%s → %s", (css, url) => expect(backgroundUrl(css)).toBe(url));
 });

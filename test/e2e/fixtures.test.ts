@@ -17,8 +17,16 @@ describe.each<DriverKind>(["extension", "playwright", "puppeteer"])("%s driver o
 
   it("has page fixtures", () => expect(PAGE_FIXTURES.length).toBeGreaterThan(0));
 
-  it.each(PAGE_FIXTURES.map((f) => [f.name, f] as const))("%s", async (_, fixture) => {
-    const url = `${server.origin}/fixture/${fixture.name}`;
+  // Titles carry the adapters a fixture verifies, `[generic-kit-slider]`, for the coverage table.
+  it.each(PAGE_FIXTURES.map((f) => [`${f.name}${(f.verifies ?? []).map((id) => ` [${id}]`).join("")}`, f] as const))("%s", async (_, fixture) => {
+    const url = `${server.origin}/fixture/${fixture.name}/${fixture.path ?? ""}`;
+    if (fixture.expected.views) {
+      // A snapshot: what the scan sees. The library drivers scan on demand; the extension does not.
+      if (!h.scan) return;
+      const views = await h.scan(url);
+      expect(views.map((v) => ({ adapter: v.adapter, status: v.status, targets: v.targets.map((t) => t.id) }))).toEqual(fixture.expected.views);
+      return;
+    }
     if (kind === "extension") {
       // The extension acts by itself; a page that navigates away on success is judged by where it lands.
       await h.raw!.goto(url);

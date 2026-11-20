@@ -15,7 +15,10 @@ describe.each<DriverKind>(["extension", "playwright", "puppeteer"])("%s driver o
   });
   afterAll(() => h?.close());
 
-  it.each(Object.keys(VENDORS) as (keyof typeof VENDORS)[])("clicks the %s checkbox and gets a token", async (vendor) => {
+  /** The adapter each vendor's test widget exercises, as a coverage tag. */
+  const ADAPTER = { turnstile: "turnstile", recaptcha: "recaptcha-checkbox", hcaptcha: "hcaptcha-checkbox" } as const;
+
+  it.each((Object.keys(VENDORS) as (keyof typeof VENDORS)[]).map((v) => [v, ADAPTER[v]] as const))("clicks the %s checkbox and gets a token [%s]", async (vendor, _adapter) => {
     const calls = server.state.modelCalls.length;
     const result = await h.solve(`${server.origin}/vendor?kind=${vendor}`);
     expect(result.state, result.detail).toBe("solved");

@@ -88,7 +88,15 @@ export interface PageFixture {
   dir: string;
   source: string;
   notes: string;
-  expected: { state: "solved"; navigatesTo?: string };
+  /** Appended to the fixture's URL when adapters match on the original one (a vendor's frame path). */
+  path?: string;
+  /** Adapters a pass verifies on a real (saved) widget, for the coverage table. */
+  verifies?: string[];
+  /**
+   * Either solved by every driver (`state`, optionally landing on `navigatesTo`), or, for a saved
+   * snapshot that no longer reacts (scripts stripped), what the scan finds (`views`).
+   */
+  expected: { state?: "solved"; navigatesTo?: string; views?: { adapter: string; status: string; targets: string[] }[] };
   html: string;
 }
 

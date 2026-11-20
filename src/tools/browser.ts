@@ -20,7 +20,8 @@ export interface Browser {
 export async function launch(options: { extension?: boolean } = {}): Promise<Browser> {
   const profile = mkdtempSync(path.join(tmpdir(), "captcha-profile-"));
   const context = await chromium.launchPersistentContext(profile, {
-    channel: "chrome",
+    // BROWSER=chromium: patchright's bundled Chromium instead of the installed Chrome.
+    channel: process.env.BROWSER === "chromium" ? "chromium" : "chrome",
     headless: false,
     viewport: { width: 1280, height: 800 },
     args: options.extension ? ["--enable-unsafe-extension-debugging"] : [],

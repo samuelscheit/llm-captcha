@@ -25,6 +25,16 @@ export async function crop(request: { image: string; rect: Rect; width: number; 
   return encode(canvas);
 }
 
+/** Draw images into one canvas, each into its rect, on white (a contact sheet). */
+export async function compose(request: { width: number; height: number; parts: ({ image: string } & Rect)[] }): Promise<string> {
+  const canvas = new OffscreenCanvas(request.width, request.height);
+  const ctx = canvas.getContext("2d")!;
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, request.width, request.height);
+  for (const part of request.parts) ctx.drawImage(await decode(part.image), part.x, part.y, part.width, part.height);
+  return encode(canvas);
+}
+
 const COLORS = { target: "rgba(255, 0, 170, 0.8)", motion: "rgba(0, 200, 255, 0.95)" };
 
 /** Draw each label as an outline of its rect with a small dark id tag at its top-left corner. */

@@ -34,7 +34,7 @@ Leave fields an action does not use null.
 Previous rounds of this challenge are listed with the errors the challenge showed afterwards. An
 error means that round was wrong: look again more carefully instead of repeating it.`;
 
-const KIND_GUIDE: Record<Exclude<ChallengeKind, "checkbox" | "slider">, string> = {
+const KIND_GUIDE: Record<Exclude<ChallengeKind, "checkbox" | "slider" | "hold">, string> = {
   select: `Click every tile that matches the instruction and is not selected yet; click a selected tile
 that does not match to unselect it. A tile matches when any part of the object is in it, including
 small edges. When the instruction says to continue until none are left, clicked tiles are replaced
@@ -46,14 +46,15 @@ when the task asks to move something. Coordinates are image pixels of the screen
 click on the submit target (Next / Verify / Submit) once the task on screen is done; a "Skip"
 label means nothing is selected yet.`,
   text: `Read the characters in the image exactly (letters and digits; keep case unless all letters
-look the same height) and type them into the "input" target. Do not click anything else.`,
+look the same height; words separated by a space) and type them into the "input" target. Do not
+click anything: a submit or verify button is pressed for you after typing.`,
 };
 
 const box = (r: Rect, region: Rect, scale: number) =>
   `x=${Math.round((r.x - region.x) * scale)} y=${Math.round((r.y - region.y) * scale)} w=${Math.round(r.width * scale)} h=${Math.round(r.height * scale)}`;
 
 export function buildPrompt(view: ChallengeView, image: ImageFrame, history: HistoryEntry[], motion?: MotionHint): string {
-  const kind = view.kind === "checkbox" || view.kind === "slider" ? "select" : view.kind;
+  const kind = view.kind === "checkbox" || view.kind === "slider" || view.kind === "hold" ? "select" : view.kind;
   const targets = view.targets.map((t) => {
     const parts = [`- ${t.id}: ${box(t.rect, view.region, image.scale)}`];
     if (t.label) parts.push(`label "${t.label}"`);

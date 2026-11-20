@@ -64,13 +64,14 @@ Work from facts, never from guesses: every fix starts from a captured failure an
    - Move the directory to `fixtures/<provider>/<descriptive-name>/`.
 4. **Reproduce:** `bun run eval --filter <provider>/<name> --runs 3`.
 5. **Find the root cause and fix it there.** Typical causes:
-   - **Wrong view** (targets, selection state, instruction, errors): adapter selectors in `src/core/adapters.ts` or the scanner in `src/page/`. Check against `dom.html`.
+   - **Wrong view** (targets, selection state, instruction, errors): adapter selectors in `src/core/adapters/<provider>.ts` or the scanner in `src/page/`. Check against `dom.html`.
    - **Right view, wrong answer:** the prompt in `src/core/prompt.ts`, what the image shows (labels, frames, scale in `src/core/engine.ts`), or a model limit. Prefer giving the model better evidence over adding rules.
    - **Right answer, wrong effect:** the coordinates, timing or gestures (`src/core/engine.ts`, `src/core/mouse.ts`, the drivers).
    - **Unknown challenge:** look at it with `bun run explore <url> [--fill selector=value] --click <selector that opens it>`, which saves every frame's element tree (closed shadow roots included), its HTML and a screenshot to `out/explore/`. Then add an adapter, plus a local e2e page in `test/support/server.ts` that copies its structure. For a widget whose site key is bound to a domain, add the page to `src/tools/vendor-pages.ts` and add a live test in `test/live/`.
 6. **Prove it.**
    - `bun run eval` (all fixtures: no regressions).
    - `bun run check` (typecheck, unit, e2e on extension, Playwright and Puppeteer).
+   - A new adapter gets a live test against the real widget in `test/live/` (vendor recipe in `src/tools/vendor-pages.ts`), with `[adapter-id]` in its title: `bun run live` records it in the coverage table (`benchmarks/verified.json`, rendered into BENCHMARK.md).
    - For a prompt or engine change: `bun run bench` re-measures every model and shows in `BENCHMARK.md` whether the change helped across models, not only the one you tried. Commit the updated `BENCHMARK.md` and `benchmarks/results.json` with the change.
 7. **Upstream it.**
    - Branch, commit the fix together with the new fixtures, and open a PR against `$REPO` using the PR template.
@@ -83,7 +84,9 @@ Keep the fixture set honest. Fixtures record real challenges and the true answer
 
 | Path | What |
 |---|---|
-| `src/core/` | engine (solve loop, readiness, escalation), adapters, prompt, model call, gestures, CDP input, fixtures, scoring, GitHub reports |
+| `src/core/` | engine (solve loop, readiness, escalation), prompt, model call, gestures, CDP input, fixtures, scoring, GitHub reports |
+| `src/core/adapters/` | built-in adapters, one file per provider; `index.ts` sets their order |
+| `src/core/kinds/` | challenge kinds with their own procedure: `hold` (Press & Hold), `carousel` (Arkose's arrow games) |
 | `src/page/` | code that runs inside page frames: scanner, canvas image tools, state publishing, DOM snapshot |
 | `src/extension/` | MV3 extension: content script, driver, service worker (runs, reports, self-reload), options page |
 | `src/cdp/` | CDP driver and its Playwright and Puppeteer hosts |

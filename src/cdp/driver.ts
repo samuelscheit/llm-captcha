@@ -116,6 +116,7 @@ export class CdpDriver implements Driver {
     crop: async (r) => (await this.onMain((r) => (globalThis as any).__captcha.images.crop(r), r)) as string,
     label: async (r) => (await this.onMain((r) => (globalThis as any).__captcha.images.label(r), r)) as string,
     motion: async (r) => (await this.onMain((r) => (globalThis as any).__captcha.images.motion(r), r)) as Awaited<ReturnType<ImageTools["motion"]>>,
+    compose: async (r) => (await this.onMain((r) => (globalThis as any).__captcha.images.compose(r), r)) as string,
   };
 
   async puzzle(view: ChallengeView, adapter: AdapterSpec): Promise<{ distance: number; margin: number } | null> {

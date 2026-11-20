@@ -2,7 +2,7 @@ import { CdpInput } from "../core/cdp-input";
 import type { Driver, ImageTools } from "../core/driver";
 import type { AdapterSpec, ChallengeView, PageState } from "../core/types";
 import type { AssistRequest } from "../page/assist";
-import { crop, label, motion } from "../page/image";
+import { compose, crop, label, motion } from "../page/image";
 import type { ContentApi } from "./content";
 
 type Api = ContentApi;
@@ -15,7 +15,7 @@ type Api = ContentApi;
 export class ExtensionDriver implements Driver {
   readonly input: CdpInput;
   /** The service worker has OffscreenCanvas: image work runs right here. */
-  readonly images: ImageTools = { crop, label, motion };
+  readonly images: ImageTools = { crop, label, motion, compose };
   private attached?: Promise<void>;
 
   constructor(private readonly tabId: number) {

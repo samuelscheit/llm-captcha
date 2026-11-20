@@ -136,7 +136,7 @@ describe("what gets reported", () => {
     ["timed out", true],
     ["hcaptcha-challenge: cannot scroll it into view", true],
     ["recaptcha-blocked: blocked", false],
-    ["text-image: no model configured", false],
+    ["generic-text-image: no model configured", false],
   ])("failed with %s → %s", (detail, reportable) => {
     expect(isReportable({ state: "failed", detail, rounds: [] })).toBe(reportable);
   });

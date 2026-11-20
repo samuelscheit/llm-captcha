@@ -15,6 +15,15 @@ function visibleText(doc: ParentNode, selectors: string[] | undefined, pierce: b
   return [...new Set(texts.filter(Boolean))];
 }
 
+/** Text of matching elements whether shown or not (screen-reader status text). */
+function anyText(doc: ParentNode, selectors: string[] | undefined, pierce: boolean): string[] {
+  const texts = (selectors ?? []).flatMap((s) => queryAll(doc, s, pierce).map((el) => (el.textContent ?? "").replace(/\s+/g, " ").trim()));
+  return [...new Set(texts.filter(Boolean))];
+}
+
+/** Target ids that submit an answer. */
+const SUBMIT_IDS = ["submit", "verify"];
+
 function matches(doc: ParentNode, selector: string | undefined, pierce: boolean): boolean {
   return !!selector && queryAll(doc, selector, pierce).some(isVisible);
 }
@@ -50,7 +59,10 @@ function targetsOf(spec: AdapterSpec, doc: ParentNode, pierce: boolean): Target[
 export function isBusy(root: Element, pierce: boolean): boolean {
   const images = [root, ...queryAll(root, "img", pierce)].filter((el): el is HTMLImageElement => el instanceof HTMLImageElement && isVisible(el));
   if (images.some((img) => !img.complete)) return true;
-  return root.getAnimations({ subtree: true }).some((a) => a.playState === "running" && a.effect?.getTiming().iterations !== Infinity);
+  // Chrome freezes animations of off-screen frames at time 0: those are not progressing.
+  return root
+    .getAnimations({ subtree: true })
+    .some((a) => a.playState === "running" && a.effect?.getTiming().iterations !== Infinity && Number(a.currentTime ?? 0) > 0);
 }
 
 function statusOf(spec: AdapterSpec, doc: ParentNode, root: Element, targets: Target[], pierce: boolean): ChallengeStatus {
@@ -58,7 +70,9 @@ function statusOf(spec: AdapterSpec, doc: ParentNode, root: Element, targets: Ta
   const leafTexts = () => (leaves ??= visibleLeafTexts(doc, pierce));
   if (matches(doc, spec.blocked, pierce) || textMatches(leafTexts, spec.blockedText)) return "blocked";
   if (matches(doc, spec.solved, pierce) || textMatches(leafTexts, spec.solvedText)) return "solved";
-  if (spec.kind === "text" && targets.find((t) => t.id === "input")?.value) return "solved";
+  // A typed answer is all a bare text captcha shows; widgets with a verdict or a submit say more.
+  const ownVerdict = spec.solved || spec.solvedText || targets.some((t) => SUBMIT_IDS.includes(t.id));
+  if (spec.kind === "text" && !ownVerdict && targets.find((t) => t.id === "input")?.value) return "solved";
   if (matches(doc, spec.waiting, pierce) || isBusy(root, pierce)) return "waiting";
   if (spec.kind === "checkbox" && !targets.some((t) => t.id === "checkbox")) return "waiting";
   return "pending";
@@ -79,7 +93,7 @@ export function scanAdapter(spec: AdapterSpec, doc: Document = document, url = l
     status: statusOf(spec, doc, root, targets, pierce),
     region,
     instruction: visibleText(doc, spec.instruction, pierce).join(" "),
-    errors: visibleText(doc, spec.errors, pierce),
+    errors: [...new Set([...visibleText(doc, spec.errors, pierce), ...anyText(doc, spec.errorsHidden, pierce)])],
     targets,
     visible: true,
   };

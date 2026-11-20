@@ -69,6 +69,7 @@ function fakeDriver(widget: FakeWidget, hooks: { onScan?: (n: number) => void } 
       crop: async () => "frame",
       label: async () => "labeled",
       motion: async () => ({ boxes: [], changed: 0 }),
+      compose: async () => "sheet",
     },
     scan: async () => {
       hooks.onScan?.(++scans);
@@ -158,16 +159,26 @@ describe("solve loop", () => {
     expect(widget.clicks).toEqual(["t2", "verify"]);
   });
 
-  it("waits a few scans before taking a vanished challenge as solved", async () => {
+  it("takes a challenge as passed only after it stayed away for 4 s", async () => {
     const widget = new FakeWidget(() => true);
     widget.status = "waiting";
-    let scans = 0;
-    const { driver } = fakeDriver(widget, { onScan: (n) => (scans = n) });
-    setTimeout(() => (widget.gone = true), 300);
+    const { driver } = fakeDriver(widget);
+    let goneAt = 0;
+    setTimeout(() => ((widget.gone = true), (goneAt = Date.now())), 300);
     const result = await solve(driver, { ...options, models: [] });
     expect(result).toMatchObject({ state: "solved", detail: "challenge gone" });
-    // Seen once or more, then three empty scans.
-    expect(scans).toBeGreaterThanOrEqual(4);
+    expect(Date.now() - goneAt).toBeGreaterThanOrEqual(4000);
+  });
+
+  it("does not take a widget that only re-renders (gone for a moment) as passed", async () => {
+    const widget = new FakeWidget(() => true);
+    widget.status = "waiting";
+    const { driver } = fakeDriver(widget);
+    // Away for 1.5 s, then back: still waiting, later refused for good.
+    setTimeout(() => (widget.gone = true), 300);
+    setTimeout(() => (widget.gone = false), 1800);
+    setTimeout(() => (widget.status = "blocked"), 2500);
+    expect(await solve(driver, { ...options, models: [] })).toMatchObject({ state: "failed", detail: "fake-grid: blocked" });
   });
 
   it("reports idle without publishing when there was never a challenge", async () => {
@@ -194,4 +205,86 @@ describe("solve loop", () => {
     const { driver } = fakeDriver(widget);
     expect(await solve(driver, { ...options, models: [] })).toMatchObject({ state: "failed", detail: "fake-grid: no model configured" });
   });
+});
+
+/** A carousel (Arkose-like): 5 options, a next arrow, submit; passes on option `answer`. */
+class FakeCarousel {
+  current = 0;
+  submitted: number[] = [];
+  status: ChallengeView["status"] = "pending";
+  constructor(private readonly answer: number) {}
+  view(): ChallengeView[] {
+    return [{
+      adapter: "fake-carousel", kind: "select", status: this.status, region: rect(100, 100, 300, 300),
+      instruction: "Pick the matching image", errors: [], visible: true, frame: "f",
+      targets: [
+        ...Array.from({ length: 5 }, (_, i) => ({ id: `pip${i + 1}`, rect: rect(120 + i * 20, 380, 10, 10), selected: i === this.current })),
+        { id: "right", rect: rect(350, 250, 30, 30) },
+        { id: "submit", rect: rect(200, 340, 80, 30) },
+      ],
+    }];
+  }
+  press(p: { x: number; y: number }) {
+    if (inside(rect(350, 250, 30, 30), p)) this.current = (this.current + 1) % 5;
+    else if (inside(rect(200, 340, 80, 30), p)) {
+      this.submitted.push(this.current);
+      if (this.current === this.answer) this.status = "solved";
+    }
+  }
+}
+
+const CAROUSEL: AdapterSpec = { id: "fake-carousel", kind: "select", root: "#c", targets: [], carousel: { options: "pip", next: "right", submit: "submit" } };
+
+describe("carousel", () => {
+  it("pages through every option once, shows the model one sheet, goes to its pick and submits", async () => {
+    const widget = new FakeCarousel(3);
+    const composed: number[] = [];
+    const { driver } = fakeDriver(widget as unknown as FakeWidget);
+    driver.images.compose = async (r) => (composed.push(r.parts.length), "sheet");
+    const { m, prompts } = model(() => decision("o4"));
+    const result = await solve(driver, { adapters: [CAROUSEL], random: seeded(2), maxRounds: 3, models: [m] });
+    expect(result.state, result.detail).toBe("solved");
+    expect(composed).toEqual([5]);
+    expect(prompts).toHaveLength(1);
+    expect(prompts[0]).toContain("- o5: x=");
+    expect(prompts[0]).toContain("Click exactly the one option");
+    // Back at the start after browsing, then three arrows to option 4, then one submit.
+    expect(widget.submitted).toEqual([3]);
+  });
+});
+
+/** Press & Hold: passes once held for `needMs`, but only when pressed after it armed. */
+class FakeHold {
+  pressedAt?: number;
+  status: ChallengeView["status"] = "pending";
+  holds = 0;
+  constructor(private readonly needMs: number) {}
+  get fill() {
+    return this.pressedAt === undefined ? 0 : Math.min(238, ((Date.now() - this.pressedAt) / this.needMs) * 238);
+  }
+  view(): ChallengeView[] {
+    if (this.pressedAt !== undefined && Date.now() - this.pressedAt >= this.needMs) this.status = "solved";
+    return [{
+      adapter: "fake-hold", kind: "hold", status: this.status, region: rect(100, 100, 240, 100), instruction: "", errors: [], visible: true, frame: "f",
+      targets: [{ id: "handle", rect: rect(100, 100, 240, 100) }, { id: "progress", rect: rect(100, 150, this.fill, 4) }],
+    }];
+  }
+  step(s: MouseStep) {
+    if (s.type === "mousePressed") (this.pressedAt = Date.now()), this.holds++;
+    if (s.type === "mouseReleased" && this.status !== "solved") this.pressedAt = undefined;
+  }
+}
+
+describe("press and hold", () => {
+  it("holds until the widget is done, after waiting for it to arm", async () => {
+    const widget = new FakeHold(1200);
+    const { driver } = fakeDriver(widget as unknown as FakeWidget);
+    driver.input.mouse = async (steps) => steps.forEach((s) => widget.step(s));
+    const started = Date.now();
+    const result = await solve(driver, { adapters: [{ id: "fake-hold", kind: "hold", root: "#h", targets: [] }], random: seeded(4), maxRounds: 3, models: [] });
+    expect(result.state, result.detail).toBe("solved");
+    expect(widget.holds).toBe(1);
+    // Armed after 2.5–4 s, then held 1.2 s.
+    expect(Date.now() - started).toBeGreaterThanOrEqual(3700);
+  }, 20_000);
 });

@@ -4,7 +4,7 @@ import { isVisible, queryAll, seededShadows, shadowOf } from "./dom";
 
 const SNAPSHOT_LIMIT = 512 * 1024;
 import { ask, ASSIST_HOST_ID } from "./assist";
-import { crop, label, motion } from "./image";
+import { compose, crop, label, motion } from "./image";
 import { measurePuzzle } from "./puzzle";
 import { skeleton } from "./skeleton";
 import { scanFrame } from "./scan";
@@ -35,7 +35,7 @@ export const pageApi: PageApi = {
     // Instant: sites with `scroll-behavior: smooth` would still be moving at the next screenshot.
     queryAll(document, adapter.root, !!adapter.pierce).find(isVisible)?.scrollIntoView({ block: "center", inline: "center", behavior: "instant" });
   },
-  images: { crop, label, motion },
+  images: { crop, label, motion, compose },
   publish(state, detail) {
     // A session that ended (timed out, solved by someone else) leaves no panel behind.
     if (state !== "solving") document.getElementById(ASSIST_HOST_ID)?.remove();

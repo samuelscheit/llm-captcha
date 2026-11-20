@@ -6,5 +6,8 @@
     "state": "solved",
     "navigatesTo": "/landed"
   },
-  "notes": "Phishing kit gate (served from a public GCS bucket): 'Slide to verify'. Releasing #sliderThumb within 5 px of the end of #sliderContainer (300 px rail, 50 px thumb) redirects to the kit's destination; navigator.webdriver = true makes it ignore the drag. The destination was a phishing link and is replaced by /landed here."
+  "notes": "Phishing kit gate (served from a public GCS bucket): 'Slide to verify'. Releasing #sliderThumb within 5 px of the end of #sliderContainer (300 px rail, 50 px thumb) redirects to the kit's destination; navigator.webdriver = true makes it ignore the drag. The destination was a phishing link and is replaced by /landed here.",
+  "verifies": [
+    "generic-kit-slider"
+  ]
 }

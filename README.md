@@ -2,7 +2,17 @@
 
 [![Captcha solving leaderboard](benchmarks/leaderboard.svg)](BENCHMARK.md)
 
-Solves verification challenges (reCAPTCHA v2, hCaptcha, Cloudflare Turnstile, Tencent TCaptcha, Aliyun captcha and nocaptcha sliders, GNAME, DataDome and phishing-kit "slide to verify" sliders, text captchas, and anything you describe with an adapter) with a vision model of your choice, for AI agents that drive a browser.
+Below the models, the leaderboard has a **coverage** table: every challenge the solver recognizes, how it solves each (checkbox click, image analysis and drag, slide to end, vision model), and when that was last verified against the real widget. Verification is recorded from test runs, not claimed by hand. Tests against real widgets name the adapters they exercise in their titles (`[aliyun-nc]`), and `bun run live` and `bun run e2e` merge their results into `benchmarks/verified.json`, including failures.
+
+Solves verification challenges with a vision model of your choice, for AI agents that drive a browser:
+
+- **Checkbox and image challenges:** reCAPTCHA v2, hCaptcha, Cloudflare Turnstile, Yandex SmartCaptcha, AWS WAF, Arkose Labs/FunCaptcha, MTCaptcha, text captchas.
+- **Slide puzzles and sliders:** GeeTest v3/v4 (and its icon, nine-grid, match and gobang tasks), Tencent TCaptcha, AliyunCaptcha and Aliyun nocaptcha, NetEase Yidun, Shumei, Dingxiang, DataDome, GNAME, drag-verify and phishing-kit gates.
+- **Press & hold:** HUMAN/PerimeterX.
+- **Proof-of-work checks and interstitials:** Friendly Captcha, ALTCHA, mCaptcha, Anubis, Cloudflare's "Just a moment…".
+- **Anything else** you describe with an adapter.
+
+Which of these were verified against the real widget, and when, is in the [leaderboard's coverage table](BENCHMARK.md#coverage).
 
 It is built to be run and improved by agents. Unsolved challenges are reported as GitHub issues with replayable fixtures, fixes are proven against those fixtures, and installations update themselves. **Agents: start with [AGENTS.md](AGENTS.md).**
 
@@ -126,19 +136,22 @@ A challenge is described declaratively. These selectors are what the scanner use
 }
 ```
 
-The `kind` field takes one of four values:
+The `kind` field takes one of these values:
 
-- `checkbox`: click it, no model.
+- `checkbox`: click it, no model. Without targets, the adapter only recognizes a check that runs by itself (Anubis, Cloudflare's interstitial): the session waits for it, or ends on a refusal.
+- `hold`: press the `handle` and keep holding, with slight pointer movement, until the widget is done (Press & Hold). It waits for the widget to arm first and retries when its progress never starts.
 - `select`: pick targets.
 - `text`: read and type.
 - `point`: click or drag positions; captured as 3 frames by default, to see animations.
 - `slider`: drag the `handle`; no model involved. It has two modes:
-  - **Puzzle**: until the `piece` image fits the gap in the `background` image (Tencent TCaptcha, AliyunCaptcha puzzle). The gap is found by image analysis, since the drop must land within a few pixels. Dark and light gaps both work, and an ambiguous gap gets a new puzzle (`reload`) instead of a guess.
+  - **Puzzle**: until the `piece` image fits the gap in the `background` image (Tencent, GeeTest, AliyunCaptcha, Yidun, Shumei, Dingxiang). The gap is found by image analysis, since the drop must land within a few pixels. The images may be `<img>`, `<canvas>` or CSS backgrounds and are measured as shown. Dark and light gaps both work. The drag starts with a short nudge, reads where the piece went, and corrects the rest, so pieces that lag their handle land too. An ambiguous gap, or the same puzzle after a failed slide, gets a new puzzle (`reload`) instead of a guess. Images that only show under the pointer (float mode) are revealed by hovering the handle.
   - **Slide to end**: without a piece, the handle goes past the end of its `rail` (Aliyun nocaptcha and slide, GNAME, DataDome simple, kit gates) on a human track that never goes back.
 
   A refused slider that shows only a `reload` ("error, click to refresh") gets it clicked.
 
-Custom adapters go in the options page; the built-ins are in `src/core/adapters.ts`.
+A `select` adapter can also declare a `carousel` (Arkose's "use the arrows" games). The engine then pages through all options, shows the model one contact sheet with the options labeled `o1`…`oN`, goes to its pick and submits.
+
+Custom adapters go in the options page; the built-ins are in `src/core/adapters/`, one file per provider.
 
 ## Development
 
@@ -159,9 +172,17 @@ bun run explore <url> --fill "input[name=email]=a@example.com" --click "a.get_co
 - the reCAPTCHA and hCaptcha demos, and Turnstile forced interactive;
 - Tencent under its own domain (vendors bind site keys to domains, so our page is served at a URL of that domain);
 - Aliyun's `nc` slider with the public test appkey of Aliyun's demos;
+- AliyunCaptcha 2.0 on Alibaba Cloud's password reset page, where it shows without any trigger;
 - the forms that guard GNAME's and Eranet's sliders (filled with a black-hole address).
 
-`capture --vendor <name>` and the live tests use the same recipes. The live suite currently solves the real Tencent puzzle (valid ticket), Aliyun's `nc` slider (Aliyun's server passes the first slide), and GNAME's and Eranet's form sliders (accepted and closed).
+`capture --vendor <name>` and the live tests use the same recipes. The live suite currently solves:
+
+- the real Tencent puzzle (valid ticket);
+- AliyunCaptcha 2.0 on Alibaba Cloud ("Verified");
+- Aliyun's `nc` slider (Aliyun's server passes the first slide);
+- GNAME's and Eranet's form sliders (accepted and closed).
+
+`BROWSER=chromium` runs the tools and tests with patchright's bundled Chromium instead of the installed Chrome (`bunx patchright install chromium` once).
 
 The e2e tests run headful local Chrome. Branded Chrome ignores `--load-extension`, so the harness loads the extension through CDP `Extensions.loadUnpacked`.
 

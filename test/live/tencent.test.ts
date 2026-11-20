@@ -7,7 +7,7 @@ import { playwrightHost } from "../../src/cdp/playwright";
 import { launch } from "../../src/tools/browser";
 import { openVendorPage, VENDOR_PAGES } from "../../src/tools/vendor-pages";
 
-it("solves the real Tencent slide puzzle and gets a ticket", async () => {
+it("solves the real Tencent slide puzzle and gets a ticket [tencent-slider]", async () => {
   const b = await launch();
   const page = b.context.pages()[0]!;
   try {

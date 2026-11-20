@@ -75,25 +75,40 @@ export function clickSteps(at: Point, random: RandomSource, from?: Point, spread
 /**
  * Press at `from`, move to `to` with a minimum-jerk profile and slight sideways wander, overshoot
  * along the drag direction by a few pixels, settle back, pause, release on `to`. Progress along the
- * direction never decreases before the overshoot: track-scoring sliders refuse a pointer that
- * jitters back.
+ * drag never decreases before the overshoot: track-scoring sliders refuse a pointer that jitters
+ * back.
  */
 export function dragSteps(from: Point, to: Point, random: RandomSource, hoverFrom?: Point): MouseStep[] {
-  const steps = approach(from, random, hoverFrom);
-  steps[steps.length - 1]!.delayMs = between(random, 80, 200);
-  steps.push({ type: "mousePressed", ...from, buttons: 1, delayMs: between(random, 90, 190) });
+  return [...pressSteps(from, random, hoverFrom), ...heldSteps(from, to, random)];
+}
 
+/** Approach `at` and press there; the button stays down. */
+export function pressSteps(at: Point, random: RandomSource, hoverFrom?: Point): MouseStep[] {
+  const steps = approach(at, random, hoverFrom);
+  steps[steps.length - 1]!.delayMs = between(random, 80, 200);
+  steps.push({ type: "mousePressed", ...at, buttons: 1, delayMs: between(random, 90, 190) });
+  return steps;
+}
+
+/**
+ * With the button down at `from`, move to `to` and release there (overshoot, settle). `release:
+ * false` stops at `to` with the button still down, without overshoot: the first part of a drag
+ * that is corrected on the way (a piece that does not follow its handle 1:1).
+ */
+export function heldSteps(from: Point, to: Point, random: RandomSource, options: { release?: boolean } = {}): MouseStep[] {
+  const release = options.release ?? true;
+  const steps: MouseStep[] = [];
   const dx = to.x - from.x;
   const dy = to.y - from.y;
   const length = Math.hypot(dx, dy) || 1;
   // Along the drag (u) and across it (v).
   const u = { x: dx / length, y: dy / length };
   const v = { x: -u.y, y: u.x };
-  const overshoot = Math.min(between(random, 3, 9), length / 4);
+  const overshoot = release ? Math.min(between(random, 3, 9), length / 4) : 0;
   const peakS = length + overshoot;
   const peak = { x: from.x + u.x * peakS, y: from.y + u.y * peakS };
-  const moves = Math.round(clamp(length / 8, 20, 45));
-  const duration = between(random, 500, 1100);
+  const moves = Math.round(clamp(length / 8, release ? 20 : 6, 45));
+  const duration = between(random, 500, 1100) * (release ? 1 : 0.5);
   let s = 0;
   let w = 0;
   for (let move = 1; move <= moves; move++) {
@@ -108,6 +123,7 @@ export function dragSteps(from: Point, to: Point, random: RandomSource, hoverFro
       delayMs: (duration / moves) * between(random, 0.7, 1.3),
     });
   }
+  if (!release) return steps;
   const settles = Math.round(between(random, 2, 4));
   for (let settle = 1; settle <= settles; settle++) {
     const p = settle / settles;

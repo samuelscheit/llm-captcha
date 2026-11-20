@@ -9,33 +9,16 @@
  * results yet, e.g. what a gateway (a `discover` entry) started offering since the last run.
  * Results live in benchmarks/results.json.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import { createModel } from "../../core/solver";
 import { loadFixtures } from "../fixtures";
-import {
-  expandSources,
-  isPermanent,
-  leaderboard,
-  record,
-  renderLeaderboard,
-  resolveModels,
-  sha,
-  staleJobs,
-  untested,
-  type BenchModel,
-  type BenchResults,
-  type ModelSource,
-} from "./benchmark";
+import { expandSources, isPermanent, record, resolveModels, staleJobs, untested, type BenchModel, type BenchResults, type ModelSource } from "./benchmark";
 import { replay } from "../replay";
-import { renderSite, renderSvg } from "./site";
+import { loadResults, publish, RESULTS_FILE as RESULTS, ROOT as root, solverHash as currentSolver } from "./publish";
 
-const root = path.resolve(import.meta.dirname, "../../..");
 const dir = path.join(root, "benchmarks");
-const RESULTS = path.join(dir, "results.json");
-/** What shapes a model's input and its scoring: a change here makes every result stale. */
-const SOLVER_FILES = ["src/core/prompt.ts", "src/core/solver.ts", "src/core/engine.ts", "src/core/score.ts", "src/page/image.ts"];
 
 const { values } = parseArgs({
   options: {
@@ -55,8 +38,8 @@ const expanded = await expandSources(sources, process.env);
 const resolved = resolveModels(expanded.models.filter((m) => !values.model || m.name === values.model), process.env);
 const skipped = [...expanded.skipped, ...resolved.skipped];
 const fixtures = loadFixtures();
-const solverHash = sha(...SOLVER_FILES.map((f) => readFileSync(path.join(root, f))));
-const results: BenchResults = existsSync(RESULTS) && !values.force ? JSON.parse(readFileSync(RESULTS, "utf8")) : { models: {} };
+const solverHash = currentSolver();
+const results: BenchResults = !values.force ? loadResults() : { models: {} };
 const runs = Number(values.runs);
 // Results of fixtures that were removed are dead weight.
 for (const byFixture of Object.values(results.models)) {
@@ -94,11 +77,5 @@ await replay(jobs, (m: BenchModel) => createModel(m), {
 });
 
 // Everything with current results is on the board, measured in this run or before.
-const rows = leaderboard(results, Object.keys(results.models), fixtures);
-const notMeasured = skipped.filter((name) => !rows.some((r) => r.model === name));
-writeFileSync(path.join(root, "BENCHMARK.md"), renderLeaderboard(rows, fixtures, solverHash, notMeasured));
-mkdirSync(path.join(root, "out/site"), { recursive: true });
-writeFileSync(path.join(root, "out/site/index.html"), renderSite(rows, fixtures, solverHash, results.unsupported ?? {}));
-writeFileSync(path.join(dir, "leaderboard.svg"), renderSvg(rows, fixtures));
 save();
-console.log(`\n${readFileSync(path.join(root, "BENCHMARK.md"), "utf8")}`);
+console.log(`\n${publish(results, skipped)}`);

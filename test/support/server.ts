@@ -241,7 +241,7 @@ function mockDecision(state: ServerState, mock: MockBehaviour, prompt: string): 
     const [x, y, w, h] = m.slice(1).map(Number) as [number, number, number, number];
     return { reasoning: "mock anim", actions: [action("clickPoint", { x: x + w / 2, y: y + h / 2 }), action("click", { target: "submit" })] };
   }
-  if (prompt.includes("(text-image)")) {
+  if (prompt.includes("(generic-text-image)")) {
     return { reasoning: "mock text", actions: [action("type", { target: "input", text: wrong ? "WRONG1" : state.text })] };
   }
   return { reasoning: "mock: unknown challenge", actions: [] };
@@ -408,7 +408,8 @@ load();
     const slide = /^\/slide\/(\w+)$/.exec(url.pathname);
     if (slide && SLIDES[slide[1]!]) return void res.writeHead(200, { "content-type": "text/html" }).end(slidePage(slide[1]!));
     // Page fixtures as they were captured: /fixture/<provider>/<name>.
-    const fixture = /^\/fixture\/([\w-]+\/[\w-]+)$/.exec(url.pathname);
+    // Page fixtures as they were captured: /fixture/<provider>/<name>[/<their original path>].
+    const fixture = /^\/fixture\/([\w-]+\/[\w-]+)(\/.*)?$/.exec(url.pathname);
     const pageFixture = fixture && PAGE_FIXTURES.find((f) => f.name === fixture[1]);
     if (pageFixture) return void res.writeHead(200, { "content-type": "text/html" }).end(pageFixture.html);
     const image = /^\/tencent\/img\/(\d+)\/(background|piece)\.png$/.exec(url.pathname);

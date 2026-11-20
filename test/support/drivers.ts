@@ -4,7 +4,8 @@ import { puppeteerHost } from "../../src/cdp/puppeteer";
 import { BUILTIN_ADAPTERS } from "../../src/core/adapters";
 import { solve, type SolveResult } from "../../src/core/engine";
 import { createModel } from "../../src/core/solver";
-import type { AdapterSpec, ModelConfig, RoundRecord } from "../../src/core/types";
+import type { AdapterSpec, ChallengeView, ModelConfig, RoundRecord } from "../../src/core/types";
+import type { CdpHost } from "../../src/cdp/driver";
 import { CdpDriver } from "../../src/cdp/driver";
 import { playwrightHost } from "../../src/cdp/playwright";
 import { configure, launch } from "../../src/tools/browser";
@@ -29,9 +30,20 @@ export interface Harness {
   page: TestPage;
   /** The Playwright page itself (extension and Playwright harnesses). */
   raw?: Page;
+  /** Load `url` and scan it once with the built-in adapters (library drivers only). */
+  scan?(url: string): Promise<ChallengeView[]>;
   /** Load `url` and let the driver solve whatever appears; resolves with the final page state. */
   solve(url: string): Promise<{ state: string; detail: string; rounds: RoundRecord[] }>;
   close(): Promise<void>;
+}
+
+/** One scan with the built-in adapters; the host is opened by the caller for its browser library. */
+async function scanOnce(host: CdpHost & { dispose(): Promise<void> }): Promise<ChallengeView[]> {
+  try {
+    return await new CdpDriver(host).scan(BUILTIN_ADAPTERS);
+  } finally {
+    await host.dispose();
+  }
 }
 
 /** Solve until something was found: challenges render a moment after load. */
@@ -66,6 +78,10 @@ export async function harness(kind: DriverKind, model: ModelConfig, adapters: Ad
         fieldValue: (name) => page.evaluate((n) => (document.querySelector(`[name="${n}"]`) as HTMLInputElement | null)?.value ?? "", name),
         click: (s) => page.click(s),
         textContent: (s) => page.$eval(s, (el) => el.textContent),
+      },
+      async scan(url) {
+        await page.goto(url);
+        return scanOnce(await puppeteerHost(page));
       },
       async solve(url) {
         await page.goto(url);
@@ -111,6 +127,13 @@ export async function harness(kind: DriverKind, model: ModelConfig, adapters: Ad
       textContent: (s) => page.textContent(s),
     },
     raw: page,
+    scan:
+      kind === "extension"
+        ? undefined
+        : async (url: string) => {
+            await page.goto(url);
+            return scanOnce(await playwrightHost(page));
+          },
     solve: kind === "extension" ? solveWithExtension : solveWithPlaywright,
     close: () => browser.close(),
   };
