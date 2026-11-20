@@ -11,6 +11,10 @@
     "passedAt": "2026-11-20T20:48:39.349Z",
     "passedBy": "slides eranet's real slider (#dragHandler) and the form goes on [generic-drag-verify]"
   },
+  "generic-kit-slider": {
+    "passedAt": "2026-11-20T21:38:46.323Z",
+    "passedBy": "puppeteer driver on page fixtures generic/slide-to-verify-kit [generic-kit-slider]"
+  },
   "gname-slider": {
     "passedAt": "2026-11-20T20:48:39.349Z",
     "passedBy": "slides gname's real slider (.gn-slide-rail) and the form goes on [gname-slider]"
@@ -20,11 +24,11 @@
     "passedBy": "solves the hcaptcha demo with the live model [hcaptcha-checkbox] [hcaptcha-challenge]"
   },
   "hcaptcha-checkbox": {
-    "passedAt": "2026-11-20T20:48:39.349Z",
-    "passedBy": "solves the hcaptcha demo with the live model [hcaptcha-checkbox] [hcaptcha-challenge]"
+    "passedAt": "2026-11-20T21:38:46.323Z",
+    "passedBy": "puppeteer driver on vendor test widgets clicks the hcaptcha checkbox and gets a token [hcaptcha-checkbox]"
   },
   "recaptcha-checkbox": {
-    "passedAt": "2026-11-20T20:40:57.844Z",
+    "passedAt": "2026-11-20T21:38:46.323Z",
     "passedBy": "puppeteer driver on vendor test widgets clicks the recaptcha checkbox and gets a token [recaptcha-checkbox]"
   },
   "recaptcha-images": {
@@ -36,7 +40,7 @@
     "passedBy": "solves the real Tencent slide puzzle and gets a ticket [tencent-slider]"
   },
   "turnstile": {
-    "passedAt": "2026-11-20T20:40:57.844Z",
+    "passedAt": "2026-11-20T21:38:46.323Z",
     "passedBy": "puppeteer driver on vendor test widgets clicks the turnstile checkbox and gets a token [turnstile]"
   }
 }

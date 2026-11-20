@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "bun build.ts",
+    "prepare": "bun build.ts",
     "typecheck": "bun build.ts && tsc --noEmit",
     "test": "vitest run test/unit",
     "e2e": "bun run build && vitest run test/e2e --reporter=default --reporter=json --outputFile.json=out/reports/e2e.json; code=$?; bun src/tools/benchmark/record-verified.ts out/reports/e2e.json; exit $code",
@@ -26,10 +27,10 @@
     "zod": "4.6.7"
   },
   "devDependencies": {
+    "@types/bun": "1.4.4",
     "@types/chrome": "0.3.7",
     "@types/node": "26.6.6",
     "@types/pngjs": "6.0.5",
-    "esbuild": "0.28.2",
     "happy-dom": "21.0.4",
     "patchright": "1.64.3",
     "pngjs": "7.0.0",
@@ -40,6 +41,10 @@
   "license": "MIT",
   "description": "Solves CAPTCHAs with a vision model of your choice for AI browser agents: Chrome extension + CDP library (Playwright, Puppeteer), with replayable fixtures, failure reports and self-updates.",
   "exports": {
-    ".": "./dist/cdp/index.js"
+    ".": {
+      "types": "./src/cdp/index.ts",
+      "bun": "./src/cdp/index.ts",
+      "default": "./dist/cdp/index.js"
+    }
   }
 }

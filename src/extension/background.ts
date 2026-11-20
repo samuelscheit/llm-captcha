@@ -63,7 +63,7 @@ async function run(tabId: number): Promise<void> {
     const settings = await loadSettings();
     const pageUrl = await driver.url();
     if (!settings.enabled || isDenied(settings, pageUrl)) return;
-    const models = configuredModels(settings).map(createModel);
+    const models = configuredModels(settings).map((config) => createModel(config));
     const result = await solve(driver, {
       adapters: adaptersOf(settings),
       models,

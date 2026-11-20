@@ -22,19 +22,24 @@ export const DecisionSchema = z.object({
   actions: z.array(ActionSchema),
 });
 
-export function createModel(config: ModelConfig): LanguageModel {
+/**
+ * The model of a configuration. `fetch` replaces the global one for the provider's requests, e.g.
+ * to send them through an egress proxy.
+ */
+export function createModel(config: ModelConfig, options: { fetch?: typeof globalThis.fetch } = {}): LanguageModel {
   const baseURL = config.baseURL.trim() || undefined;
+  const { fetch } = options;
   switch (config.provider) {
     case "openai":
-      return createOpenAI({ apiKey: config.apiKey, baseURL })(config.model);
+      return createOpenAI({ apiKey: config.apiKey, baseURL, fetch })(config.model);
     case "anthropic":
       // Requests from an extension carry an Origin header; Anthropic refuses those without opt-in.
-      return createAnthropic({ apiKey: config.apiKey, baseURL, headers: { "anthropic-dangerous-direct-browser-access": "true" } })(config.model);
+      return createAnthropic({ apiKey: config.apiKey, baseURL, fetch, headers: { "anthropic-dangerous-direct-browser-access": "true" } })(config.model);
     case "google":
-      return createGoogle({ apiKey: config.apiKey, baseURL })(config.model);
+      return createGoogle({ apiKey: config.apiKey, baseURL, fetch })(config.model);
     case "openai-compatible":
       if (!baseURL) throw new Error("An OpenAI-compatible provider needs a base URL.");
-      return createOpenAICompatible({ name: "custom", baseURL, apiKey: config.apiKey, supportsStructuredOutputs: true })(config.model);
+      return createOpenAICompatible({ name: "custom", baseURL, apiKey: config.apiKey, fetch, supportsStructuredOutputs: true })(config.model);
   }
 }
 
