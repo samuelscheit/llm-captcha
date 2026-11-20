@@ -1,0 +1,275 @@
+{
+  "source": "https://www.google.com/recaptcha/api2/demo",
+  "capturedAt": "2026-11-20T18:48:32.144Z",
+  "view": {
+    "adapter": "recaptcha-images",
+    "kind": "select",
+    "status": "pending",
+    "region": {
+      "x": 85,
+      "y": 85,
+      "width": 400,
+      "height": 582
+    },
+    "instruction": "Select all squares with motorcycles If there are none, click skip",
+    "errors": [],
+    "targets": [
+      {
+        "id": "t1",
+        "rect": {
+          "x": 91,
+          "y": 211,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t2",
+        "rect": {
+          "x": 188,
+          "y": 211,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t3",
+        "rect": {
+          "x": 285,
+          "y": 211,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t4",
+        "rect": {
+          "x": 382,
+          "y": 211,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t5",
+        "rect": {
+          "x": 91,
+          "y": 308,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t6",
+        "rect": {
+          "x": 188,
+          "y": 308,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t7",
+        "rect": {
+          "x": 285,
+          "y": 308,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t8",
+        "rect": {
+          "x": 382,
+          "y": 308,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t9",
+        "rect": {
+          "x": 91,
+          "y": 405,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t10",
+        "rect": {
+          "x": 188,
+          "y": 405,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t11",
+        "rect": {
+          "x": 285,
+          "y": 405,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t12",
+        "rect": {
+          "x": 382,
+          "y": 405,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t13",
+        "rect": {
+          "x": 91,
+          "y": 502,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t14",
+        "rect": {
+          "x": 188,
+          "y": 502,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t15",
+        "rect": {
+          "x": 285,
+          "y": 502,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t16",
+        "rect": {
+          "x": 382,
+          "y": 502,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "verify",
+        "rect": {
+          "x": 377,
+          "y": 615,
+          "width": 100,
+          "height": 42
+        },
+        "label": "SKIP"
+      },
+      {
+        "id": "reload",
+        "rect": {
+          "x": 91,
+          "y": 613,
+          "width": 48,
+          "height": 48
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "ACEBBEAA7CF360D2130196D2C3BF77E3"
+  },
+  "history": [],
+  "expected": {
+    "clicks": [
+      "t2",
+      "t6",
+      "t7",
+      "t10",
+      "t11",
+      "verify"
+    ]
+  },
+  "notes": "Rider helmet bottom of t2, body t6/t7, bike t10/t11. Live: accepted (next challenge followed without error).",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "Motorcycle with rider sits in the center: the rider's helmet is in t2, the body and bike are in t6 and t7, and the lower bike and wheel are in t10 and t11. Bottom row tiles show no part of it.",
+      "actions": [
+        {
+          "kind": "click",
+          "target": "t2",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t6",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t7",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t10",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t11",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "verify",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

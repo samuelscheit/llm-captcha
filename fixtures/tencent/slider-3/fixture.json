@@ -1,0 +1,12 @@
+{
+  "kind": "slider",
+  "source": "https://www.tencentcloud.com/report-platform/dnsabuse",
+  "origin": {
+    "x": 52,
+    "y": 158
+  },
+  "expected": {
+    "offset": 421
+  },
+  "notes": "Tencent TCaptcha slide puzzle from the report form's popup. origin: where the piece image's top-left sits on the background; offset: how far right it must move to fit the gap. Both in background image pixels (680x390, shown at half size)."
+}

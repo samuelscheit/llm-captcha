@@ -1,0 +1,45 @@
+{
+  "name": "llm-captcha-solver",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bun build.ts",
+    "typecheck": "bun build.ts && tsc --noEmit",
+    "test": "vitest run test/unit",
+    "e2e": "bun run build && vitest run test/e2e",
+    "eval": "bun run build && bun src/tools/eval.ts",
+    "capture": "bun run build && bun src/tools/capture.ts",
+    "check": "bun run typecheck && bun run test && bun run e2e",
+    "update": "bun src/tools/update.ts",
+    "pull-reports": "bun src/tools/pull-reports.ts",
+    "bench": "bun run build && bun src/tools/benchmark/bench.ts",
+    "explore": "bun run build && bun src/tools/explore.ts",
+    "live": "bun run build && vitest run test/live"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "4.0.107",
+    "@ai-sdk/google": "4.0.123",
+    "@ai-sdk/openai": "4.0.122",
+    "@ai-sdk/openai-compatible": "3.0.94",
+    "ai": "7.0.178",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/chrome": "0.3.7",
+    "@types/node": "26.6.6",
+    "@types/pngjs": "6.0.5",
+    "esbuild": "0.28.2",
+    "happy-dom": "21.0.4",
+    "patchright": "1.64.3",
+    "pngjs": "7.0.0",
+    "puppeteer-core": "25.18.1",
+    "typescript": "7.0.2",
+    "vitest": "5.1.1"
+  },
+  "license": "MIT",
+  "description": "Solves CAPTCHAs with a vision model of your choice for AI browser agents: Chrome extension + CDP library (Playwright, Puppeteer), with replayable fixtures, failure reports and self-updates.",
+  "exports": {
+    ".": "./dist/cdp/index.js"
+  }
+}

@@ -1,0 +1,345 @@
+{
+  "source": "https://www.google.com/recaptcha/api2/demo",
+  "capturedAt": "2026-11-20T18:35:14.823Z",
+  "view": {
+    "adapter": "recaptcha-images",
+    "kind": "select",
+    "status": "pending",
+    "region": {
+      "x": 85,
+      "y": 69.5,
+      "width": 400,
+      "height": 612.5
+    },
+    "instruction": "Select all squares with motorcycles",
+    "errors": [
+      "Please try again"
+    ],
+    "targets": [
+      {
+        "id": "t1",
+        "rect": {
+          "x": 91,
+          "y": 195.5,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t2",
+        "rect": {
+          "x": 188,
+          "y": 195.5,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t3",
+        "rect": {
+          "x": 285,
+          "y": 195.5,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t4",
+        "rect": {
+          "x": 382,
+          "y": 195.5,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t5",
+        "rect": {
+          "x": 91,
+          "y": 292.5,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t6",
+        "rect": {
+          "x": 188,
+          "y": 292.5,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t7",
+        "rect": {
+          "x": 285,
+          "y": 292.5,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t8",
+        "rect": {
+          "x": 382,
+          "y": 292.5,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t9",
+        "rect": {
+          "x": 91,
+          "y": 389.5,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t10",
+        "rect": {
+          "x": 188,
+          "y": 389.5,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t11",
+        "rect": {
+          "x": 285,
+          "y": 389.5,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t12",
+        "rect": {
+          "x": 382,
+          "y": 389.5,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t13",
+        "rect": {
+          "x": 91,
+          "y": 486.5,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t14",
+        "rect": {
+          "x": 188,
+          "y": 486.5,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t15",
+        "rect": {
+          "x": 285,
+          "y": 486.5,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "t16",
+        "rect": {
+          "x": 382,
+          "y": 486.5,
+          "width": 97,
+          "height": 97
+        },
+        "selected": false
+      },
+      {
+        "id": "verify",
+        "rect": {
+          "x": 377,
+          "y": 630,
+          "width": 100,
+          "height": 42
+        },
+        "label": "SKIP"
+      },
+      {
+        "id": "reload",
+        "rect": {
+          "x": 91,
+          "y": 628,
+          "width": 48,
+          "height": 48
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "F6F1775BDDC4E2BFD43D43E1E9FFE613"
+  },
+  "history": [
+    {
+      "instruction": "Select all images with cars",
+      "decision": {
+        "reasoning": "Cars visible in t2, t3 (blue car at the right edge), t4, t7, t8 and t9 (dark car at the bottom). t1, t5 and t6 show only bicycles and buildings, with no cars, so I unselect them and then verify.",
+        "actions": [
+          {
+            "kind": "click",
+            "target": "t1",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t5",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t6",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "verify",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          }
+        ]
+      },
+      "errorsAfter": [
+        "Please try again"
+      ]
+    }
+  ],
+  "expected": {
+    "clicks": [
+      "t4",
+      "t7",
+      "t8",
+      "t10",
+      "t11",
+      "t14",
+      "t15",
+      "verify"
+    ]
+  },
+  "notes": "Live answer was accepted by reCAPTCHA (solved). Selected flags corrected (bug reported all tiles selected; the model noticed the SKIP button and ignored it). History holds round 1 of the session (different image).",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "The task is to select every square with a motorcycle. The tile list marks all tiles as SELECTED, but the screenshot shows no checkmarks and the button reads SKIP, so I treat none as selected. The main rider and scooter cover t7 (helmet), t10, t11, t14 and t15. A second rider on a scooter is in t8. A small distant motorcycle near the top edge of the road is in t4. I'll click those tiles, then verify.",
+      "actions": [
+        {
+          "kind": "click",
+          "target": "t4",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t7",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t8",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t10",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t11",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t14",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t15",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "verify",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

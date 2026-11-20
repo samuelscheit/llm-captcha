@@ -1,0 +1,109 @@
+{
+  "source": "https://accounts.hcaptcha.com/demo",
+  "capturedAt": "2026-11-20T18:50:21.480Z",
+  "view": {
+    "adapter": "hcaptcha-challenge",
+    "kind": "point",
+    "status": "pending",
+    "region": {
+      "x": 90,
+      "y": 11,
+      "width": 520,
+      "height": 570
+    },
+    "instruction": "Select the shape that is different",
+    "errors": [],
+    "targets": [
+      {
+        "id": "submit",
+        "rect": {
+          "x": 516,
+          "y": 532,
+          "width": 84,
+          "height": 39
+        },
+        "label": "Verify"
+      },
+      {
+        "id": "refresh",
+        "rect": {
+          "x": 145,
+          "y": 531.5,
+          "width": 37,
+          "height": 37
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "D073C00C449462EA4F1B47D7E376EB50"
+  },
+  "history": [
+    {
+      "instruction": "Select the shape that is different",
+      "decision": {
+        "reasoning": "Four triangle-tile shapes. Comparing their silhouettes, the top-left, bottom-left and bottom-right shapes all have a two-peaked top edge. The top-right shape (m3) has a single top cluster and juts out to the right, so it looks like the odd one. I'll select it and submit.",
+        "actions": [
+          {
+            "kind": "clickPoint",
+            "target": null,
+            "text": null,
+            "x": 368,
+            "y": 224,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "submit",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          }
+        ]
+      },
+      "errorsAfter": []
+    }
+  ],
+  "expected": {
+    "clicks": [
+      "submit"
+    ],
+    "points": [
+      {
+        "x": 105,
+        "y": 230,
+        "r": 40
+      }
+    ]
+  },
+  "notes": "Animated: the odd top-left shape is only clearly visible in frame 1 and is faded in the current frame. Odd one: top-left (narrow, leans left). Live: accepted, session solved.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "Comparing the shapes across frames: the top-right, bottom-left and bottom-right shapes have the same silhouette, a peaked top, a wide middle extending to both sides and a tail at the lower right. The top-left shape, visible in frame 1, is narrower and leans left without the right-side extension, so it is the odd one. It is faded in the current frame, so I'll click its location and then submit.",
+      "actions": [
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 105,
+          "y": 230,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "submit",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

@@ -1,0 +1,1243 @@
+{
+ "models": {
+  "claude-opus-5-5": {
+   "hcaptcha/odd-shape-2": {
+    "fixtureHash": "4552defd2492",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 5139,
+      "at": "2026-11-20T19:21:45.652Z"
+     },
+     {
+      "pass": true,
+      "ms": 6575,
+      "at": "2026-11-20T19:21:47.088Z"
+     }
+    ]
+   },
+   "hcaptcha/odd-shape-1": {
+    "fixtureHash": "f21199afa50f",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 9279,
+      "at": "2026-11-20T19:21:49.792Z"
+     },
+     {
+      "pass": true,
+      "ms": 9822,
+      "at": "2026-11-20T19:21:50.334Z"
+     }
+    ]
+   },
+   "hcaptcha/odd-shape-fading-1": {
+    "fixtureHash": "40a38e2a65b4",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 10057,
+      "at": "2026-11-20T19:21:50.570Z"
+     },
+     {
+      "pass": false,
+      "ms": 19385,
+      "at": "2026-11-20T19:21:59.898Z",
+      "problems": [
+       "point 1: 0 clicks inside, expected 1",
+       "clicks outside every expected point: 142,377"
+      ]
+     }
+    ]
+   },
+   "hcaptcha/odd-shape-fading-2": {
+    "fixtureHash": "6e0a74e48746",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 10578,
+      "at": "2026-11-20T19:21:56.231Z"
+     },
+     {
+      "pass": true,
+      "ms": 14984,
+      "at": "2026-11-20T19:22:02.073Z"
+     }
+    ]
+   },
+   "hcaptcha/odd-shape-fading-3": {
+    "fixtureHash": "e5347997ac9a",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 9417,
+      "at": "2026-11-20T19:21:59.751Z"
+     },
+     {
+      "pass": true,
+      "ms": 10661,
+      "at": "2026-11-20T19:22:00.454Z"
+     }
+    ]
+   },
+   "hcaptcha/odd-shape-fading-4": {
+    "fixtureHash": "23332c340005",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 10230,
+      "at": "2026-11-20T19:22:00.800Z"
+     },
+     {
+      "pass": true,
+      "ms": 10324,
+      "at": "2026-11-20T19:22:06.556Z"
+     }
+    ]
+   },
+   "hcaptcha/shape-loading": {
+    "fixtureHash": "b5530a9320eb",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 3466,
+      "at": "2026-11-20T19:22:03.217Z"
+     },
+     {
+      "pass": true,
+      "ms": 3508,
+      "at": "2026-11-20T19:22:03.407Z"
+     }
+    ]
+   },
+   "recaptcha/3x3-cars": {
+    "fixtureHash": "f4cf747d829f",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": false,
+      "ms": 6073,
+      "at": "2026-11-20T19:22:06.874Z",
+      "problems": [
+       "clicks: missing [], extra [t3]"
+      ]
+     },
+     {
+      "pass": false,
+      "ms": 8358,
+      "at": "2026-11-20T19:22:08.813Z",
+      "problems": [
+       "clicks: missing [], extra [t3]"
+      ]
+     }
+    ]
+   },
+   "recaptcha/4x4-motorcycle-rider": {
+    "fixtureHash": "95b8dd71a097",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 7161,
+      "at": "2026-11-20T19:22:09.235Z"
+     },
+     {
+      "pass": true,
+      "ms": 8609,
+      "at": "2026-11-20T19:22:11.827Z"
+     }
+    ]
+   },
+   "recaptcha/dynamic-bus-1": {
+    "fixtureHash": "c9320f2af90e",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 5095,
+      "at": "2026-11-20T19:22:11.970Z"
+     },
+     {
+      "pass": true,
+      "ms": 3674,
+      "at": "2026-11-20T19:22:12.489Z"
+     }
+    ]
+   },
+   "recaptcha/4x4-motorcycles": {
+    "fixtureHash": "c62c947a4586",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 12635,
+      "at": "2026-11-20T19:22:16.043Z"
+     },
+     {
+      "pass": true,
+      "ms": 11756,
+      "at": "2026-11-20T19:22:18.313Z"
+     }
+    ]
+   },
+   "recaptcha/dynamic-bus-2": {
+    "fixtureHash": "6708e1492dd0",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 7087,
+      "at": "2026-11-20T19:22:16.325Z"
+     },
+     {
+      "pass": true,
+      "ms": 5704,
+      "at": "2026-11-20T19:22:17.533Z"
+     }
+    ]
+   },
+   "recaptcha/dynamic-bus-3": {
+    "fixtureHash": "64dccf0d7d7b",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 4976,
+      "at": "2026-11-20T19:22:17.466Z"
+     },
+     {
+      "pass": true,
+      "ms": 5507,
+      "at": "2026-11-20T19:22:17.479Z"
+     }
+    ]
+   },
+   "recaptcha/dynamic-cars-2": {
+    "fixtureHash": "91946c64920e",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 4277,
+      "at": "2026-11-20T19:22:21.756Z"
+     },
+     {
+      "pass": true,
+      "ms": 5075,
+      "at": "2026-11-20T19:22:22.542Z"
+     }
+    ]
+   },
+   "recaptcha/dynamic-cars-1": {
+    "fixtureHash": "40606819fb95",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 5599,
+      "at": "2026-11-20T19:22:21.926Z"
+     },
+     {
+      "pass": true,
+      "ms": 6160,
+      "at": "2026-11-20T19:22:22.203Z"
+     }
+    ]
+   },
+   "recaptcha/dynamic-cars-3": {
+    "fixtureHash": "6890abd976be",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 4540,
+      "at": "2026-11-20T19:22:22.853Z"
+     },
+     {
+      "pass": true,
+      "ms": 5459,
+      "at": "2026-11-20T19:22:22.993Z"
+     }
+    ]
+   },
+   "recaptcha/dynamic-cars-4": {
+    "fixtureHash": "ef5e6790f969",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 4967,
+      "at": "2026-11-20T19:22:26.893Z"
+     },
+     {
+      "pass": true,
+      "ms": 5539,
+      "at": "2026-11-20T19:22:27.296Z"
+     }
+    ]
+   }
+  },
+  "claude-sonnet-5-5": {
+   "hcaptcha/odd-shape-1": {
+    "fixtureHash": "f21199afa50f",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 7454,
+      "at": "2026-11-20T19:22:30.308Z"
+     },
+     {
+      "pass": true,
+      "ms": 7835,
+      "at": "2026-11-20T19:22:30.830Z"
+     }
+    ]
+   },
+   "hcaptcha/odd-shape-2": {
+    "fixtureHash": "4552defd2492",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 6881,
+      "at": "2026-11-20T19:22:33.774Z"
+     },
+     {
+      "pass": true,
+      "ms": 6993,
+      "at": "2026-11-20T19:22:34.291Z"
+     }
+    ]
+   },
+   "hcaptcha/odd-shape-fading-1": {
+    "fixtureHash": "40a38e2a65b4",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 9602,
+      "at": "2026-11-20T19:22:37.122Z"
+     },
+     {
+      "pass": false,
+      "ms": 12598,
+      "at": "2026-11-20T19:22:40.914Z",
+      "problems": [
+       "point 1: 0 clicks inside, expected 1",
+       "clicks outside every expected point: 368,388"
+      ]
+     }
+    ]
+   },
+   "hcaptcha/odd-shape-fading-3": {
+    "fixtureHash": "e5347997ac9a",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 6045,
+      "at": "2026-11-20T19:22:39.819Z"
+     },
+     {
+      "pass": true,
+      "ms": 6711,
+      "at": "2026-11-20T19:22:41.002Z"
+     }
+    ]
+   },
+   "hcaptcha/odd-shape-fading-2": {
+    "fixtureHash": "6e0a74e48746",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": false,
+      "ms": 10558,
+      "at": "2026-11-20T19:22:40.866Z",
+      "problems": [
+       "point 1: 0 clicks inside, expected 1",
+       "clicks outside every expected point: 108,380"
+      ]
+     },
+     {
+      "pass": true,
+      "ms": 15206,
+      "at": "2026-11-20T19:22:46.037Z"
+     }
+    ]
+   },
+   "hcaptcha/shape-loading": {
+    "fixtureHash": "b5530a9320eb",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 3071,
+      "at": "2026-11-20T19:22:43.939Z"
+     },
+     {
+      "pass": true,
+      "ms": 3398,
+      "at": "2026-11-20T19:22:44.314Z"
+     }
+    ]
+   },
+   "hcaptcha/odd-shape-fading-4": {
+    "fixtureHash": "23332c340005",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": false,
+      "ms": 9335,
+      "at": "2026-11-20T19:22:46.458Z",
+      "problems": [
+       "point 1: 0 clicks inside, expected 1",
+       "clicks outside every expected point: 111,228"
+      ]
+     },
+     {
+      "pass": false,
+      "ms": 9630,
+      "at": "2026-11-20T19:22:49.450Z",
+      "problems": [
+       "point 1: 0 clicks inside, expected 1",
+       "clicks outside every expected point: 111,230"
+      ]
+     }
+    ]
+   },
+   "recaptcha/3x3-cars": {
+    "fixtureHash": "f4cf747d829f",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": false,
+      "ms": 7341,
+      "at": "2026-11-20T19:22:48.344Z",
+      "problems": [
+       "clicks: missing [], extra [t3]"
+      ]
+     },
+     {
+      "pass": false,
+      "ms": 6462,
+      "at": "2026-11-20T19:22:50.401Z",
+      "problems": [
+       "clicks: missing [], extra [t3]"
+      ]
+     }
+    ]
+   },
+   "recaptcha/4x4-motorcycle-rider": {
+    "fixtureHash": "95b8dd71a097",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 8393,
+      "at": "2026-11-20T19:22:52.707Z"
+     },
+     {
+      "pass": false,
+      "ms": 7938,
+      "at": "2026-11-20T19:22:53.975Z",
+      "problems": [
+       "clicks: missing [t2, verify], extra []"
+      ]
+     }
+    ]
+   },
+   "recaptcha/4x4-motorcycles": {
+    "fixtureHash": "c62c947a4586",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": false,
+      "ms": 7140,
+      "at": "2026-11-20T19:22:53.600Z",
+      "problems": [
+       "clicks: missing [t7], extra []"
+      ]
+     },
+     {
+      "pass": false,
+      "ms": 6891,
+      "at": "2026-11-20T19:22:55.238Z",
+      "problems": [
+       "clicks: missing [t4, t7], extra [t12]"
+      ]
+     }
+    ]
+   },
+   "recaptcha/dynamic-bus-1": {
+    "fixtureHash": "c9320f2af90e",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 4703,
+      "at": "2026-11-20T19:22:54.154Z"
+     },
+     {
+      "pass": false,
+      "ms": 4049,
+      "at": "2026-11-20T19:22:54.451Z",
+      "problems": [
+       "clicks: missing [], extra [verify]"
+      ]
+     }
+    ]
+   },
+   "recaptcha/dynamic-bus-3": {
+    "fixtureHash": "64dccf0d7d7b",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 5319,
+      "at": "2026-11-20T19:22:59.474Z"
+     },
+     {
+      "pass": true,
+      "ms": 5698,
+      "at": "2026-11-20T19:22:59.675Z"
+     }
+    ]
+   },
+   "recaptcha/dynamic-bus-2": {
+    "fixtureHash": "6708e1492dd0",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 5948,
+      "at": "2026-11-20T19:22:59.548Z"
+     },
+     {
+      "pass": true,
+      "ms": 7049,
+      "at": "2026-11-20T19:22:59.757Z"
+     }
+    ]
+   },
+   "recaptcha/dynamic-cars-1": {
+    "fixtureHash": "40606819fb95",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": false,
+      "ms": 5220,
+      "at": "2026-11-20T19:23:00.458Z",
+      "problems": [
+       "clicks: missing [], extra [verify]"
+      ]
+     },
+     {
+      "pass": false,
+      "ms": 6263,
+      "at": "2026-11-20T19:23:00.715Z",
+      "problems": [
+       "clicks: missing [], extra [verify]"
+      ]
+     }
+    ]
+   },
+   "recaptcha/dynamic-cars-2": {
+    "fixtureHash": "91946c64920e",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 4317,
+      "at": "2026-11-20T19:23:03.865Z"
+     },
+     {
+      "pass": true,
+      "ms": 5122,
+      "at": "2026-11-20T19:23:04.600Z"
+     }
+    ]
+   },
+   "recaptcha/dynamic-cars-3": {
+    "fixtureHash": "6890abd976be",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 4858,
+      "at": "2026-11-20T19:23:04.534Z"
+     },
+     {
+      "pass": true,
+      "ms": 5722,
+      "at": "2026-11-20T19:23:05.480Z"
+     }
+    ]
+   },
+   "recaptcha/dynamic-cars-4": {
+    "fixtureHash": "ef5e6790f969",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 5019,
+      "at": "2026-11-20T19:23:05.479Z"
+     },
+     {
+      "pass": true,
+      "ms": 6300,
+      "at": "2026-11-20T19:23:07.016Z"
+     }
+    ]
+   }
+  },
+  "claude-haiku-5-5": {
+   "hcaptcha/odd-shape-1": {
+    "fixtureHash": "f21199afa50f",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 7904,
+      "at": "2026-11-20T19:23:12.505Z"
+     },
+     {
+      "pass": false,
+      "ms": 7164,
+      "at": "2026-11-20T19:23:12.644Z",
+      "problems": [
+       "point 1: 0 clicks inside, expected 1",
+       "clicks outside every expected point: 380,220"
+      ]
+     }
+    ]
+   },
+   "hcaptcha/odd-shape-2": {
+    "fixtureHash": "4552defd2492",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 7170,
+      "at": "2026-11-20T19:23:12.651Z"
+     },
+     {
+      "pass": true,
+      "ms": 8538,
+      "at": "2026-11-20T19:23:15.561Z"
+     }
+    ]
+   },
+   "hcaptcha/odd-shape-fading-1": {
+    "fixtureHash": "40a38e2a65b4",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": false,
+      "ms": 6550,
+      "at": "2026-11-20T19:23:14.452Z",
+      "problems": [
+       "point 1: 0 clicks inside, expected 1",
+       "clicks outside every expected point: 152,224"
+      ]
+     },
+     {
+      "pass": true,
+      "ms": 11232,
+      "at": "2026-11-20T19:23:20.341Z"
+     }
+    ]
+   },
+   "hcaptcha/odd-shape-fading-3": {
+    "fixtureHash": "e5347997ac9a",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 9064,
+      "at": "2026-11-20T19:23:21.716Z"
+     },
+     {
+      "pass": true,
+      "ms": 8374,
+      "at": "2026-11-20T19:23:22.827Z"
+     }
+    ]
+   },
+   "hcaptcha/odd-shape-fading-2": {
+    "fixtureHash": "6e0a74e48746",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": false,
+      "ms": 9564,
+      "at": "2026-11-20T19:23:22.069Z",
+      "problems": [
+       "point 1: 0 clicks inside, expected 1",
+       "clicks outside every expected point: 258,232"
+      ]
+     },
+     {
+      "pass": false,
+      "ms": 11209,
+      "at": "2026-11-20T19:23:23.859Z",
+      "problems": [
+       "point 1: 0 clicks inside, expected 1",
+       "clicks outside every expected point: 260,232"
+      ]
+     }
+    ]
+   },
+   "hcaptcha/odd-shape-fading-4": {
+    "fixtureHash": "23332c340005",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 6668,
+      "at": "2026-11-20T19:23:22.229Z"
+     },
+     {
+      "pass": true,
+      "ms": 6996,
+      "at": "2026-11-20T19:23:27.338Z"
+     }
+    ]
+   },
+   "hcaptcha/shape-loading": {
+    "fixtureHash": "b5530a9320eb",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": false,
+      "ms": 2421,
+      "at": "2026-11-20T19:23:24.491Z",
+      "problems": [
+       "clicks: missing [], extra [submit]"
+      ]
+     },
+     {
+      "pass": false,
+      "ms": 2890,
+      "at": "2026-11-20T19:23:24.607Z",
+      "problems": [
+       "clicks: missing [], extra [submit]"
+      ]
+     }
+    ]
+   },
+   "recaptcha/4x4-motorcycle-rider": {
+    "fixtureHash": "95b8dd71a097",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": false,
+      "ms": 4012,
+      "at": "2026-11-20T19:23:28.503Z",
+      "problems": [
+       "clicks: missing [t2], extra []"
+      ]
+     },
+     {
+      "pass": false,
+      "ms": 4644,
+      "at": "2026-11-20T19:23:28.504Z",
+      "problems": [
+       "clicks: missing [t2], extra []"
+      ]
+     }
+    ]
+   },
+   "recaptcha/3x3-cars": {
+    "fixtureHash": "f4cf747d829f",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 8229,
+      "at": "2026-11-20T19:23:30.459Z"
+     },
+     {
+      "pass": true,
+      "ms": 8414,
+      "at": "2026-11-20T19:23:31.241Z"
+     }
+    ]
+   },
+   "recaptcha/dynamic-bus-1": {
+    "fixtureHash": "c9320f2af90e",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": false,
+      "ms": 4861,
+      "at": "2026-11-20T19:23:33.366Z",
+      "problems": [
+       "clicks: missing [], extra [verify]"
+      ]
+     },
+     {
+      "pass": false,
+      "ms": 6296,
+      "at": "2026-11-20T19:23:34.800Z",
+      "problems": [
+       "clicks: missing [], extra [verify]"
+      ]
+     }
+    ]
+   },
+   "recaptcha/4x4-motorcycles": {
+    "fixtureHash": "c62c947a4586",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": false,
+      "ms": 10726,
+      "at": "2026-11-20T19:23:35.333Z",
+      "problems": [
+       "clicks: missing [t7], extra []"
+      ]
+     },
+     {
+      "pass": false,
+      "ms": 12698,
+      "at": "2026-11-20T19:23:40.037Z",
+      "problems": [
+       "clicks: missing [t7], extra []"
+      ]
+     }
+    ]
+   },
+   "recaptcha/dynamic-bus-2": {
+    "fixtureHash": "6708e1492dd0",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 4986,
+      "at": "2026-11-20T19:23:36.227Z"
+     },
+     {
+      "pass": true,
+      "ms": 6783,
+      "at": "2026-11-20T19:23:37.243Z"
+     }
+    ]
+   },
+   "recaptcha/dynamic-bus-3": {
+    "fixtureHash": "64dccf0d7d7b",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 4965,
+      "at": "2026-11-20T19:23:38.332Z"
+     },
+     {
+      "pass": true,
+      "ms": 6283,
+      "at": "2026-11-20T19:23:41.084Z"
+     }
+    ]
+   },
+   "recaptcha/dynamic-cars-1": {
+    "fixtureHash": "40606819fb95",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": false,
+      "ms": 7665,
+      "at": "2026-11-20T19:23:42.999Z",
+      "problems": [
+       "clicks: missing [], extra [verify]"
+      ]
+     },
+     {
+      "pass": false,
+      "ms": 7252,
+      "at": "2026-11-20T19:23:43.479Z",
+      "problems": [
+       "clicks: missing [], extra [verify]"
+      ]
+     }
+    ]
+   },
+   "recaptcha/dynamic-cars-2": {
+    "fixtureHash": "91946c64920e",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 6321,
+      "at": "2026-11-20T19:23:43.565Z"
+     },
+     {
+      "pass": true,
+      "ms": 10093,
+      "at": "2026-11-20T19:23:48.426Z"
+     }
+    ]
+   },
+   "recaptcha/dynamic-cars-3": {
+    "fixtureHash": "6890abd976be",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 6473,
+      "at": "2026-11-20T19:23:46.511Z"
+     },
+     {
+      "pass": false,
+      "ms": 8482,
+      "at": "2026-11-20T19:23:49.566Z",
+      "problems": [
+       "clicks: missing [t5], extra []"
+      ]
+     }
+    ]
+   },
+   "recaptcha/dynamic-cars-4": {
+    "fixtureHash": "ef5e6790f969",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 8367,
+      "at": "2026-11-20T19:23:51.366Z"
+     },
+     {
+      "pass": true,
+      "ms": 8930,
+      "at": "2026-11-20T19:23:52.411Z"
+     }
+    ]
+   }
+  },
+  "gpt-5.6": {
+   "hcaptcha/odd-shape-1": {
+    "fixtureHash": "f21199afa50f",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 16851,
+      "at": "2026-11-20T19:24:06.419Z"
+     },
+     {
+      "pass": false,
+      "ms": 42698,
+      "at": "2026-11-20T19:24:31.125Z",
+      "problems": [
+       "point 1: 0 clicks inside, expected 1",
+       "clicks outside every expected point: 388,220"
+      ]
+     }
+    ]
+   },
+   "hcaptcha/odd-shape-fading-1": {
+    "fixtureHash": "40a38e2a65b4",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 15785,
+      "at": "2026-11-20T19:24:08.481Z"
+     },
+     {
+      "pass": true,
+      "ms": 18347,
+      "at": "2026-11-20T19:24:10.758Z"
+     }
+    ]
+   },
+   "hcaptcha/odd-shape-2": {
+    "fixtureHash": "4552defd2492",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": false,
+      "ms": 34664,
+      "at": "2026-11-20T19:24:26.031Z",
+      "problems": [
+       "point 1: 0 clicks inside, expected 1",
+       "clicks outside every expected point: 149,230"
+      ]
+     },
+     {
+      "pass": true,
+      "ms": 36712,
+      "at": "2026-11-20T19:24:27.032Z"
+     }
+    ]
+   },
+   "hcaptcha/odd-shape-fading-2": {
+    "fixtureHash": "6e0a74e48746",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": false,
+      "ms": 20800,
+      "at": "2026-11-20T19:24:27.220Z",
+      "problems": [
+       "clicks: missing [submit], extra []",
+       "point 1: 0 clicks inside, expected 1"
+      ]
+     },
+     {
+      "pass": false,
+      "ms": 34605,
+      "at": "2026-11-20T19:24:43.087Z",
+      "problems": [
+       "point 1: 0 clicks inside, expected 1",
+       "clicks outside every expected point: 252,376"
+      ]
+     }
+    ]
+   },
+   "hcaptcha/odd-shape-fading-3": {
+    "fixtureHash": "e5347997ac9a",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": false,
+      "ms": 19260,
+      "at": "2026-11-20T19:24:30.020Z",
+      "problems": [
+       "point 1: 0 clicks inside, expected 1",
+       "clicks outside every expected point: 372,228"
+      ]
+     },
+     {
+      "pass": true,
+      "ms": 26893,
+      "at": "2026-11-20T19:24:52.925Z"
+     }
+    ]
+   },
+   "hcaptcha/shape-loading": {
+    "fixtureHash": "b5530a9320eb",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 6118,
+      "at": "2026-11-20T19:24:36.139Z"
+     },
+     {
+      "pass": true,
+      "ms": 6057,
+      "at": "2026-11-20T19:24:37.183Z"
+     }
+    ]
+   },
+   "hcaptcha/odd-shape-fading-4": {
+    "fixtureHash": "23332c340005",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 16131,
+      "at": "2026-11-20T19:24:43.163Z"
+     },
+     {
+      "pass": true,
+      "ms": 16255,
+      "at": "2026-11-20T19:24:43.476Z"
+     }
+    ]
+   },
+   "recaptcha/3x3-cars": {
+    "fixtureHash": "f4cf747d829f",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": false,
+      "ms": 13105,
+      "at": "2026-11-20T19:24:50.289Z",
+      "problems": [
+       "clicks: missing [t9], extra []"
+      ]
+     },
+     {
+      "pass": true,
+      "ms": 14811,
+      "at": "2026-11-20T19:24:50.951Z"
+     }
+    ]
+   },
+   "recaptcha/4x4-motorcycle-rider": {
+    "fixtureHash": "95b8dd71a097",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": false,
+      "ms": 11582,
+      "at": "2026-11-20T19:24:54.672Z",
+      "problems": [
+       "clicks: missing [t2], extra []"
+      ]
+     },
+     {
+      "pass": false,
+      "ms": 14165,
+      "at": "2026-11-20T19:24:57.329Z",
+      "problems": [
+       "clicks: missing [t2], extra []"
+      ]
+     }
+    ]
+   },
+   "recaptcha/dynamic-bus-1": {
+    "fixtureHash": "c9320f2af90e",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 11736,
+      "at": "2026-11-20T19:25:02.687Z"
+     },
+     {
+      "pass": true,
+      "ms": 11709,
+      "at": "2026-11-20T19:25:04.635Z"
+     }
+    ]
+   },
+   "recaptcha/4x4-motorcycles": {
+    "fixtureHash": "c62c947a4586",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 22664,
+      "at": "2026-11-20T19:25:06.142Z"
+     },
+     {
+      "pass": true,
+      "ms": 19922,
+      "at": "2026-11-20T19:25:10.212Z"
+     }
+    ]
+   },
+   "recaptcha/dynamic-bus-2": {
+    "fixtureHash": "6708e1492dd0",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 13316,
+      "at": "2026-11-20T19:25:07.988Z"
+     },
+     {
+      "pass": true,
+      "ms": 11374,
+      "at": "2026-11-20T19:25:08.704Z"
+     }
+    ]
+   },
+   "recaptcha/dynamic-bus-3": {
+    "fixtureHash": "64dccf0d7d7b",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 9619,
+      "at": "2026-11-20T19:25:12.307Z"
+     },
+     {
+      "pass": false,
+      "ms": 16060,
+      "at": "2026-11-20T19:25:20.696Z",
+      "problems": [
+       "clicks: missing [verify], extra [t8]"
+      ]
+     }
+    ]
+   },
+   "recaptcha/dynamic-cars-1": {
+    "fixtureHash": "40606819fb95",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 12058,
+      "at": "2026-11-20T19:25:18.201Z"
+     },
+     {
+      "pass": true,
+      "ms": 16535,
+      "at": "2026-11-20T19:25:24.523Z"
+     }
+    ]
+   },
+   "recaptcha/dynamic-cars-2": {
+    "fixtureHash": "91946c64920e",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 9956,
+      "at": "2026-11-20T19:25:20.169Z"
+     },
+     {
+      "pass": false,
+      "ms": 16437,
+      "at": "2026-11-20T19:25:25.141Z",
+      "problems": [
+       "clicks: missing [], extra [t2]"
+      ]
+     }
+    ]
+   },
+   "recaptcha/dynamic-cars-3": {
+    "fixtureHash": "6890abd976be",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": true,
+      "ms": 11797,
+      "at": "2026-11-20T19:25:24.105Z"
+     },
+     {
+      "pass": false,
+      "ms": 10642,
+      "at": "2026-11-20T19:25:28.844Z",
+      "problems": [
+       "clicks: missing [], extra [t2]"
+      ]
+     }
+    ]
+   },
+   "recaptcha/dynamic-cars-4": {
+    "fixtureHash": "ef5e6790f969",
+    "solverHash": "ad45f2192309",
+    "runs": [
+     {
+      "pass": false,
+      "ms": 11343,
+      "at": "2026-11-20T19:25:31.513Z",
+      "problems": [
+       "clicks: missing [verify], extra [t5]"
+      ]
+     },
+     {
+      "pass": false,
+      "ms": 11895,
+      "at": "2026-11-20T19:25:32.592Z",
+      "problems": [
+       "clicks: missing [verify], extra [t5]"
+      ]
+     }
+    ]
+   }
+  }
+ }
+}

@@ -1,0 +1,64 @@
+{
+  "source": "https://accounts.hcaptcha.com/demo",
+  "capturedAt": "2026-11-20T18:35:39.712Z",
+  "view": {
+    "adapter": "hcaptcha-challenge",
+    "kind": "point",
+    "status": "pending",
+    "region": {
+      "x": 90,
+      "y": 11,
+      "width": 520,
+      "height": 570
+    },
+    "instruction": "Click on the shape that does not match the others",
+    "errors": [],
+    "targets": [
+      {
+        "id": "submit",
+        "rect": {
+          "x": 516,
+          "y": 532,
+          "width": 84,
+          "height": 39
+        },
+        "label": "Skip"
+      },
+      {
+        "id": "refresh",
+        "rect": {
+          "x": 145,
+          "y": 531.5,
+          "width": 37,
+          "height": 37
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "7BCCEF3288EB9A794153F92A11F4A5C0"
+  },
+  "history": [],
+  "expected": {
+    "clicks": [],
+    "points": []
+  },
+  "notes": "Canvas not rendered yet (blank). Correct: wait, click nothing.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "The challenge asks for the shape that doesn't match the others, but the image area is still blank, so the shapes haven't loaded yet. Waiting this round.",
+      "actions": [
+        {
+          "kind": "wait",
+          "target": null,
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

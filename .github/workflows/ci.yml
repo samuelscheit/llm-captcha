@@ -1,0 +1,19 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+      - run: bun run test
+      # The e2e tests drive headful Google Chrome (the runner image ships it) on a virtual display.
+      - run: xvfb-run --auto-servernum bun run e2e
+        env:
+          CHROME_PATH: /usr/bin/google-chrome

@@ -1,0 +1,210 @@
+{
+  "source": "https://www.google.com/recaptcha/api2/demo",
+  "capturedAt": "2026-11-20T18:49:40.653Z",
+  "view": {
+    "adapter": "recaptcha-images",
+    "kind": "select",
+    "status": "pending",
+    "region": {
+      "x": 85,
+      "y": 85,
+      "width": 400,
+      "height": 582
+    },
+    "instruction": "Select all images with cars Click verify once there are none left",
+    "errors": [],
+    "targets": [
+      {
+        "id": "t1",
+        "rect": {
+          "x": 90,
+          "y": 210,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t2",
+        "rect": {
+          "x": 220,
+          "y": 210,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t3",
+        "rect": {
+          "x": 350,
+          "y": 210,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t4",
+        "rect": {
+          "x": 90,
+          "y": 340,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t5",
+        "rect": {
+          "x": 220,
+          "y": 340,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t6",
+        "rect": {
+          "x": 350,
+          "y": 340,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t7",
+        "rect": {
+          "x": 90,
+          "y": 470,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t8",
+        "rect": {
+          "x": 220,
+          "y": 470,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t9",
+        "rect": {
+          "x": 350,
+          "y": 470,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "verify",
+        "rect": {
+          "x": 377,
+          "y": 615,
+          "width": 100,
+          "height": 42
+        },
+        "label": "VERIFY"
+      },
+      {
+        "id": "reload",
+        "rect": {
+          "x": 91,
+          "y": 613,
+          "width": 48,
+          "height": 48
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "ACEBBEAA7CF360D2130196D2C3BF77E3"
+  },
+  "history": [
+    {
+      "instruction": "Select all images with cars Click verify once there are none left",
+      "decision": {
+        "reasoning": "Tiles t1, t2 and t5 are blank because their replacement images are still loading. The other tiles show no cars: t3 houses, t4 traffic lights, t6 palms, t7 a palm, t8 an overpass road with no visible cars, t9 palms. I'll wait for the new tiles to load before deciding.",
+        "actions": [
+          {
+            "kind": "wait",
+            "target": null,
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          }
+        ]
+      },
+      "errorsAfter": []
+    },
+    {
+      "instruction": "Select all images with cars Click verify once there are none left",
+      "decision": {
+        "reasoning": "The replacement tiles have loaded. The new t5 shows a road with cars on it, so it matches. The new t1 shows a building and the new t2 an overpass, neither with cars. The rest are unchanged and have no cars. Since clicked tiles get replaced, I click only t5 this round and do not press verify.",
+        "actions": [
+          {
+            "kind": "click",
+            "target": "t5",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          }
+        ]
+      },
+      "errorsAfter": []
+    },
+    {
+      "instruction": "Select all images with cars Click verify once there are none left",
+      "decision": {
+        "reasoning": "The task is to keep selecting car tiles until none are left. The new t5 shows a red car on the road, so it matches. The other tiles have no cars: t1 a building, t2 an overpass, t3 houses, t4 traffic lights, t6 palms, t7 a palm, t8 an overpass and t9 palms. Since clicked tiles get replaced, I click only t5 this round and do not press verify.",
+        "actions": [
+          {
+            "kind": "click",
+            "target": "t5",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          }
+        ]
+      },
+      "errorsAfter": []
+    }
+  ],
+  "expected": {
+    "clicks": [
+      "verify"
+    ]
+  },
+  "notes": "No cars left: verify. Accepted.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "Now t5 shows an overpass with no cars. Checking the other tiles: t1 a building/overpass, t2 an overpass, t3 houses, t4 traffic lights, t6 palms, t7 a palm, t8 a road with no cars, t9 palms. No car tiles are left, so I click verify.",
+      "actions": [
+        {
+          "kind": "click",
+          "target": "verify",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

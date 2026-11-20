@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="754" height="232" viewBox="0 0 754 232" role="img" aria-label="Captcha solving leaderboard">
+<style>
+text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;fill:#1b1b1a}
+.title{font-size:16px;font-weight:700}.sub{font-size:11px;fill:#6b6a66}.head{font-size:11px;font-weight:600;fill:#6b6a66}
+.model{font-size:13px;font-weight:600}.value{font-size:13px;font-weight:700}.cell{font-size:13px;font-weight:600}
+</style>
+<rect width="754" height="232" rx="10" fill="#ffffff" stroke="#e3e2de"/>
+<text x="16" y="28" class="title">Captcha solving by model</text>
+<text x="16" y="47" class="sub">17 real challenges, pass rate over all runs · updated 2026-11-20</text>
+<text x="16" y="74" class="head">MODEL</text>
+<text x="200" y="74" class="head">OVERALL</text>
+<text x="550" y="74" text-anchor="middle" class="head">hcaptcha/point (7)</text>
+<text x="670" y="74" text-anchor="middle" class="head">recaptcha/select (10)</text>
+<rect x="0" y="84" width="754" height="34" fill="#f6f6f4"/><text x="16" y="106" class="model">claude-opus-5-5</text><rect x="200" y="93" width="220" height="14" rx="7" fill="#e6e5e1"/><rect x="200" y="93" width="200.58823529411765" height="14" rx="7" fill="#1a7f4b"/><text x="430" y="106" class="value">91%</text><text x="550" y="106" text-anchor="middle" class="cell" fill="#1a7f4b">93%</text><text x="670" y="106" text-anchor="middle" class="cell" fill="#1a7f4b">90%</text>
+<text x="16" y="140" class="model">claude-sonnet-5-5</text><rect x="200" y="127" width="220" height="14" rx="7" fill="#e6e5e1"/><rect x="200" y="127" width="142.3529411764706" height="14" rx="7" fill="#b7791f"/><text x="430" y="140" class="value">65%</text><text x="550" y="140" text-anchor="middle" class="cell" fill="#b7791f">71%</text><text x="670" y="140" text-anchor="middle" class="cell" fill="#b7791f">60%</text>
+<rect x="0" y="152" width="754" height="34" fill="#f6f6f4"/><text x="16" y="174" class="model">gpt-5.6</text><rect x="200" y="161" width="220" height="14" rx="7" fill="#e6e5e1"/><rect x="200" y="161" width="135.88235294117646" height="14" rx="7" fill="#b7791f"/><text x="430" y="174" class="value">62%</text><text x="550" y="174" text-anchor="middle" class="cell" fill="#b7791f">64%</text><text x="670" y="174" text-anchor="middle" class="cell" fill="#b7791f">60%</text>
+<text x="16" y="208" class="model">claude-haiku-5-5</text><rect x="200" y="195" width="220" height="14" rx="7" fill="#e6e5e1"/><rect x="200" y="195" width="122.94117647058823" height="14" rx="7" fill="#b7791f"/><text x="430" y="208" class="value">56%</text><text x="550" y="208" text-anchor="middle" class="cell" fill="#b7791f">57%</text><text x="670" y="208" text-anchor="middle" class="cell" fill="#b7791f">55%</text>
+</svg>

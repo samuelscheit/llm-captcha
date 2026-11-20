@@ -1,0 +1,189 @@
+{
+  "source": "https://www.google.com/recaptcha/api2/demo",
+  "capturedAt": "2026-11-20T18:35:00.269Z",
+  "view": {
+    "adapter": "recaptcha-images",
+    "kind": "select",
+    "status": "pending",
+    "region": {
+      "x": 85,
+      "y": 85,
+      "width": 400,
+      "height": 582
+    },
+    "instruction": "Select all images with cars",
+    "errors": [],
+    "targets": [
+      {
+        "id": "t1",
+        "rect": {
+          "x": 90,
+          "y": 210,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t2",
+        "rect": {
+          "x": 220,
+          "y": 210,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t3",
+        "rect": {
+          "x": 350,
+          "y": 210,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t4",
+        "rect": {
+          "x": 90,
+          "y": 340,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t5",
+        "rect": {
+          "x": 220,
+          "y": 340,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t6",
+        "rect": {
+          "x": 350,
+          "y": 340,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t7",
+        "rect": {
+          "x": 90,
+          "y": 470,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t8",
+        "rect": {
+          "x": 220,
+          "y": 470,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t9",
+        "rect": {
+          "x": 350,
+          "y": 470,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "verify",
+        "rect": {
+          "x": 377,
+          "y": 615,
+          "width": 100,
+          "height": 42
+        },
+        "label": "VERIFY"
+      },
+      {
+        "id": "reload",
+        "rect": {
+          "x": 91,
+          "y": 613,
+          "width": 48,
+          "height": 48
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "F6F1775BDDC4E2BFD43D43E1E9FFE613"
+  },
+  "history": [],
+  "expected": {
+    "clicks": [
+      "t2",
+      "t4",
+      "t7",
+      "t8",
+      "t9",
+      "verify"
+    ]
+  },
+  "notes": "Live: scan reported every tile SELECTED (hidden .rc-imageselect-checkbox matched); the model trusted it and 'unselected' t1,t5,t6, which selected them -> 'Please try again'. Selected flags corrected to the truth (none selected). Cars: t2 road, t4 dark car, t7 street, t8 white car, t9 dark hood at the bottom. Correction: t3 has bicycles and plants only (the blue thing is a bicycle frame), not a car; the model was right to skip it.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "Cars visible in t2, t3 (blue car at the right edge), t4, t7, t8 and t9 (dark car at the bottom). t1, t5 and t6 show only bicycles and buildings, with no cars, so I unselect them and then verify.",
+      "actions": [
+        {
+          "kind": "click",
+          "target": "t1",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t5",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t6",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "verify",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": [
+      "Please try again"
+    ]
+  }
+}

@@ -1,0 +1,63 @@
+import type { AdapterSpec, ChallengeView, PageState } from "../core/types";
+import type { ImageTools } from "../core/driver";
+import { isVisible, queryAll, seededShadows, shadowOf } from "./dom";
+
+const SNAPSHOT_LIMIT = 512 * 1024;
+import { ask, ASSIST_HOST_ID } from "./assist";
+import { crop, label, motion } from "./image";
+import { measurePuzzle } from "./puzzle";
+import { skeleton } from "./skeleton";
+import { scanFrame } from "./scan";
+
+/**
+ * The code a driver runs inside page frames, in an isolated world: the extension as a content
+ * script, CDP drivers by injecting the bundled source (`dist/page.js`). Views are relative to the
+ * frame's own viewport; the driver adds frame offsets.
+ */
+export interface PageApi {
+  scan(adapters: AdapterSpec[]): ChallengeView[];
+  reveal(adapter: AdapterSpec): void;
+  images: ImageTools;
+  publish(state: PageState, detail: string): void;
+  /** This frame's document as HTML, closed shadow roots included, for fixing adapters offline. */
+  snapshot(): string;
+  measurePuzzle: typeof measurePuzzle;
+  ask: typeof ask;
+  /** Visible element tree, for writing adapters (`bun run explore`). */
+  skeleton: typeof skeleton;
+  /** Hand closed shadow roots in, as [host, root, host, root, ...]. */
+  seedShadows(...pairs: Node[]): void;
+}
+
+export const pageApi: PageApi = {
+  scan: (adapters) => scanFrame(adapters),
+  reveal(adapter) {
+    // Instant: sites with `scroll-behavior: smooth` would still be moving at the next screenshot.
+    queryAll(document, adapter.root, !!adapter.pierce).find(isVisible)?.scrollIntoView({ block: "center", inline: "center", behavior: "instant" });
+  },
+  images: { crop, label, motion },
+  publish(state, detail) {
+    // A session that ended (timed out, solved by someone else) leaves no panel behind.
+    if (state !== "solving") document.getElementById(ASSIST_HOST_ID)?.remove();
+    const html = document.documentElement;
+    html.dataset.captchaState = state;
+    html.dataset.captchaDetail = detail;
+    window.dispatchEvent(new CustomEvent("captcha-state", { detail: JSON.stringify({ state, detail }) }));
+  },
+  measurePuzzle,
+  ask,
+  skeleton,
+  snapshot() {
+    const roots = queryAll(document, "*", true).flatMap((el) => shadowOf(el) ?? []);
+    return document.documentElement
+      .getHTML({ serializableShadowRoots: true, shadowRoots: roots })
+      .replace(/<script\b[\s\S]*?<\/script>/gi, "")
+      .replace(/data:([\w/+.-]+);base64,[A-Za-z0-9+/=]{2048,}/g, "data:$1;base64,…")
+      .slice(0, SNAPSHOT_LIMIT);
+  },
+  seedShadows(...pairs) {
+    for (let i = 0; i + 1 < pairs.length; i += 2) seededShadows.set(pairs[i] as Element, pairs[i + 1] as ShadowRoot);
+  },
+};
+
+export const PAGE_GLOBAL = "__captcha";

@@ -1,0 +1,74 @@
+name: Benchmark
+# Weekly: when the gateway offers models that were never measured, benchmark only those, commit
+# the leaderboard (BENCHMARK.md, benchmarks/leaderboard.svg for the README) and deploy the page.
+# Weeks without new models stop after one model-list request.
+on:
+  schedule:
+    - cron: "0 5 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: benchmark
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+env:
+  GATEWAY_URL: ${{ vars.GATEWAY_URL }}
+  GATEWAY_KEY: ${{ secrets.GATEWAY_KEY }}
+  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+  ANTHROPIC_BASE_URL: ${{ vars.ANTHROPIC_BASE_URL }}
+  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+  OPENAI_BASE_URL: ${{ vars.OPENAI_BASE_URL }}
+  GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+  GOOGLE_BASE_URL: ${{ vars.GOOGLE_BASE_URL }}
+  XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    outputs:
+      found: ${{ steps.new.outputs.found }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+      - name: Untested models?
+        id: new
+        run: |
+          set +e
+          bun src/tools/benchmark/bench.ts --list-new
+          code=$?
+          if [ $code -eq 0 ]; then echo "found=true" >> "$GITHUB_OUTPUT"
+          elif [ $code -eq 3 ]; then echo "found=false" >> "$GITHUB_OUTPUT"
+          else exit $code; fi
+      # Replays label images in Chrome (the runner image ships it), on a virtual display.
+      - if: steps.new.outputs.found == 'true'
+        run: xvfb-run --auto-servernum bun src/tools/benchmark/bench.ts --new-only
+      - if: steps.new.outputs.found == 'true'
+        name: Commit the leaderboard
+        run: |
+          git add BENCHMARK.md benchmarks/results.json benchmarks/leaderboard.svg
+          if git diff --cached --quiet; then exit 0; fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "chore(benchmark): measure new models"
+          git push
+      - if: steps.new.outputs.found == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: out/site
+
+  deploy:
+    needs: bench
+    if: needs.bench.outputs.found == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

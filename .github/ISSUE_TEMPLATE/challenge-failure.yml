@@ -1,0 +1,30 @@
+name: Challenge not solved
+description: A challenge the solver failed on. Reports from the extension (Failure reports) are filed automatically in this shape.
+labels: [challenge-failure]
+body:
+  - type: input
+    id: adapter
+    attributes:
+      label: Challenge
+      description: Adapter id or vendor, e.g. recaptcha-images, hcaptcha-challenge, turnstile.
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: Where it happened (origin and path, no query).
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: The final state and detail (data-captcha-detail), what the model did, what the widget answered.
+    validations:
+      required: true
+  - type: textarea
+    id: fixture
+    attributes:
+      label: Fixture
+      description: |
+        `bun run capture <url>` saves rounds under fixtures/captured/<provider>/. Attach or push them
+        (fixture.json, frame-N.png, labeled.png); a fix is tested against exactly this case.

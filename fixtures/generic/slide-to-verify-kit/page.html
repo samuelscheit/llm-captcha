@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verification Required</title>
+    <style>
+        body {
+            background-color: #f7f9fa;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .instructions {
+            margin-bottom: 20px;
+            color: #555;
+            font-size: 16px;
+        }
+
+        /* Slider Container */
+        .slider-container {
+            width: 300px;
+            height: 50px;
+            background-color: #e0e0e0;
+            border-radius: 25px;
+            position: relative;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+            /* Prevents text selection while dragging */
+            user-select: none; 
+            -webkit-user-select: none;
+        }
+
+        /* The text inside the slider */
+        .slider-text {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #777;
+            z-index: 2;
+            pointer-events: none; /* Allows clicking through the text */
+            transition: color 0.3s;
+        }
+
+        /* The green background that fills up as you slide */
+        .slider-track {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0;
+            background-color: #4CAF50;
+            z-index: 1;
+        }
+
+        /* The draggable button */
+        .slider-thumb {
+            width: 50px;
+            height: 50px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 3;
+            transition: left 0.3s ease, background-color 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* Removes the transition animation while actively dragging so it follows the mouse smoothly */
+        .slider-thumb.dragging {
+            transition: none; 
+        }
+
+        .slider-track.dragging {
+            transition: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="instructions" id="instructions">Please verify you are human</div>
+
+    <div class="slider-container" id="sliderContainer">
+        <div class="slider-text" id="sliderText">Slide to verify</div>
+        <div class="slider-track" id="sliderTrack"></div>
+        <div class="slider-thumb" id="sliderThumb">&#8594;</div> <!-- Right Arrow HTML Entity -->
+    </div>
+
+    <script>
+        const destination = "/landed"; // Replace with your link
+        
+        const thumb = document.getElementById('sliderThumb');
+        const container = document.getElementById('sliderContainer');
+        const track = document.getElementById('sliderTrack');
+        const text = document.getElementById('sliderText');
+        const instructions = document.getElementById('instructions');
+
+        let isDragging = false;
+        let startX = 0;
+        let isVerified = false;
+
+        // Calculate maximum distance the thumb can slide
+        const maxSlide = container.clientWidth - thumb.clientWidth;
+
+        function startDrag(e) {
+            if (isVerified) return;
+            
+            // Instantly fail known headless automated browsers
+            if (navigator.webdriver) {
+                console.warn("Bot detected.");
+                return;
+            }
+
+            isDragging = true;
+            thumb.classList.add('dragging');
+            track.classList.add('dragging');
+            
+            // Get starting X coordinate (works for both mouse and touch)
+            startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+
+            // Get current X coordinate
+            let currentX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            
+            // Calculate how far the mouse has moved
+            let moveX = currentX - startX;
+
+            // Constrain movement within the container limits
+            if (moveX < 0) moveX = 0;
+            if (moveX > maxSlide) moveX = maxSlide;
+
+            // Move the thumb and expand the green track
+            thumb.style.left = moveX + 'px';
+            track.style.width = (moveX + (thumb.clientWidth / 2)) + 'px';
+        }
+
+        function endDrag(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            thumb.classList.remove('dragging');
+            track.classList.remove('dragging');
+
+            let currentLeft = parseInt(thumb.style.left || 0);
+
+            // Check if the user dragged it all the way to the end (with a 5px tolerance)
+            if (currentLeft >= maxSlide - 5) {
+                success();
+            } else {
+                // If they let go too early, snap back to the start
+                thumb.style.left = '0px';
+                track.style.width = '0px';
+            }
+        }
+
+        function success() {
+            isVerified = true;
+            
+            // Lock the slider in the "success" state
+            thumb.style.left = maxSlide + 'px';
+            track.style.width = '100%';
+            thumb.innerHTML = "&#10003;"; // Checkmark HTML Entity
+            thumb.style.backgroundColor = "#4CAF50";
+            text.innerText = "Verified";
+            text.style.color = "white";
+            instructions.innerText = "Redirecting...";
+
+            // Remove event listeners to stop further interaction
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('touchmove', drag);
+
+            // Execute the redirect after a brief pause so the user sees the success state
+            setTimeout(function() {
+                window.location.replace(destination);
+            }, 800);
+        }
+
+        // Attach event listeners for Mouse (Desktop)
+        thumb.addEventListener('mousedown', startDrag);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', endDrag);
+
+        // Attach event listeners for Touch (Mobile)
+        thumb.addEventListener('touchstart', startDrag, {passive: true});
+        document.addEventListener('touchmove', drag, {passive: true});
+        document.addEventListener('touchend', endDrag);
+
+    </script>
+</body>
+</html>

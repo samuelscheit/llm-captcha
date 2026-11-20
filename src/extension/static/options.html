@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LLM Captcha Solver</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>LLM Captcha Solver</h1>
+        <label class="switch"><input type="checkbox" id="enabled" /><span>Enabled</span></label>
+      </header>
+
+      <section>
+        <h2>Model</h2>
+        <p class="hint">Any vision model. Requests go straight from this browser to the endpoint.</p>
+        <div class="grid">
+          <label>Provider
+            <select id="provider">
+              <option value="openai-compatible">OpenAI-compatible (xAI, Ollama, OpenRouter, …)</option>
+              <option value="openai">OpenAI</option>
+              <option value="anthropic">Anthropic</option>
+              <option value="google">Google</option>
+            </select>
+          </label>
+          <label>Model <input id="model" placeholder="e.g. grok-4, gpt-5, claude-opus-5-5" /></label>
+          <label class="wide">Base URL <input id="baseURL" placeholder="Empty: the provider's default endpoint" /></label>
+          <label class="wide">API key <input id="apiKey" type="password" autocomplete="off" /></label>
+        </div>
+        <div class="row">
+          <button id="test" type="button">Test model</button>
+          <output id="testResult"></output>
+        </div>
+        <label class="stack">Fallback models
+          <textarea id="fallbackModels" rows="3" spellcheck="false" class="mono" placeholder='[{"provider": "google", "baseURL": "", "apiKey": "…", "model": "gemini-3.8-flash"}]'></textarea>
+        </label>
+        <p class="hint">Same fields as above, as a JSON array. When a call to one model fails, the next takes over.</p>
+      </section>
+
+      <section>
+        <h2>Failure reports</h2>
+        <p class="hint">
+          Unsolved challenges become GitHub issues: the rounds (screenshots, what the model saw and did) and the
+          challenge's markup are pushed to a fixture branch, so a fix can be tested against exactly that case.
+        </p>
+        <label class="switch"><input type="checkbox" id="reportEnabled" /><span>Report failures</span></label>
+        <div class="grid">
+          <label>Issues repository <input id="reportRepo" placeholder="owner/name" /></label>
+          <label>Fixture branches in <input id="reportFixtureRepo" placeholder="Empty: same repository (or your fork)" /></label>
+          <label class="wide">GitHub token <input id="reportToken" type="password" autocomplete="off" placeholder="Issues: write on the issues repository, contents: write on the fixture repository" /></label>
+          <label>Reports per day at most <input id="reportMaxPerDay" type="number" min="0" max="100" /></label>
+        </div>
+        <ul id="reports" class="reports"></ul>
+      </section>
+
+      <section>
+        <h2>Behaviour</h2>
+        <div class="grid">
+          <label>Model rounds per page <input id="maxRounds" type="number" min="1" max="50" /></label>
+          <label class="switch"><input type="checkbox" id="autoReload" /><span>Reload into new builds (updater)</span></label>
+          <label class="wide">Never solve on (one domain per line, subdomains included)
+            <textarea id="denylist" rows="3" placeholder="bank.example"></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section>
+        <h2>Custom adapters</h2>
+        <p class="hint">
+          A JSON array of adapter specs, checked before the built-in ones. The built-ins show the format.
+        </p>
+        <textarea id="customAdapters" rows="8" spellcheck="false" class="mono"></textarea>
+        <details>
+          <summary>Built-in adapters</summary>
+          <pre id="builtins" class="mono"></pre>
+        </details>
+      </section>
+
+      <div class="row sticky">
+        <button id="save" type="button" class="primary">Save</button>
+        <output id="saveResult"></output>
+      </div>
+
+      <section>
+        <h2>Recent rounds</h2>
+        <table>
+          <thead><tr><th>Time</th><th>Page</th><th>Challenge</th><th>Round</th><th>Result</th></tr></thead>
+          <tbody id="log"></tbody>
+        </table>
+      </section>
+    </main>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

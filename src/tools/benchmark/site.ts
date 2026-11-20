@@ -1,0 +1,135 @@
+/**
+ * The leaderboard as a static page (GitHub Pages) and as an SVG chart (README). Pure renderers
+ * over the rows of `leaderboard()`.
+ */
+import { categoryOf, type Cell, type Row } from "./benchmark";
+import type { StoredFixture } from "../fixtures";
+
+const esc = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+const rate = (c: Cell | undefined) => (c && c.total ? c.passed / c.total : undefined);
+const pct = (c: Cell | undefined) => (rate(c) === undefined ? "–" : `${Math.round(rate(c)! * 100)}%`);
+
+/** Green for solved most of the time, amber for sometimes, red for rarely. */
+const tone = (r: number | undefined) => (r === undefined ? "none" : r >= 0.8 ? "good" : r >= 0.5 ? "mid" : "bad");
+
+function categories(fixtures: StoredFixture[]) {
+  const names = [...new Set(fixtures.map(categoryOf))].sort();
+  return names.map((name) => ({ name, count: fixtures.filter((f) => categoryOf(f) === name).length }));
+}
+
+const updatedOf = (rows: Row[]) => rows.map((r) => r.measuredAt).sort().at(-1)?.slice(0, 10) ?? "never";
+
+/** README chart: one row per model, a bar for the overall pass rate, then each category. */
+export function renderSvg(rows: Row[], fixtures: StoredFixture[]): string {
+  const cats = categories(fixtures);
+  const nameW = 200;
+  const barW = 220;
+  const catW = 120;
+  const rowH = 34;
+  /** Baseline of the first row; title, subtitle and column heads sit above it. */
+  const top = 106;
+  const width = nameW + barW + 70 + cats.length * catW + 24;
+  const height = top - 22 + Math.max(rows.length, 1) * rowH + 12;
+  const color = { good: "#1a7f4b", mid: "#b7791f", bad: "#c53030", none: "#8a8a85" };
+  const body = rows.map((r, i) => {
+    const y = top + i * rowH;
+    const overall = rate(r.overall) ?? 0;
+    return [
+      i % 2 ? "" : `<rect x="0" y="${y - 22}" width="${width}" height="${rowH}" fill="#f6f6f4"/>`,
+      `<text x="16" y="${y}" class="model">${esc(r.model)}</text>`,
+      `<rect x="${nameW}" y="${y - 13}" width="${barW}" height="14" rx="7" fill="#e6e5e1"/>`,
+      `<rect x="${nameW}" y="${y - 13}" width="${Math.max(barW * overall, 14)}" height="14" rx="7" fill="${color[tone(overall)]}"/>`,
+      `<text x="${nameW + barW + 10}" y="${y}" class="value">${pct(r.overall)}</text>`,
+      ...cats.map((c, j) => {
+        const cell = r.categories[c.name];
+        return `<text x="${nameW + barW + 70 + j * catW + catW / 2}" y="${y}" text-anchor="middle" class="cell" fill="${color[tone(rate(cell))]}">${pct(cell)}</text>`;
+      }),
+    ].join("");
+  });
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Captcha solving leaderboard">
+<style>
+text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;fill:#1b1b1a}
+.title{font-size:16px;font-weight:700}.sub{font-size:11px;fill:#6b6a66}.head{font-size:11px;font-weight:600;fill:#6b6a66}
+.model{font-size:13px;font-weight:600}.value{font-size:13px;font-weight:700}.cell{font-size:13px;font-weight:600}
+</style>
+<rect width="${width}" height="${height}" rx="10" fill="#ffffff" stroke="#e3e2de"/>
+<text x="16" y="28" class="title">Captcha solving by model</text>
+<text x="16" y="47" class="sub">${esc(`${fixtures.length} real challenges, pass rate over all runs · updated ${updatedOf(rows)}`)}</text>
+<text x="16" y="74" class="head">MODEL</text>
+<text x="${nameW}" y="74" class="head">OVERALL</text>
+${cats.map((c, j) => `<text x="${nameW + barW + 70 + j * catW + catW / 2}" y="74" text-anchor="middle" class="head">${esc(`${c.name} (${c.count})`)}</text>`).join("\n")}
+${body.join("\n") || `<text x="16" y="${top}" class="sub">No results yet.</text>`}
+</svg>
+`;
+}
+
+/** The GitHub Pages leaderboard: the table, the categories explained, models that cannot take part. */
+export function renderSite(rows: Row[], fixtures: StoredFixture[], solverHash: string, unsupported: Record<string, string>): string {
+  const cats = categories(fixtures);
+  const cell = (c: Cell | undefined) =>
+    `<td class="${tone(rate(c))}">${c ? `<b>${pct(c)}</b><small>${c.passed}/${c.total}</small>` : "–"}</td>`;
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Captcha solving leaderboard</title>
+<meta name="description" content="Which vision models solve real reCAPTCHA, hCaptcha and other challenges, measured on labeled fixtures.">
+<style>
+:root{color-scheme:light dark;--bg:#f6f6f4;--surface:#fff;--text:#1b1b1a;--muted:#6b6a66;--line:#e3e2de;--good:#1a7f4b;--mid:#b7791f;--bad:#c53030;--good-bg:#e7f4ec;--mid-bg:#fbf1dc;--bad-bg:#fbe7e7}
+@media (prefers-color-scheme:dark){:root{--bg:#161615;--surface:#1f1f1e;--text:#ecebe7;--muted:#9b9a95;--line:#33332f;--good:#5cc98a;--mid:#e9b45a;--bad:#ff8a80;--good-bg:#173323;--mid-bg:#3a2e15;--bad-bg:#3d1c1a}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,sans-serif}
+main{max-width:1040px;margin:0 auto;padding:48px 20px 72px}
+h1{font-size:28px;letter-spacing:-.02em;margin:0 0 8px}p{color:var(--muted);margin:0 0 12px;max-width:720px}
+.meta{font-size:13px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-top:28px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+th small,td small{display:block;font-size:12px;font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0}
+tr:last-child td{border-bottom:0}td.rank{color:var(--muted);width:1%}td.model{font-weight:600}
+td.good b{color:var(--good)}td.mid b{color:var(--mid)}td.bad b{color:var(--bad)}
+td.overall{background:var(--good-bg)}td.overall.mid{background:var(--mid-bg)}td.overall.bad{background:var(--bad-bg)}
+h2{font-size:17px;margin:40px 0 8px}ul{color:var(--muted);padding-left:20px}code{font-size:13px}
+a{color:inherit}
+</style>
+</head>
+<body>
+<main>
+<h1>Captcha solving leaderboard</h1>
+<p>How often each vision model solves real reCAPTCHA, hCaptcha and other challenges. Every challenge is a fixture captured from a live page and labeled by hand, and is replayed exactly as the solver asks live: same screenshots, target labels, motion analysis and prompt. A run passes when its answer equals the labeled one; every run counts.</p>
+<p class="meta">${fixtures.length} fixtures · updated ${updatedOf(rows)} · solver <code>${esc(solverHash)}</code></p>
+<div class="card">
+<table>
+<thead><tr><th></th><th>Model</th><th>Overall</th>${cats.map((c) => `<th>${esc(c.name)}<small>${c.count} fixtures</small></th>`).join("")}<th>Median time</th></tr></thead>
+<tbody>
+${rows
+  .map(
+    (r, i) =>
+      `<tr><td class="rank">${i + 1}</td><td class="model">${esc(r.model)}</td>${cell(r.overall).replace('<td class="', '<td class="overall ')}${cats.map((c) => cell(r.categories[c.name])).join("")}<td>${(r.medianMs / 1000).toFixed(1)}s</td></tr>`,
+  )
+  .join("\n") || `<tr><td colspan="${cats.length + 4}">No results yet.</td></tr>`}
+</tbody>
+</table>
+</div>
+<h2>Categories</h2>
+<ul>
+<li><b>select</b>: pick image tiles (reCAPTCHA grids, including the dynamic ones whose tiles are replaced after each click).</li>
+<li><b>point</b>: click positions in a canvas (hCaptcha shape puzzles, which animate: the model gets several frames and the regions that moved).</li>
+<li><b>text</b>: read distorted characters.</li>
+</ul>
+${
+  Object.keys(unsupported).length
+    ? `<h2>Not on the board</h2><p>Offered by the gateway, but refused the request (for example no image input):</p><ul>${Object.entries(unsupported)
+        .sort()
+        .map(([m, why]) => `<li><b>${esc(m)}</b>: ${esc(why.slice(0, 140))}</li>`)
+        .join("")}</ul>`
+    : ""
+}
+<h2>Method</h2>
+<p>Models are measured once per version of the fixtures and of the solver code that shapes their input; new models offered by the gateway are measured weekly. Provider outages and rate limits are retried later, never counted as failures.</p>
+</main>
+</body>
+</html>
+`;
+}

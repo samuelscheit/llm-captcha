@@ -1,0 +1,14 @@
+node_modules/
+dist/
+src/cdp/page-source.generated.ts
+test-results/
+fixtures/captured/
+.DS_Store
+fixtures/**/last-eval.json
+src/core/build-info.generated.ts
+dist.next/
+dist.prev/
+.update-rejected
+update.log
+benchmarks/models.local.json
+out/

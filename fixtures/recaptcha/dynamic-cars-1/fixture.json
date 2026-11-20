@@ -1,0 +1,324 @@
+{
+  "source": "https://www.google.com/recaptcha/api2/demo",
+  "capturedAt": "2026-11-20T18:49:03.366Z",
+  "view": {
+    "adapter": "recaptcha-images",
+    "kind": "select",
+    "status": "pending",
+    "region": {
+      "x": 85,
+      "y": 69.5,
+      "width": 400,
+      "height": 612.5
+    },
+    "instruction": "Select all images with cars Click verify once there are none left",
+    "errors": [
+      "Please try again."
+    ],
+    "targets": [
+      {
+        "id": "t1",
+        "rect": {
+          "x": 90,
+          "y": 194.5,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t2",
+        "rect": {
+          "x": 220,
+          "y": 194.5,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t3",
+        "rect": {
+          "x": 350,
+          "y": 194.5,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t4",
+        "rect": {
+          "x": 90,
+          "y": 324.5,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t5",
+        "rect": {
+          "x": 220,
+          "y": 324.5,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t6",
+        "rect": {
+          "x": 350,
+          "y": 324.5,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t7",
+        "rect": {
+          "x": 90,
+          "y": 454.5,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t8",
+        "rect": {
+          "x": 220,
+          "y": 454.5,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "t9",
+        "rect": {
+          "x": 350,
+          "y": 454.5,
+          "width": 130,
+          "height": 130
+        },
+        "selected": false
+      },
+      {
+        "id": "verify",
+        "rect": {
+          "x": 377,
+          "y": 630,
+          "width": 100,
+          "height": 42
+        },
+        "label": "VERIFY"
+      },
+      {
+        "id": "reload",
+        "rect": {
+          "x": 91,
+          "y": 628,
+          "width": 48,
+          "height": 48
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "ACEBBEAA7CF360D2130196D2C3BF77E3"
+  },
+  "history": [
+    {
+      "instruction": "Select all squares with motorcycles If there are none, click skip",
+      "decision": {
+        "reasoning": "Motorcycle with rider sits in the center: the rider's helmet is in t2, the body and bike are in t6 and t7, and the lower bike and wheel are in t10 and t11. Bottom row tiles show no part of it.",
+        "actions": [
+          {
+            "kind": "click",
+            "target": "t2",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t6",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t7",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t10",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t11",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "verify",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          }
+        ]
+      },
+      "errorsAfter": []
+    },
+    {
+      "instruction": "Select all squares with bicycles If there are none, click skip",
+      "decision": {
+        "reasoning": "Bicycles are parked in the lower-left area: the bikes and rack cover t5, t6, t9 and t10, the wheels extend into t13 and t14, and a rear wheel edge reaches t11. I'll select those tiles, then verify.",
+        "actions": [
+          {
+            "kind": "click",
+            "target": "t5",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t6",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t9",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t10",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t11",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t13",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "t14",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          },
+          {
+            "kind": "click",
+            "target": "verify",
+            "text": null,
+            "x": null,
+            "y": null,
+            "toX": null,
+            "toY": null
+          }
+        ]
+      },
+      "errorsAfter": [
+        "Please try again."
+      ]
+    }
+  ],
+  "expected": {
+    "clicks": [
+      "t1",
+      "t2",
+      "t5"
+    ]
+  },
+  "notes": "Dynamic grid after a failed challenge (error text still shown). Cars in t1, t2, t5. Session accepted.",
+  "observed": {
+    "model": "claude-opus-5-5",
+    "decision": {
+      "reasoning": "Task: select images with cars until none are left. t1 has a car on the road, t2 has several cars on a street, and t5 has a white SUV, so those three match. t3 shows houses, t4 traffic lights, t6 palms, t7 a palm, t8 an overpass and t9 palms, none with cars. Because clicked tiles get replaced, I click only the matching tiles this round and do not press verify.",
+      "actions": [
+        {
+          "kind": "click",
+          "target": "t1",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t2",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        },
+        {
+          "kind": "click",
+          "target": "t5",
+          "text": null,
+          "x": null,
+          "y": null,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}
