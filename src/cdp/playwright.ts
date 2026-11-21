@@ -41,6 +41,9 @@ export async function playwrightHost(page: PwPage): Promise<CdpHost & { dispose(
       }
       for (const frame of live) if (!sessions.has(frame)) sessions.set(frame, open(frame).catch(() => undefined));
       const entries = await Promise.all(sessions.values());
+      // A frame without its own session now (a blank frame a widget renders into later) may get
+      // one when it navigates out of process, as the same Frame: ask again next time.
+      for (const [frame, entry] of sessions) if (!(await entry)) sessions.delete(frame);
       return entries.find((e) => e?.id === frameId)?.session;
     },
     async dispose() {

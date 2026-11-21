@@ -22,12 +22,7 @@ it.skipIf(!process.env.LLM_API_KEY).each([
     await openVendorPage(b.context, page, VENDOR_PAGES[vendor]);
     const host = await playwrightHost(page);
     try {
-      const run = () => solve(new CdpDriver(host), { adapters: BUILTIN_ADAPTERS, models: [createModel(liveModel())], maxRounds: 8, timeoutMs: 180_000 });
-      let result = await run();
-      for (let i = 0; result.state === "idle" && i < 10; i++) {
-        await page.waitForTimeout(1000);
-        result = await run();
-      }
+      const result = await solve(new CdpDriver(host), { adapters: BUILTIN_ADAPTERS, models: [createModel(liveModel())], maxRounds: 8, timeoutMs: 180_000 });
       // A failure is evidence: its rounds go to fixtures/captured/ for labeling and replay.
       if (result.state !== "solved") for (const round of result.rounds) saveRound(round, liveModel().model);
       expect(result.state, result.detail).toBe("solved");

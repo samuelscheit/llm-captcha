@@ -76,10 +76,12 @@ function fakeDriver(widget: FakeWidget, hooks: { onScan?: (n: number) => void } 
       return widget.view();
     },
     reveal: async () => {},
+    uncover: async () => {},
     puzzle: async () => null,
     snapshot: async () => "<html>challenge</html>",
     publish: async (state, detail) => void published.push([state, detail]),
     url: async () => "https://site.test/form",
+    document: async () => (widget as { document?: string }).document ?? "doc-1",
   };
   return { driver, published };
 }
@@ -181,11 +183,13 @@ describe("solve loop", () => {
     expect(await solve(driver, { ...options, models: [] })).toMatchObject({ state: "failed", detail: "fake-grid: blocked" });
   });
 
-  it("reports idle without publishing when there was never a challenge", async () => {
+  it("reports idle without publishing when no challenge appeared in time", async () => {
     const widget = new FakeWidget(() => true);
     widget.gone = true;
     const { driver, published } = fakeDriver(widget);
-    expect(await solve(driver, { ...options, models: [] })).toMatchObject({ state: "idle" });
+    const started = Date.now();
+    expect(await solve(driver, { ...options, models: [], appearMs: 1200 })).toMatchObject({ state: "idle" });
+    expect(Date.now() - started).toBeGreaterThanOrEqual(1200);
     expect(published).toEqual([]);
   });
 
@@ -204,6 +208,105 @@ describe("solve loop", () => {
     const widget = new FakeWidget(() => true);
     const { driver } = fakeDriver(widget);
     expect(await solve(driver, { ...options, models: [] })).toMatchObject({ state: "failed", detail: "fake-grid: no model configured" });
+  });
+});
+
+/**
+ * A reCAPTCHA-like checkbox whose token lands in a response field of the page `tokenAfterMs`
+ * after the click (never when undefined). A cover takes every click until it is hidden.
+ */
+class FakeCheckbox {
+  covered?: string;
+  checked = false;
+  token = "";
+  gone = false;
+  appearAt = 0;
+  clicks = 0;
+  constructor(public tokenAfterMs?: number) {}
+  view(): ChallengeView[] {
+    if (this.gone || Date.now() < this.appearAt) return [];
+    return [{
+      adapter: "fake-checkbox", kind: "checkbox", status: this.checked ? "solved" : "pending", region: rect(100, 100, 300, 76), instruction: "", errors: [],
+      targets: [{ id: "checkbox", rect: rect(110, 120, 28, 28) }], visible: true, frame: "f", response: this.token, ...(this.covered && { covered: this.covered }),
+    }];
+  }
+  press(p: { x: number; y: number }) {
+    if (this.covered || !inside(rect(110, 120, 28, 28), p)) return;
+    this.clicks++;
+    this.checked = true;
+    if (this.tokenAfterMs !== undefined) setTimeout(() => (this.token = "token"), this.tokenAfterMs);
+  }
+}
+
+const CHECKBOX: AdapterSpec = { id: "fake-checkbox", kind: "checkbox", root: "#anchor", response: "textarea", targets: [] };
+
+describe("checkbox with a response field", () => {
+  const solveBox = (widget: FakeCheckbox, extra: { appearMs?: number; timeoutMs?: number } = {}) => {
+    const { driver } = fakeDriver(widget as unknown as FakeWidget);
+    let uncovers = 0;
+    return {
+      uncovers: () => uncovers,
+      driver,
+      result: (cover: () => void = () => (widget.covered = undefined)) => {
+        driver.uncover = async () => void (uncovers++, cover());
+        return solve(driver, { adapters: [CHECKBOX], random: seeded(3), models: [], ...extra });
+      },
+    };
+  };
+
+  it("hides what covers the checkbox, then clicks it", async () => {
+    const widget = new FakeCheckbox(0);
+    widget.covered = "div#onetrust-consent-sdk";
+    const run = solveBox(widget);
+    expect(await run.result()).toMatchObject({ state: "solved", detail: "no challenge left" });
+    expect(run.uncovers()).toBe(1);
+    expect(widget.clicks).toBe(1);
+  });
+
+  it("fails naming the cover when it cannot be hidden, without clicking into it", async () => {
+    const widget = new FakeCheckbox(0);
+    widget.covered = "div.modal-backdrop";
+    const run = solveBox(widget);
+    expect(await run.result(() => {})).toMatchObject({ state: "failed", detail: "fake-checkbox: covered by div.modal-backdrop" });
+    expect(run.uncovers()).toBe(3);
+    expect(widget.clicks).toBe(0);
+  });
+
+  it("counts a checked box as solved only once its token is in the page", async () => {
+    const widget = new FakeCheckbox(2000);
+    const result = await solveBox(widget).result();
+    expect(result).toMatchObject({ state: "solved" });
+    expect(widget.token).toBe("token");
+    expect(widget.clicks).toBe(1);
+  });
+
+  it("fails a checked box that disappears without a token instead of calling it solved", async () => {
+    const widget = new FakeCheckbox();
+    setTimeout(() => (widget.gone = true), 2500);
+    expect(await solveBox(widget).result()).toMatchObject({ state: "failed", detail: "fake-checkbox: gone without a response token" });
+  }, 15_000);
+
+  it("calls it solved when the page navigated on by itself, token or not (an interstitial passing)", async () => {
+    const widget = new FakeCheckbox() as FakeCheckbox & { document?: string };
+    setTimeout(() => ((widget.gone = true), (widget.document = "doc-2")), 2500);
+    expect(await solveBox(widget, { appearMs: 1500 }).result()).toMatchObject({ state: "solved", detail: "challenge gone" });
+  }, 15_000);
+
+  it("solves the challenge the page it navigated to renders a few seconds later", async () => {
+    const widget = new FakeCheckbox() as FakeCheckbox & { document?: string };
+    setTimeout(() => ((widget.gone = true), (widget.document = "doc-2")), 2500);
+    // The new page's widget: unchecked, and it hands over its token.
+    setTimeout(() => Object.assign(widget, { gone: false, checked: false, token: "", tokenAfterMs: 0 }), 5000);
+    expect(await solveBox(widget, { appearMs: 8000 }).result()).toMatchObject({ state: "solved", detail: "no challenge left" });
+    expect(widget.clicks).toBe(2);
+    expect(widget.token).toBe("token");
+  }, 20_000);
+
+  it("waits for a checkbox that renders seconds after the page", async () => {
+    const widget = new FakeCheckbox(0);
+    widget.appearAt = Date.now() + 2500;
+    expect(await solveBox(widget, { appearMs: 5000 }).result()).toMatchObject({ state: "solved" });
+    expect(widget.clicks).toBe(1);
   });
 });
 

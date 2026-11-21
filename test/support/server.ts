@@ -26,6 +26,8 @@ export interface ServerState {
   tencent: { puzzle: number; misses: number[]; solved: number };
   /** Slide-to-end look-alikes: every release, with how far short of the end and whether the track went back. */
   slides: { variant: string; short: number; backwards: boolean; passed: boolean }[];
+  /** Clicks that reached the checkbox widget (not the page's cover over it). */
+  checkboxClicks: number;
   /** Model requests the mock received, newest last: prompt, last image, image count, time. */
   modelCalls: { prompt: string; image: string; images: number; at: number }[];
 }
@@ -164,6 +166,16 @@ export const TEST_ADAPTERS: AdapterSpec[] = [
     ],
   },
   {
+    // A reCAPTCHA-like checkbox frame that hands its token to the embedding page.
+    id: "test-checkbox",
+    kind: "checkbox",
+    url: String.raw`127\.0\.0\.1:\d+/checkbox`,
+    root: "#anchor",
+    solved: '#box[aria-checked="true"]',
+    response: "textarea[name=test-response]",
+    targets: [{ id: "checkbox", selector: "#box" }],
+  },
+  {
     id: "test-point",
     kind: "point",
     url: String.raw`127\.0\.0\.1:\d+/point`,
@@ -250,7 +262,7 @@ function mockDecision(state: ServerState, mock: MockBehaviour, prompt: string): 
 export async function startServer(): Promise<TestServer> {
   const state: ServerState = {
     text: newText(), textSubmitted: [], grid: newGrid(), gridVerified: 0, gridLoadedAt: 0, point: newPoint(), pointClicks: [], animMisses: [],
-    tencent: { puzzle: 0, misses: [], solved: 0 }, slides: [], modelCalls: [],
+    tencent: { puzzle: 0, misses: [], solved: 0 }, slides: [], checkboxClicks: 0, modelCalls: [],
   };
   const mock: MockBehaviour = { wrongFirst: 0 };
   let origin = "";
@@ -336,6 +348,34 @@ submit.onclick=()=>{document.querySelector('.error').hidden=hit;if(hit){done.hid
       return ["application/json", "true"];
     },
     "/landed": () => ["text/html", page("Landed", "<h1>Landed</h1>")],
+    // The checkbox frame: a click checks it and sends the token to the page, as reCAPTCHA's anchor does.
+    "/checkbox": () => ["text/html", page("Checkbox", `<style>body{margin:0} #anchor{width:300px;height:74px;border:1px solid #d3d3d3;display:flex;align-items:center;gap:12px;padding-left:12px;box-sizing:border-box}
+#box{width:26px;height:26px;border:2px solid #c1c1c1;border-radius:2px;cursor:pointer} #box[aria-checked=true]{background:#1d7a46}</style>
+<div id="anchor"><span id="box" role="checkbox" aria-checked="false"></span>I'm not a robot</div>
+<script>box.onclick=()=>{box.setAttribute('aria-checked','true');fetch('/checkbox/click',{method:'POST'});parent.postMessage({token:'token-'+Date.now()},'*')}</script>`)],
+    "/checkbox/click": () => {
+      state.checkboxClicks++;
+      return ["text/plain", "ok"];
+    },
+    /**
+     * A form with the checkbox frame below the fold and its response field next to it. `banner=1`
+     * lays a OneTrust-like cookie banner with a full-page backdrop over everything. `token`: `fill`
+     * puts the token into the field at once, `late` 3 s after the check, `vanish` never, and the
+     * page removes the widget instead (a re-render that lost it), `navigate` never either, and the
+     * page navigates on by itself (Cloudflare's interstitial reloading into the site). `late=1`
+     * renders the widget 3 s after load into a frame that starts out blank, as explicit renders do,
+     * next to a cross-site frame that is there from the start (a tracker).
+     */
+    "/consent": (_req, url) => ["text/html", page("Consent", `<h1>Report abuse</h1><div style="height:${url.searchParams.get("offset") ?? 1100}px"></div>
+${url.searchParams.get("late") === "1" ? `<iframe src="${widgetOrigin}/landed" style="width:1px;height:1px;border:0"></iframe>` : ""}
+<form><div id="widget"><iframe ${url.searchParams.get("late") === "1" ? "" : `src="${widgetOrigin}/checkbox" `}style="width:304px;height:78px;border:0"></iframe><textarea name="test-response" style="display:none"></textarea></div><button>Submit</button></form>
+${url.searchParams.get("banner") === "1" ? `<div id="onetrust-consent-sdk"><div class="onetrust-pc-dark-filter" style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2147483645"></div>
+<div id="onetrust-banner-sdk" role="dialog" style="position:fixed;top:80px;left:320px;width:650px;padding:24px;background:#fff;z-index:2147483646">About Cookies <button>Got It</button></div></div>` : ""}
+<script>${url.searchParams.get("late") === "1" ? `setTimeout(()=>document.querySelector('#widget iframe').src=${JSON.stringify(`${widgetOrigin}/checkbox`)},3000);` : ""}
+addEventListener('message',e=>{if(!e.data?.token)return;const mode=${JSON.stringify(url.searchParams.get("token") ?? "fill")};
+const field=document.querySelector('[name=test-response]');
+if(mode==='fill')field.value=e.data.token;else if(mode==='late')setTimeout(()=>field.value=e.data.token,3000);
+else if(mode==='navigate')setTimeout(()=>location.href='/landed',1000);else setTimeout(()=>widget.remove(),1000)})</script>`)],
     /** A real vendor widget with its official always-pass test sitekey. */
     "/vendor": (_req, url) => {
       const vendor = VENDORS[url.searchParams.get("kind") as keyof typeof VENDORS];

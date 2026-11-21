@@ -3,10 +3,16 @@ import type { Rect } from "../core/types";
 /** Closed shadow roots handed in by a CDP driver, which can see them through DOM.getDocument. */
 export const seededShadows = new WeakMap<Element, ShadowRoot>();
 
+/**
+ * The extension API that opens closed shadow roots. Typed here, not through @types/chrome: the
+ * CDP library ships this file as source, and its consumers have no chrome types.
+ */
+const extensionDom = () => (globalThis as { chrome?: { dom?: { openOrClosedShadowRoot?(el: HTMLElement): ShadowRoot | null | undefined } } }).chrome?.dom;
+
 /** Shadow root of an element: closed ones through the extension API or the CDP-seeded map. */
 export function shadowOf(el: Element): ShadowRoot | null {
   // The extension API throws for anything but HTML elements (SVG, MathML), which cannot host one.
-  const closed = el instanceof HTMLElement ? (globalThis.chrome?.dom?.openOrClosedShadowRoot?.(el) as ShadowRoot | null | undefined) : undefined;
+  const closed = el instanceof HTMLElement ? extensionDom()?.openOrClosedShadowRoot?.(el) : undefined;
   return closed ?? seededShadows.get(el) ?? el.shadowRoot ?? null;
 }
 
@@ -36,7 +42,4 @@ export function textOf(el: Element): string {
   return ((el as HTMLElement).innerText ?? el.textContent ?? "").replace(/\s+/g, " ").trim();
 }
 
-export function offsetRect(r: Rect, dx: number, dy: number): Rect {
-  return { x: r.x + dx, y: r.y + dy, width: r.width, height: r.height };
-}
 

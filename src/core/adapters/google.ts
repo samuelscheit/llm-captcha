@@ -10,6 +10,7 @@ export const GOOGLE: AdapterSpec[] = [
     url: `${RECAPTCHA}/anchor`,
     root: "#rc-anchor-container",
     solved: '#recaptcha-anchor[aria-checked="true"]',
+    response: "textarea[name=g-recaptcha-response]",
     waiting: ".recaptcha-checkbox-loading, .recaptcha-checkbox-spinner-overlay[style*='opacity: 1']",
     // "Verification expired. Check the checkbox again." shows in the same place and is recoverable.
     blockedText: "(try again later|automated queries)",

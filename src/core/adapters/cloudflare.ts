@@ -11,6 +11,7 @@ export const CLOUDFLARE: AdapterSpec[] = [
     retryMs: 8000,
     // Without the checkbox the widget is verifying, or retrying a failure by itself: waiting.
     solvedText: "^Success!?$",
+    response: "input[name=cf-turnstile-response]",
     targets: [{ id: "checkbox", selector: "label:has(input[type=checkbox])", optional: true }],
   },
   {

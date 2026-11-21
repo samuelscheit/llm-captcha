@@ -49,6 +49,13 @@ export interface ChallengeView {
   targets: Target[];
   /** False when the element or one of its frames is hidden (it may still be scrolled out of view). */
   visible: boolean;
+  /**
+   * Name of an element of the embedding page on top of the challenge or one of its frames (a
+   * cookie banner, a modal backdrop): clicks would land on it.
+   */
+  covered?: string;
+  /** Value of the adapter's `response` field next to the widget; undefined when there is none. */
+  response?: string;
   /** Opaque key of the frame the view came from, set by the driver. */
   frame?: string;
 }
@@ -118,6 +125,13 @@ export interface AdapterSpec {
   errorsMatch?: string;
   /** Selector that matches anywhere in the document when solved. */
   solved?: string;
+  /**
+   * Field the widget fills with its token in the page that embeds its frame
+   * (`textarea[name=g-recaptcha-response]`), found nearest to the frame element. When it exists,
+   * the challenge counts as solved only once it holds a value: a checked box without a token has
+   * not passed, and a widget that disappears without one has failed.
+   */
+  response?: string;
   /** Regex matched against visible leaf texts when solved. */
   solvedText?: string;
   /** Selector that matches when the challenge cannot be solved (e.g. "try again later"). */

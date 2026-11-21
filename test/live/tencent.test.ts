@@ -14,12 +14,7 @@ it("solves the real Tencent slide puzzle and gets a ticket [tencent-slider]", as
     await openVendorPage(b.context, page, VENDOR_PAGES.tencent);
     const host = await playwrightHost(page);
     try {
-      // The popup frame takes a few seconds to render its puzzle: "idle" until then.
-      let result = await solve(new CdpDriver(host), { adapters: BUILTIN_ADAPTERS, maxRounds: 4, timeoutMs: 60_000 });
-      for (let i = 0; result.state === "idle" && i < 15; i++) {
-        await page.waitForTimeout(1000);
-        result = await solve(new CdpDriver(host), { adapters: BUILTIN_ADAPTERS, maxRounds: 4, timeoutMs: 60_000 });
-      }
+      const result = await solve(new CdpDriver(host), { adapters: BUILTIN_ADAPTERS, maxRounds: 4, timeoutMs: 60_000 });
       expect(result.state, result.detail).toBe("solved");
     } finally {
       await host.dispose();

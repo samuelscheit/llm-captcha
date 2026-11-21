@@ -23,6 +23,11 @@ export interface EngineOptions {
   maxRounds?: number;
   /** Whole session, including waits for the vendor's verdict. */
   timeoutMs?: number;
+  /**
+   * How long to look for a challenge before reporting `idle`: widgets render seconds after the
+   * page loads (reCAPTCHA's explicit render after the consent script). Default 15000.
+   */
+  appearMs?: number;
   random?: RandomSource;
   signal?: AbortSignal;
   /** Every model round, with the screenshot, e.g. to save it as a fixture. */
@@ -69,6 +74,8 @@ const HISTORY_ROUNDS = 3;
 const GONE_MS = 4000;
 /** Reveal attempts before a challenge that does not fit the viewport is solved as it is. */
 const MAX_REVEALS = 3;
+/** Attempts to hide what covers a challenge before giving up on it. */
+const MAX_UNCOVERS = 3;
 /** A region that moved more than this (CSS px) while the model thought makes its answer stale. */
 const MAX_DRIFT = 4;
 /** Rejected rounds in a row on one puzzle before asking the widget for a new one. */
@@ -274,6 +281,13 @@ async function solveLoop(
   const lastClick = new Map<string, number>();
   const histories = new Map<string, HistoryEntry[]>();
   const reveals = new Map<string, number>();
+  const uncovers = new Map<string, number>();
+  /** Challenges of the last scan that saw any, whose response field was empty: not passed. */
+  const tokenless = new Map<string, string>();
+  /** The top document challenges were last seen in: one that navigated since has moved on by itself. */
+  let seenIn = "";
+  /** Since when the session looks at a page that shows no challenge yet: its start, or a navigation. */
+  let lookingSince: number | undefined = Date.now();
   /** Rounds in a row the widget rejected, per challenge. */
   const rejections = new Map<string, number>();
   /** Slide or hold attempts per widget, and the gap of its last slide. */
@@ -289,7 +303,16 @@ async function solveLoop(
   let goneSince: number | undefined;
   let previous: { key: string; entry: HistoryEntry; record: RoundRecord } | undefined;
   const finish = (state: SolveResult["state"], detail: string) => finishWith(state, detail, session.announced);
-  const scan = async () => (await abortable(driver.scan(adapters), signal)).filter((v) => v.visible);
+  const scan = async () => {
+    const views = (await abortable(driver.scan(adapters), signal)).filter((v) => v.visible);
+    if (views.length) {
+      tokenless.clear();
+      for (const v of views) if (v.response === "") tokenless.set(keyOf(v), v.adapter);
+      seenIn = await abortable(driver.document(), signal);
+    }
+    // A widget that shows success without its token has not passed yet (or never will).
+    return views.map((v): ChallengeView => (v.status === "solved" && v.response === "" ? { ...v, status: "waiting" } : v));
+  };
 
   // Input first: the extension's debugger infobar shrinks the viewport, so scan after it shows.
   await driver.input.viewport();
@@ -311,14 +334,30 @@ async function solveLoop(
     const active = views.filter((v) => v.status === "pending" || v.status === "waiting");
     if (!active.length) {
       if (views.some((v) => v.status === "solved")) return finish("solved", "no challenge left");
-      if (!session.announced) return finish("idle", "no challenge found");
-      // Seen before, gone now: closed after passing, or only re-rendering. Look for a while.
+      // A page without challenges so far may still render one (seconds after load).
+      if (lookingSince !== undefined) {
+        if (Date.now() - lookingSince >= (options.appearMs ?? 15_000)) return session.announced ? finish("solved", "challenge gone") : finish("idle", "no challenge found");
+        await sleep(500, signal);
+        continue;
+      }
+      // Gone after it was seen. The page navigated on by itself (Cloudflare's interstitial
+      // reloading into the site, a form the widget submitted): the new page may bring its own.
+      if ((await abortable(driver.document(), signal)) !== seenIn) {
+        lookingSince = Date.now();
+        continue;
+      }
+      // Same page: closed after passing, or only re-rendering. Look for a while.
       goneSince ??= Date.now();
-      if (Date.now() - goneSince >= GONE_MS) return finish("solved", "challenge gone");
+      if (Date.now() - goneSince >= GONE_MS) {
+        // Removed from the page without its token: it never passed.
+        const unpassed = tokenless.values().next().value;
+        return unpassed ? finish("failed", `${unpassed}: gone without a response token`) : finish("solved", "challenge gone");
+      }
       await sleep(500, signal);
       continue;
     }
     goneSince = undefined;
+    lookingSince = undefined;
     if (!session.announced) {
       session.announced = true;
       await driver.publish("solving", active[0]!.adapter);
@@ -346,6 +385,15 @@ async function solveLoop(
       if (tries >= MAX_REVEALS * 3) return finish("failed", `${view.adapter}: cannot scroll it into view`);
       await driver.reveal(view, spec);
       await sleep(400, signal);
+      continue;
+    }
+    // Something of the page lies on top of it (a cookie banner): clicks would land there.
+    if (view.covered) {
+      const tries = uncovers.get(keyOf(view)) ?? 0;
+      if (tries >= MAX_UNCOVERS) return finish("failed", `${view.adapter}: covered by ${view.covered}`);
+      uncovers.set(keyOf(view), tries + 1);
+      await driver.uncover(view, spec);
+      await sleep(300, signal);
       continue;
     }
 

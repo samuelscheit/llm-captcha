@@ -1,13 +1,14 @@
 import type { AdapterSpec, ChallengeView, PageState } from "../core/types";
 import type { ImageTools } from "../core/driver";
+import { ownerState, uncover } from "./cover";
 import { isVisible, queryAll, seededShadows, shadowOf } from "./dom";
-
-const SNAPSHOT_LIMIT = 512 * 1024;
 import { ask, ASSIST_HOST_ID } from "./assist";
 import { compose, crop, label, motion } from "./image";
 import { measurePuzzle } from "./puzzle";
 import { skeleton } from "./skeleton";
 import { scanFrame } from "./scan";
+
+const SNAPSHOT_LIMIT = 512 * 1024;
 
 /**
  * The code a driver runs inside page frames, in an isolated world: the extension as a content
@@ -17,6 +18,13 @@ import { scanFrame } from "./scan";
 export interface PageApi {
   scan(adapters: AdapterSpec[]): ChallengeView[];
   reveal(adapter: AdapterSpec): void;
+  /**
+   * Hide what covers the challenge's root in this frame, when this is the top page (see `scan`).
+   * Covers of frame elements are hidden in their parent frame with `uncoverElement`.
+   */
+  uncover(adapter: AdapterSpec): string[];
+  uncoverElement(el: Element): string[];
+  ownerState: typeof ownerState;
   images: ImageTools;
   publish(state: PageState, detail: string): void;
   /** This frame's document as HTML, closed shadow roots included, for fixing adapters offline. */
@@ -35,6 +43,13 @@ export const pageApi: PageApi = {
     // Instant: sites with `scroll-behavior: smooth` would still be moving at the next screenshot.
     queryAll(document, adapter.root, !!adapter.pierce).find(isVisible)?.scrollIntoView({ block: "center", inline: "center", behavior: "instant" });
   },
+  uncover(adapter) {
+    if (window !== window.top) return [];
+    const root = queryAll(document, adapter.root, !!adapter.pierce).find(isVisible);
+    return root ? uncover(root) : [];
+  },
+  uncoverElement: uncover,
+  ownerState,
   images: { crop, label, motion, compose },
   publish(state, detail) {
     // A session that ended (timed out, solved by someone else) leaves no panel behind.

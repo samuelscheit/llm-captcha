@@ -6,7 +6,7 @@
   "scripts": {
     "build": "bun build.ts",
     "prepare": "bun build.ts",
-    "typecheck": "bun build.ts && tsc --noEmit",
+    "typecheck": "bun build.ts && tsc --noEmit && tsc --noEmit -p tsconfig.library.json",
     "test": "vitest run test/unit",
     "e2e": "bun run build && vitest run test/e2e --reporter=default --reporter=json --outputFile.json=out/reports/e2e.json; code=$?; bun src/tools/benchmark/record-verified.ts out/reports/e2e.json; exit $code",
     "eval": "bun run build && bun src/tools/eval.ts",

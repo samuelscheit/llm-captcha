@@ -22,19 +22,12 @@ async function liveSolve(vendor: VendorName, withModel: boolean): Promise<{ resu
     await openVendorPage(b.context, page, VENDOR_PAGES[vendor]);
     const host = await playwrightHost(page);
     try {
-      const run = () =>
-        solve(new CdpDriver(host), {
-          adapters: BUILTIN_ADAPTERS,
-          models: withModel ? [createModel(liveModel())] : [],
-          maxRounds: withModel ? 8 : 4,
-          timeoutMs: withModel ? 180_000 : 90_000,
-        });
-      // Widgets render a moment after load: "idle" until then.
-      let result = await run();
-      for (let i = 0; result.state === "idle" && i < 15; i++) {
-        await page.waitForTimeout(1000);
-        result = await run();
-      }
+      const result = await solve(new CdpDriver(host), {
+        adapters: BUILTIN_ADAPTERS,
+        models: withModel ? [createModel(liveModel())] : [],
+        maxRounds: withModel ? 8 : 4,
+        timeoutMs: withModel ? 180_000 : 90_000,
+      });
       const passed = result.state === "solved" || (await vendorPassed(page));
       // A failure is evidence: its model rounds go to fixtures/captured/ for labeling and replay.
       if (!passed && withModel) for (const round of result.rounds) saveRound(round, liveModel().model);

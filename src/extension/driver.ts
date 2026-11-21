@@ -46,6 +46,10 @@ export class ExtensionDriver implements Driver {
     await this.inFrame(Number(view.frame), (spec: AdapterSpec) => (globalThis as unknown as { __captcha: Api }).__captcha.reveal(spec), adapter);
   }
 
+  async uncover(view: ChallengeView, adapter: AdapterSpec): Promise<void> {
+    await this.inFrame(Number(view.frame), (spec: AdapterSpec) => (globalThis as unknown as { __captcha: Api }).__captcha.uncoverAll(spec), adapter);
+  }
+
   async puzzle(view: ChallengeView, adapter: AdapterSpec, withImages = false): Promise<PuzzleMeasure | null> {
     const [result] = await chrome.scripting.executeScript({
       target: { tabId: this.tabId, frameIds: [Number(view.frame)] },
@@ -78,6 +82,11 @@ export class ExtensionDriver implements Driver {
 
   async url(): Promise<string> {
     return (await chrome.tabs.get(this.tabId)).url ?? "";
+  }
+
+  async document(): Promise<string> {
+    const [result] = await chrome.scripting.executeScript({ target: { tabId: this.tabId, frameIds: [0] }, func: () => 0 });
+    return result?.documentId ?? "";
   }
 
   async close(): Promise<void> {

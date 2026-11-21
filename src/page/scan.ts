@@ -1,4 +1,5 @@
 import type { AdapterSpec, ChallengeStatus, ChallengeView, Target } from "../core/types";
+import { coveredBy, nameOf } from "./cover";
 import { isVisible, queryAll, rectOf, textOf } from "./dom";
 
 /** Visible elements that carry text themselves (no element children with text). */
@@ -87,6 +88,10 @@ export function scanAdapter(spec: AdapterSpec, doc: Document = document, url = l
   const targets = targetsOf(spec, doc, pierce);
   if (!targets) return null;
   const region = rectOf(root);
+  // Only the top page's own covers count here: a vendor's frame lays out its own widget, and
+  // covers in the pages between are checked on each frame element (`ownerState`).
+  const view = doc.defaultView;
+  const cover = view && view === view.top ? coveredBy(root) : null;
   return {
     adapter: spec.id,
     kind: spec.kind,
@@ -98,6 +103,7 @@ export function scanAdapter(spec: AdapterSpec, doc: Document = document, url = l
     ),
     targets,
     visible: true,
+    ...(cover && { covered: nameOf(cover) }),
   };
 }
 

@@ -3,6 +3,7 @@ import type { Driver, ImageTools } from "../core/driver";
 import type { RandomSource } from "../core/mouse";
 import type { AdapterSpec, ChallengeView, PageState } from "../core/types";
 import type { AssistRequest } from "../page/assist";
+import { nestOffset, placeView, responseSelectors, TOP_FRAME, type FrameOffset, type OwnerState } from "../page/cover";
 import type { PuzzleMeasure } from "../page/puzzle";
 import { PAGE_SOURCE } from "./page-source.generated";
 
@@ -45,19 +46,6 @@ interface DomNode {
 
 const WORLD = "captcha-solver";
 
-/** Runs on an iframe element in its parent's isolated world: its content box in that viewport. */
-function ownerBox(this: HTMLIFrameElement) {
-  const r = this.getBoundingClientRect();
-  const s = getComputedStyle(this);
-  const shown = this.checkVisibility({ opacityProperty: true, visibilityProperty: true }) && r.width > 1 && r.height > 1;
-  return {
-    x: r.x + this.clientLeft + parseFloat(s.paddingLeft),
-    y: r.y + this.clientTop + parseFloat(s.paddingTop),
-    // Vendors park hidden challenge frames far outside the document (top: -10000px).
-    visible: shown && r.right + scrollX > 0 && r.bottom + scrollY > 0,
-  };
-}
-
 /**
  * Driver over plain CDP. The page code runs in an isolated world per frame, invisible to page
  * scripts; out-of-process frames are reached through their own sessions.
@@ -78,10 +66,11 @@ export class CdpDriver implements Driver {
   async scan(adapters: AdapterSpec[]): Promise<ChallengeView[]> {
     this.frames = await this.liveFrames();
     const pierceUrls = adapters.filter((a) => a.pierce).map((a) => new RegExp(a.url ?? "", "i"));
-    const offsets = new Map<string, Promise<{ x: number; y: number; visible: boolean }>>();
-    const offsetOf = (id: string): Promise<{ x: number; y: number; visible: boolean }> => {
+    const responses = responseSelectors(adapters);
+    const offsets = new Map<string, Promise<FrameOffset>>();
+    const offsetOf = (id: string): Promise<FrameOffset> => {
       let offset = offsets.get(id);
-      if (!offset) offsets.set(id, (offset = this.frameOffset(id, offsetOf)));
+      if (!offset) offsets.set(id, (offset = this.frameOffset(id, offsetOf, responses)));
       return offset;
     };
     const perFrame = await Promise.all(
@@ -90,14 +79,8 @@ export class CdpDriver implements Driver {
           if (pierceUrls.some((re) => re.test(frame.url))) await this.seedShadows(frame);
           const local = (await this.call(frame, (adapters: AdapterSpec[]) => (globalThis as any).__captcha.scan(adapters), adapters)) as ChallengeView[];
           if (!local.length) return [];
-          const o = await offsetOf(frame.id);
-          return local.map((v) => ({
-            ...v,
-            frame: frame.id,
-            region: { ...v.region, x: v.region.x + o.x, y: v.region.y + o.y },
-            targets: v.targets.map((t) => ({ ...t, rect: { ...t.rect, x: t.rect.x + o.x, y: t.rect.y + o.y } })),
-            visible: v.visible && o.visible,
-          }));
+          const offset = await offsetOf(frame.id);
+          return local.map((v) => ({ ...placeView(v, offset, adapters), frame: frame.id }));
         } catch {
           // A frame that navigated or detached mid-scan shows up again next scan.
           return [];
@@ -110,6 +93,15 @@ export class CdpDriver implements Driver {
   async reveal(view: ChallengeView, adapter: AdapterSpec): Promise<void> {
     const frame = this.frames.get(view.frame ?? "");
     if (frame) await this.call(frame, (spec: AdapterSpec) => (globalThis as any).__captcha.reveal(spec), adapter);
+  }
+
+  async uncover(view: ChallengeView, adapter: AdapterSpec): Promise<void> {
+    let frame = this.frames.get(view.frame ?? "");
+    if (!frame) return;
+    await this.call(frame, (spec: AdapterSpec) => (globalThis as any).__captcha.uncover(spec), adapter);
+    for (let parent = this.frames.get(frame.parentId ?? ""); parent; frame = parent, parent = this.frames.get(frame.parentId ?? "")) {
+      await this.onOwner(parent, frame.id, "function () { return globalThis.__captcha.uncoverElement(this) }");
+    }
   }
 
   /** Image work runs in the top frame's isolated world. */
@@ -167,6 +159,11 @@ export class CdpDriver implements Driver {
   async url(): Promise<string> {
     const { frameTree } = await this.host.page.send("Page.getFrameTree");
     return frameTree.frame.url;
+  }
+
+  async document(): Promise<string> {
+    const { frameTree } = await this.host.page.send("Page.getFrameTree");
+    return frameTree.frame.loaderId;
   }
 
   private async mainFrame(): Promise<LiveFrame> {
@@ -243,23 +240,32 @@ export class CdpDriver implements Driver {
     return result.value;
   }
 
-  /** A frame's viewport origin in top-level coordinates, from its owner element in the parent. */
-  private async frameOffset(id: string, offsetOf: (id: string) => Promise<{ x: number; y: number; visible: boolean }>) {
+  /** A frame's viewport in top-level coordinates, from its owner element in the parent and theirs. */
+  private async frameOffset(id: string, offsetOf: (id: string) => Promise<FrameOffset>, responses: string[]): Promise<FrameOffset> {
     const frame = this.frames.get(id);
-    const parent = frame?.parentId ? this.frames.get(frame.parentId) : undefined;
-    if (!frame?.parentId) return { x: 0, y: 0, visible: true };
-    if (!parent) return { x: 0, y: 0, visible: false };
+    if (!frame?.parentId) return TOP_FRAME;
+    const parent = this.frames.get(frame.parentId);
+    if (!parent) return { ...TOP_FRAME, visible: false };
+    const owner = (await this.onOwner(parent, id, "function (responses) { return globalThis.__captcha.ownerState(this, responses) }", responses)) as OwnerState;
+    return nestOffset(await offsetOf(parent.id), owner);
+  }
+
+  /** Call `functionDeclaration` on the element of frame `id` in its parent's isolated world. */
+  private async onOwner(parent: LiveFrame, id: string, functionDeclaration: string, ...args: unknown[]): Promise<unknown> {
     const { backendNodeId } = await parent.session.send("DOM.getFrameOwner", { frameId: id });
     const { object } = await parent.session.send("DOM.resolveNode", { backendNodeId, executionContextId: parent.context });
-    const { result } = await parent.session.send("Runtime.callFunctionOn", {
-      objectId: object.objectId,
-      functionDeclaration: ownerBox.toString(),
-      returnByValue: true,
-    });
-    await parent.session.send("Runtime.releaseObject", { objectId: object.objectId }).catch(() => {});
-    const box = result.value as { x: number; y: number; visible: boolean };
-    const base = await offsetOf(parent.id);
-    return { x: base.x + box.x, y: base.y + box.y, visible: base.visible && box.visible };
+    try {
+      const { result, exceptionDetails } = await parent.session.send("Runtime.callFunctionOn", {
+        objectId: object.objectId,
+        functionDeclaration,
+        arguments: args.map((value) => ({ value })),
+        returnByValue: true,
+      });
+      if (exceptionDetails) throw new Error(exceptionDetails.exception?.description ?? exceptionDetails.text);
+      return result.value;
+    } finally {
+      await parent.session.send("Runtime.releaseObject", { objectId: object.objectId }).catch(() => {});
+    }
   }
 
   /** Hand the frame's closed shadow roots to its page code; scripts cannot reach them otherwise. */
