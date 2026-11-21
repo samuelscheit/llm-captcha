@@ -1,0 +1,6 @@
+{
+  "//": "The CDP library as a consumer type-checks it: the package exports the TypeScript source, and consumers have no @types/chrome.",
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "types": ["node"] },
+  "include": ["src/cdp/index.ts"]
+}
