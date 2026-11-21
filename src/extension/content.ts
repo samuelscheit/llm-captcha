@@ -1,30 +1,32 @@
 import type { AdapterSpec, ChallengeView } from "../core/types";
-import { offsetRect } from "../page/dom";
+import { placeView, responseSelectors } from "../page/cover";
 import { PAGE_GLOBAL, pageApi } from "../page/index";
 import { scanFrame } from "../page/scan";
-import { frameOffset, serveFrameOffsets } from "./frames";
+import { frameOffset, serveFrames, uncoverAncestors } from "./frames";
 import type { Message } from "./messages";
 import { adaptersOf, loadSettings } from "./settings";
 
-/** The page API plus `scanTop`: views moved into top-level coordinates through the frame chain. */
+/**
+ * The page API plus what goes through the frame chain: `scanTop` (views in top-level coordinates)
+ * and `uncoverAll` (covers hidden in this frame and every frame above it).
+ */
 export const contentApi = {
   ...pageApi,
   async scanTop(adapters: AdapterSpec[]): Promise<ChallengeView[]> {
     const local = pageApi.scan(adapters);
     if (!local.length) return [];
-    const offset = await frameOffset();
-    return local.map((view) => ({
-      ...view,
-      region: offsetRect(view.region, offset.x, offset.y),
-      targets: view.targets.map((t) => ({ ...t, rect: offsetRect(t.rect, offset.x, offset.y) })),
-      visible: view.visible && offset.visible,
-    }));
+    const offset = await frameOffset(responseSelectors(adapters));
+    return local.map((view) => placeView(view, offset, adapters));
+  },
+  uncoverAll(adapter: AdapterSpec): void {
+    pageApi.uncover(adapter);
+    uncoverAncestors();
   },
 };
 export type ContentApi = typeof contentApi;
 
 Object.assign(globalThis, { [PAGE_GLOBAL]: contentApi });
-serveFrameOffsets();
+serveFrames();
 
 // Wake the service worker when a challenge needs work. It scans all frames itself; a frame reports
 // its transition to "pending", and again every few seconds while it stays pending, so a wake lost

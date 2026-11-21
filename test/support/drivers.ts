@@ -46,15 +46,6 @@ async function scanOnce(host: CdpHost & { dispose(): Promise<void> }): Promise<C
   }
 }
 
-/** Solve until something was found: challenges render a moment after load. */
-async function solveUntilFound(run: () => Promise<SolveResult>, pause: () => Promise<unknown>): Promise<SolveResult> {
-  for (let attempt = 0; ; attempt++) {
-    const result = await run();
-    if (result.state !== "idle" || attempt >= 10) return result;
-    await pause();
-  }
-}
-
 /** The same scenario under each driver: the extension on its own, or the CDP library on Playwright or Puppeteer. */
 export async function harness(kind: DriverKind, model: ModelConfig, adapters: AdapterSpec[] = []): Promise<Harness> {
   // Well inside the test timeout: a stuck widget fails with the engine's own detail.
@@ -87,7 +78,7 @@ export async function harness(kind: DriverKind, model: ModelConfig, adapters: Ad
         await page.goto(url);
         const host = await puppeteerHost(page);
         try {
-          return await solveUntilFound(() => solve(new CdpDriver(host), engine()), () => new Promise((r) => setTimeout(r, 500)));
+          return await solve(new CdpDriver(host), engine());
         } finally {
           await host.dispose();
         }
@@ -112,7 +103,7 @@ export async function harness(kind: DriverKind, model: ModelConfig, adapters: Ad
     await page.goto(url);
     const host = await playwrightHost(page);
     try {
-      return await solveUntilFound(() => solve(new CdpDriver(host), engine()), () => page.waitForTimeout(500));
+      return await solve(new CdpDriver(host), engine());
     } finally {
       await host.dispose();
     }

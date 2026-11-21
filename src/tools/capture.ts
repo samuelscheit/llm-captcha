@@ -49,12 +49,7 @@ try {
       const host = await playwrightHost(page);
       const driver = new CdpDriver(host);
       const slides: SlideRecord[] = [];
-      const run = () => solve(driver, { adapters: BUILTIN_ADAPTERS, models: [model], onSlide: (s) => slides.push(s) });
-      let result = await run();
-      for (let i = 0; result.state === "idle" && i < 10; i++) {
-        await page.waitForTimeout(1000);
-        result = await run();
-      }
+      const result = await solve(driver, { adapters: BUILTIN_ADAPTERS, models: [model], onSlide: (s) => slides.push(s) });
       const passed = result.state === "solved" || (await vendorPassed(page));
       console.log(`${url} #${session}: ${result.state} (${result.detail}), vendor ${passed ? "passed" : "did not pass"}, ${result.rounds.length} model rounds, ${slides.length} slides`);
       // The last slide of a session the vendor passed had the right offset.

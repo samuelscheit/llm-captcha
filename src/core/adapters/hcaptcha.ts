@@ -8,6 +8,7 @@ export const HCAPTCHA: AdapterSpec[] = [
     url: String.raw`hcaptcha\.com/captcha/.*frame=checkbox`,
     root: "#anchor",
     solved: '#checkbox[aria-checked="true"]',
+    response: "textarea[name=h-captcha-response]",
     waiting: "#anchor-state .pulse:not([style*='display: none'])",
     targets: [{ id: "checkbox", selector: "#checkbox" }],
   },

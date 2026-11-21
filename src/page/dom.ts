@@ -36,7 +36,4 @@ export function textOf(el: Element): string {
   return ((el as HTMLElement).innerText ?? el.textContent ?? "").replace(/\s+/g, " ").trim();
 }
 
-export function offsetRect(r: Rect, dx: number, dy: number): Rect {
-  return { x: r.x + dx, y: r.y + dy, width: r.width, height: r.height };
-}
 

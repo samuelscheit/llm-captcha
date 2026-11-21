@@ -47,21 +47,21 @@ fixtures/       real challenges by provider (recaptcha/, hcaptcha/, tencent/), r
 test/           unit, e2e (local pages + vendor test widgets, every driver), live (real widgets)
 ```
 
-The engine talks to a browser only through `Driver` (`src/core/driver.ts`): `scan`, `reveal`, `input` (trusted mouse and keys, screenshots), `images` and `publish`.
+The engine talks to a browser only through `Driver` (`src/core/driver.ts`): `scan`, `reveal`, `uncover`, `input` (trusted mouse and keys, screenshots), `images` and `publish`.
 
 - **ExtensionDriver.** Content scripts in every frame scan, and resolve frame offsets by asking their parent frame. `chrome.debugger` is attached only while a challenge is being solved, for trusted input.
 - **CdpDriver.** The page bundle (`dist/page.js`) is injected into an isolated world per frame, which page scripts cannot see. Out-of-process frames are found through `iframe` targets. Closed shadow roots (Turnstile) are read with `DOM.getDocument({pierce})` and handed to the scanner.
 
 Each solve round:
 
-1. Scan every frame for challenges and pick the open popup over its checkbox.
-2. Scroll it into view.
+1. Scan every frame for challenges and pick the open popup over its checkbox. A page that has not rendered its widget yet is watched for up to `appearMs` (15 s) before the session ends as `idle`; so is a page the challenge navigated to (Cloudflare's interstitial reloading into the site), which may bring its own.
+2. Scroll it into view. If an element of the page lies on top of it or of one of its frames (a cookie banner with its backdrop, a modal), clicks would land there: the scanner hit-tests the challenge and every frame element above it, and the engine hides the outermost element covering it before acting, or fails with `covered by <element>`.
 3. Capture a burst of frames (for animated challenges) and find the regions that moved.
 4. Label targets on the image and ask the model for actions.
 5. Run the actions as human-like CDP gestures (eased approach, minimum-jerk drags, focus emulation).
 6. Read the widget's verdict and feed errors into the next round.
 
-Checkboxes are clicked without a model, spaced so the vendor's verdict can arrive (Turnstile restarts its check on every click).
+Checkboxes are clicked without a model, spaced so the vendor's verdict can arrive (Turnstile restarts its check on every click). A widget that hands a token to its page (reCAPTCHA, hCaptcha, Turnstile) declares that field as `response`: the challenge counts as solved only once the field next to its frame holds a value. A checked box without one is still verifying, and a widget that disappears from a page that stays without one has failed.
 
 The model is asked only about a challenge at rest. These checks cost no round:
 

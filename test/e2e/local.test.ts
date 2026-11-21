@@ -62,6 +62,37 @@ describe.each<DriverKind>(["extension", "playwright", "puppeteer"])("%s driver o
     expect(server.state.modelCalls.length).toBe(calls);
   });
 
+  it("hides a cookie banner that covers a checkbox below the fold, then clicks it", async () => {
+    const clicks = server.state.checkboxClicks;
+    const result = await h.solve(`${server.origin}/consent?banner=1&token=fill`);
+    expect(result.state, result.detail).toBe("solved");
+    expect(server.state.checkboxClicks).toBe(clicks + 1);
+    expect(await h.page.fieldValue("test-response")).toMatch(/^token-/);
+  });
+
+  it("finds a widget rendered seconds after load into a frame that started out blank", async () => {
+    const result = await h.solve(`${server.origin}/consent?late=1&offset=0`);
+    expect(result.state, result.detail).toBe("solved");
+    expect(await h.page.fieldValue("test-response")).toMatch(/^token-/);
+  });
+
+  it("calls a checked box solved only once its token is in the page", async () => {
+    const result = await h.solve(`${server.origin}/consent?token=late`);
+    expect(result.state, result.detail).toBe("solved");
+    expect(await h.page.fieldValue("test-response")).toMatch(/^token-/);
+  });
+
+  it("fails a checked box that disappears without a token", async () => {
+    const result = await h.solve(`${server.origin}/consent?token=vanish`);
+    expect(result).toMatchObject({ state: "failed", detail: "test-checkbox: gone without a response token" });
+  });
+
+  it("calls a checkbox solved when the page navigates on by itself without filling its field", async () => {
+    const result = await h.solve(`${server.origin}/consent?token=navigate`);
+    expect(result).toMatchObject({ state: "solved", detail: "challenge gone" });
+    expect(h.page.url()).toMatch(/\/landed$/);
+  });
+
   it("reads a text captcha below the fold, scrolls to it and types the answer", async () => {
     server.mock.wrongFirst = 0;
     const result = await h.solve(`${server.origin}/text`);

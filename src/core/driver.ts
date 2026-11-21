@@ -53,6 +53,11 @@ export interface Driver {
   scan(adapters: AdapterSpec[]): Promise<ChallengeView[]>;
   /** Scroll the challenge's root into view. */
   reveal(view: ChallengeView, adapter: AdapterSpec): Promise<void>;
+  /**
+   * Hide what covers a challenge (`view.covered`) in the top page and in every page between it
+   * and the challenge's frame, so clicks reach the widget.
+   */
+  uncover(view: ChallengeView, adapter: AdapterSpec): Promise<void>;
   readonly images: ImageTools;
   /**
    * Slide puzzle of a `slider` view: how far (CSS px) the piece must go, and how sure; null while
@@ -70,4 +75,6 @@ export interface Driver {
   publish(state: PageState, detail: string): Promise<void>;
   /** URL of the top-level page, for logs. */
   url(): Promise<string>;
+  /** Identity of the top-level document: changes when the page navigates, even to the same URL. */
+  document(): Promise<string>;
 }
