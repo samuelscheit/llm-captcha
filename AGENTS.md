@@ -95,3 +95,7 @@ Keep the fixture set honest. Fixtures record real challenges and the true answer
 | `benchmarks/`, `BENCHMARK.md` | models on the leaderboard, their results per fixture, the leaderboard |
 | `test/unit`, `test/e2e` | unit tests; local challenge pages and real vendor test widgets under every driver (mock model) |
 | `fixtures/<provider>/<name>/` | labeled real challenges replayed by `bun run eval` |
+
+## Learned rules
+
+- Drive browsers for tests, exploration and capture with patchright on the locally installed Chrome, headful, not with plain Playwright, a downloaded browser or headless mode: challenges detect automation and headless browsers, so only this setup matches what a real user's browser shows.
