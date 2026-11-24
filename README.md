@@ -1,230 +1,182 @@
+<div align="center">
+
 # LLM Captcha Solver
+
+**Your browser agent hits a captcha. This gets it through: with the vision model you choose, and with plain image analysis wherever a model would only guess.**
+
+[![CI](https://github.com/samuelscheit/llm-captcha/actions/workflows/ci.yml/badge.svg)](https://github.com/samuelscheit/llm-captcha/actions/workflows/ci.yml)
+[![Leaderboard](https://img.shields.io/badge/leaderboard-models_on_real_challenges-2f5bea)](https://samuelscheit.github.io/llm-captcha/)
+[![How it works](https://img.shields.io/badge/explainer-interactive-1a7f4b)](https://samuelscheit.github.io/llm-captcha/how-it-works.html)
+[![License: MIT](https://img.shields.io/badge/license-MIT-6b6a66)](LICENSE)
+
+[What it solves](#what-it-solves) · [Leaderboard](#ai-model-captcha-leaderboard) · [Quick start](#quick-start) · [For agents](#for-agents) · [How it works](#how-it-works) · [Docs](#documentation)
+
+<img src="docs/img/hero.svg" width="860" alt="A real reCAPTCHA round: the challenge, the labeled view the model gets, the tiles it picks clicked in order, solved">
+
+</div>
+
+## What it solves
+
+<table>
+<tr><th colspan="3" align="left">🧠 Vision model, with the targets labeled for it</th></tr>
+<tr>
+<td align="center" width="33%"><img src="docs/img/providers/recaptcha.png" width="260" alt="reCAPTCHA v2"><br><b>reCAPTCHA v2</b><br><sub>pick tiles, dynamic grids</sub></td>
+<td align="center" width="33%"><img src="docs/img/providers/hcaptcha.png" width="260" alt="hCaptcha"><br><b>hCaptcha</b><br><sub>click points, animated</sub></td>
+<td align="center" width="33%"><img src="docs/img/providers/geetest.png" width="260" alt="GeeTest v3 / v4"><br><b>GeeTest v3 / v4</b><br><sub>icons, nine-grid, match, gobang</sub></td>
+</tr>
+<tr>
+<td align="center" width="33%"><img src="docs/img/providers/arkose.png" width="260" alt="Arkose / FunCaptcha"><br><b>Arkose / FunCaptcha</b><br><sub>carousel games</sub></td>
+<td align="center" width="33%"><img src="docs/img/providers/yandex.png" width="260" alt="Yandex SmartCaptcha"><br><b>Yandex SmartCaptcha</b><br><sub>read text</sub></td>
+<td align="center" width="33%"><img src="docs/img/providers/mtcaptcha.png" width="260" alt="MTCaptcha"><br><b>MTCaptcha</b><br><sub>read text</sub></td>
+</tr>
+<tr><th colspan="3" align="left">📐 Image analysis, then a human drag: no model</th></tr>
+<tr>
+<td align="center" width="33%"><img src="docs/img/providers/tencent.png" width="260" alt="Tencent TCaptcha"><br><b>Tencent TCaptcha</b><br><sub>slide puzzle</sub></td>
+<td align="center" width="33%"><img src="docs/img/providers/yidun.png" width="260" alt="NetEase Yidun"><br><b>NetEase Yidun</b><br><sub>jigsaw</sub></td>
+<td align="center" width="33%"><img src="docs/img/providers/dingxiang.png" width="260" alt="Dingxiang"><br><b>Dingxiang</b><br><sub>slide puzzle</sub></td>
+</tr>
+<tr>
+<td align="center" width="33%"><img src="docs/img/providers/shumei.png" width="260" alt="Shumei"><br><b>Shumei</b><br><sub>slide puzzle</sub></td>
+<td align="center" width="33%"><img src="docs/img/providers/aliyun.png" width="260" alt="AliyunCaptcha, nocaptcha"><br><b>AliyunCaptcha, nocaptcha</b><br><sub>puzzle, slide to end</sub></td>
+<td align="center" width="33%"><img src="docs/img/providers/datadome.png" width="260" alt="DataDome"><br><b>DataDome</b><br><sub>slider</sub></td>
+</tr>
+<tr>
+<td align="center" width="33%"><img src="docs/img/providers/gname.png" width="260" alt="GNAME"><br><b>GNAME</b><br><sub>slide to end</sub></td>
+<td align="center" width="33%"><img src="docs/img/providers/generic.png" width="260" alt="Drag-verify and kit gates"><br><b>Drag-verify and kit gates</b><br><sub>slide to end</sub></td>
+<td align="center" width="33%"><img src="docs/img/providers/dogwaf.png" width="260" alt="DogWAF and forks"><br><b>DogWAF and forks</b><br><sub>shifted grid, counting</sub></td>
+</tr>
+<tr><th colspan="3" align="left">✅ A click, a hold, or just waiting</th></tr>
+<tr>
+<td align="center" width="33%"><img src="docs/img/providers/turnstile.png" width="260" alt="Cloudflare Turnstile"><br><b>Cloudflare Turnstile</b><br><sub>checkbox</sub></td>
+<td align="center" width="33%"><img src="docs/img/providers/human.png" width="260" alt="HUMAN / PerimeterX"><br><b>HUMAN / PerimeterX</b><br><sub>press & hold</sub></td>
+<td align="center" width="33%"><img src="docs/img/providers/friendlycaptcha.png" width="260" alt="Friendly Captcha"><br><b>Friendly Captcha</b><br><sub>proof of work</sub></td>
+</tr>
+<tr>
+<td align="center" width="33%"><img src="docs/img/providers/altcha.png" width="260" alt="ALTCHA"><br><b>ALTCHA</b><br><sub>proof of work</sub></td>
+<td align="center" width="33%"><img src="docs/img/providers/mcaptcha.png" width="260" alt="mCaptcha"><br><b>mCaptcha</b><br><sub>proof of work</sub></td>
+<td align="center" width="33%"><img src="docs/img/providers/anubis.png" width="260" alt="Anubis"><br><b>Anubis</b><br><sub>proof-of-work interstitial</sub></td>
+</tr>
+</table>
+
+Also AWS WAF image grids, Cloudflare's "Just a moment…" interstitial, and text captchas on any site. Anything else takes a few lines of JSON: an [adapter](docs/adapters.md). The [coverage table](BENCHMARK.md#coverage) says when each adapter last passed against the real widget.
+
+## AI model captcha leaderboard
 
 [![Captcha solving leaderboard](benchmarks/leaderboard.svg)](BENCHMARK.md)
 
-Below the models, the leaderboard has a **coverage** table: every challenge the solver recognizes, how it solves each (checkbox click, image analysis and drag, slide to end, vision model), and when that was last verified against the real widget. Verification is recorded from test runs, not claimed by hand. Tests against real widgets name the adapters they exercise in their titles (`[aliyun-nc]`), and `bun run live` and `bun run e2e` merge their results into `benchmarks/verified.json`, including failures.
+Which vision model solves which captcha: pass rates per challenge type on labeled real-world challenges, replayed exactly as the solver asks live, with tokens and dollars per solve. Measured again whenever a model, a fixture or the solver changes. Configure a primary model and fallbacks; a failed call moves on to the next. → [Full leaderboard and coverage](BENCHMARK.md) · [website](https://samuelscheit.github.io/llm-captcha/)
 
-Solves verification challenges with a vision model of your choice, for AI agents that drive a browser:
+## Quick start
 
-- **Checkbox and image challenges:** reCAPTCHA v2, hCaptcha, Cloudflare Turnstile, Yandex SmartCaptcha, AWS WAF, Arkose Labs/FunCaptcha, MTCaptcha, text captchas.
-- **Slide puzzles and sliders:** GeeTest v3/v4 (and its icon, nine-grid, match and gobang tasks), Tencent TCaptcha, AliyunCaptcha and Aliyun nocaptcha, NetEase Yidun, Shumei, Dingxiang, DataDome, GNAME, drag-verify and phishing-kit gates.
-- **Press & hold:** HUMAN/PerimeterX.
-- **Proof-of-work checks and interstitials:** Friendly Captcha, ALTCHA, mCaptcha, Anubis, Cloudflare's "Just a moment…".
-- **JavaScript-free walls:** DogWAF and its forks (dogwaf-fork): the automatic check, "click the square with the dog's nose" (the shifted image's roll found by image analysis) and the compat count (counted by image analysis).
-- **Anything else** you describe with an adapter.
+**Extension**, for any Chrome you or an agent drive:
 
-Which of these were verified against the real widget, and when, is in the [leaderboard's coverage table](BENCHMARK.md#coverage).
+```sh
+git clone https://github.com/samuelscheit/llm-captcha.git && cd llm-captcha
+bun install && bun run build          # → dist/extension
+bun run update --install              # optional: hourly self-update
+```
 
-It is built to be run and improved by agents. Unsolved challenges are reported as GitHub issues with replayable fixtures, fixes are proven against those fixtures, and installations update themselves. **Agents: start with [AGENTS.md](AGENTS.md).**
+Load `dist/extension` at `chrome://extensions` (Developer mode → Load unpacked) and pick a model in its options page. Without a model, the extension asks whoever drives the browser ([assist mode](#assist-mode-no-model-needed)).
 
-It ships as two things that share one engine:
+**Library**, for a browser you control:
 
-- **A Chrome extension** that works on its own. Any agent driving the browser (Grok, Claude, browser-use, a script) benefits without integration.
-- **A CDP library** for Playwright/patchright, Puppeteer or a raw CDP connection: `solveCaptchas(host)`.
+```ts
+import { solveCaptchas, playwrightHost, createModel } from "<checkout>/dist/cdp/index.js";
 
-## How the agent knows what is going on
+const host = await playwrightHost(page);
+const result = await solveCaptchas(host, {
+  models: [createModel({ provider: "anthropic", baseURL: "", apiKey, model: "claude-opus-5-5" })],
+});
+await host.dispose();
+// result.state: "solved" | "failed" | "idle"
+```
 
-The top document publishes the state:
+`puppeteerHost(page)` works the same; any OpenAI-compatible, OpenAI, Anthropic or Google model goes through the AI SDK.
+
+> [!TIP]
+> Run the browser the way a person's runs: headful, without `--enable-automation`, with `--disable-blink-features=AutomationControlled` (patchright does this by default). Many challenges check `navigator.webdriver` before they look at anything else.
+
+## For agents
+
+The top document always says what is going on:
 
 ```html
-<html data-captcha-state="solving|solved|failed" data-captcha-detail="recaptcha-images"></html>
+<html data-captcha-state="solving | solved | failed" data-captcha-detail="recaptcha-images">
 ```
 
-A `captcha-state` event fires on `window` with every change. One line in the agent's prompt is enough: _"If `<html data-captcha-state>` is `solving`, wait until it is `solved` or `failed` before acting."_
+A `captcha-state` event fires on `window` with every change. One line in your agent's prompt is enough: _"If `<html data-captcha-state>` is `solving`, wait until it is `solved` or `failed` before acting."_
 
-## Architecture
+### Assist mode: no model needed
 
-```
-src/core/       runtime-agnostic: engine (solve loop), adapters, prompt, model call (AI SDK),
-                gesture plans, CDP input, scoring
-src/page/       runs inside page frames (isolated world): scanner, canvas image tools
-                (crop, label, motion), state publishing
-src/extension/  MV3 extension: content script (scanner + frame offsets + wake-up),
-                ExtensionDriver (chrome.scripting + chrome.debugger), options page
-src/cdp/        CdpDriver over any CDP session provider; Playwright and Puppeteer hosts
-src/tools/      developer and operations tools (`bun run <name>`): explore, capture, eval,
-                bench (benchmark/), pull-reports, update, and what they share
-fixtures/       real challenges by provider (recaptcha/, hcaptcha/, tencent/), replayed by eval and bench
-test/           unit, e2e (local pages + vendor test widgets, every driver), live (real widgets)
-```
+Without a model configured, the extension puts each challenge to whoever drives the browser. A panel beside the challenge shows the labeled screenshot, the instruction and an answer field. Screenshot, DOM and accessibility-tree agents can all use it, and so can a person:
 
-The engine talks to a browser only through `Driver` (`src/core/driver.ts`): `scan`, `reveal`, `uncover`, `input` (trusted mouse and keys, screenshots), `images` and `publish`.
+| Answer | Does |
+|---|---|
+| `t2 t5 verify` | clicks targets |
+| `120,80` | clicks a point of the image |
+| `drag 10,20 200,20` | drags between two points |
+| `type XK4P9` | types (for text challenges the bare characters work too) |
+| `3 0 7` | one value per input, when there are several |
 
-- **ExtensionDriver.** Content scripts in every frame scan, and resolve frame offsets by asking their parent frame. `chrome.debugger` is attached only while a challenge is being solved, for trusted input.
-- **CdpDriver.** The page bundle (`dist/page.js`) is injected into an isolated world per frame, which page scripts cannot see. Out-of-process frames are found through `iframe` targets. Closed shadow roots (Turnstile) are read with `DOM.getDocument({pierce})` and handed to the scanner.
+The extension turns the answer into precise trusted input, reports errors back, and handles waits and retries as it would with a model.
 
-Each solve round:
+## How it works
 
-1. Scan every frame for challenges and pick the open popup over its checkbox. A page that has not rendered its widget yet is watched for up to `appearMs` (15 s) before the session ends as `idle`; so is a page the challenge navigated to (Cloudflare's interstitial reloading into the site), which may bring its own.
-2. Scroll it into view. If an element of the page lies on top of it or of one of its frames (a cookie banner with its backdrop, a modal), clicks would land there: the scanner hit-tests the challenge and every frame element above it, and the engine hides the outermost element covering it before acting, or fails with `covered by <element>`.
-3. Capture a burst of frames (for animated challenges) and find the regions that moved.
-4. Label targets on the image and ask the model for actions.
-5. Run the actions as human-like CDP gestures (eased approach, minimum-jerk drags, focus emulation).
-6. Read the widget's verdict and feed errors into the next round.
-
-Checkboxes are clicked without a model, spaced so the vendor's verdict can arrive (Turnstile restarts its check on every click). A widget that hands a token to its page (reCAPTCHA, hCaptcha, Turnstile) declares that field as `response`: the challenge counts as solved only once the field next to its frame holds a value. A checked box without one is still verifying, and a widget that disappears from a page that stays without one has failed.
-
-The model is asked only about a challenge at rest. These checks cost no round:
-
-- **Loading or animating:** the scanner reports a challenge as `waiting` while an image in it is still loading or a finite CSS animation or transition is running, such as reCAPTCHA's replacement tiles fading in.
-- **Still changing on screen:** each round's frames are compared; any change in a non-animated challenge, or a change across most of an animated one, means it has not settled.
-- **Moved while the model thought:** the challenge is scanned again just before acting, and the answer is dropped if the challenge moved meanwhile.
-
-Animated challenges (`point` by default, or `animated: true` in the adapter) are captured as 3 frames 300 ms apart. hCaptcha fades its shapes in and out, so a single frame hides some of them. The model gets every frame, with the moving regions outlined and listed.
-
-## Recovering by itself
-
-When a challenge goes wrong, the engine responds in steps:
-
-- **Wrong answer:** the widget's error goes back to the model with the earlier rounds.
-- **Two rejections in a row:** the engine asks the widget for a new puzzle (its reload button) and starts with a fresh history.
-- **Failed model call:** the next configured fallback model takes over.
-- **Lost wake-up:** a frame that stays pending wakes the service worker again every few seconds, which covers a restarted service worker or a run that was just ending.
-- **Stalled call:** every wait, screenshot and model call ends at the session deadline.
-- **Failed session:** the page reads `failed` with a reason. The extension does not retry that tab (no paid loops) until it navigates.
-
-## Improving itself
-
-1. **Failure reports.** With reports configured (options page, or `reportToGitHub` in the library), a failed session pushes its last rounds as fixtures and the challenge frame's markup to a `fixtures/<provider>/<time>` branch. It then files a `challenge-failure` issue showing what the model saw, or comments on the open one with the same title. Page URLs are reported without query or fragment.
-2. **Triage.** `bun run pull-reports` restores reported rounds into `fixtures/captured/`. You or an agent label them, reproduce with `bun run eval`, fix the root cause, and open a PR that carries the new fixtures.
-3. **Self-update.** `bun run update --install` checks hourly. It accepts only fast-forwards of a clean checkout, builds into a staging directory and swaps it in only when the unit tests pass, so a broken commit never reaches `dist/`. The extension notices the new `build.json` and reloads itself between solves.
-
-    Updates run code from the upstream branch in your browser: point the checkout at a repository you trust.
-
-## Model
-
-Pick any provider through the AI SDK: OpenAI-compatible (xAI, Ollama, OpenRouter, …), OpenAI, Anthropic or Google. Set the endpoint, key and model in the options page. The key stays in `chrome.storage.local`.
-
-**No model configured: assist mode.** The extension then puts each challenge to whoever drives the browser. A panel on the page, placed away from the challenge, shows the labeled screenshot, the instruction and the answer syntax, with a labeled input. Screenshot, DOM and accessibility-tree agents can all read and use it, and so can a person; `data-captcha-detail` says an answer is needed. The answer syntax:
-
-- `t2 t5 verify` clicks targets;
-- `120,80` clicks a point of the image;
-- `drag 10,20 200,20` drags between two points;
-- `type XK4P9` types (for text challenges the bare characters work too).
-
-The extension turns the answer into precise trusted clicks, reports errors back, and handles the readiness waits and retries as with a model. Agents that decline CAPTCHAs by policy will decline this too.
-
-To choose one, see the **[leaderboard](BENCHMARK.md)**, also published at **[samuelscheit.github.io/llm-captcha](https://samuelscheit.github.io/llm-captcha/)**. It shows each model's pass rate per challenge type (provider × kind) on the labeled real-world fixtures, replayed exactly as the solver asks live. It also shows what each model costs: median tokens in and out per run, and dollars per run and per solved challenge. The dollars are at the provider's API list price ([genai-prices](https://github.com/pydantic/genai-prices)), with input priced uncached, as on a live challenge.
-
-`bun run bench` updates it incrementally. It re-measures only (model, fixture) pairs whose fixture or solver code changed, so adding a fixture or a model costs a few calls. Provider outages are retried later instead of counted.
-
-Models come from `benchmarks/models.json`:
-
-- explicit entries, with keys from the environment (`${ANTHROPIC_API_KEY}`, …);
-- a `discover` entry, which adds every model an OpenAI-compatible gateway lists (`${GATEWAY_URL}/models`).
-
-A model the gateway refuses for good (for example no image input) is recorded as unsupported and not tried again. A local `benchmarks/models.local.json` overrides the list.
-
-The weekly CI workflow checks the gateway for models that were never measured and stops right there if there are none. Otherwise it benchmarks just the new ones, commits the leaderboard and this chart, and deploys the page to GitHub Pages. For a prompt or engine change, run `bun run bench` locally and commit the result with the change; pushing new results deploys the page too. CI needs the secret `GATEWAY_KEY` and the variable `GATEWAY_URL` (or a provider's `*_API_KEY`).
-
-## Adapters
-
-A challenge is described declaratively. These selectors are what the scanner uses:
-
-```json
-{
-	"id": "my-grid",
-	"kind": "select",
-	"url": "widgets\\.example\\.com/challenge",
-	"root": "#challenge",
-	"instruction": [".prompt"],
-	"errors": [".error"],
-	"solved": ".success",
-	"targets": [
-		{ "id": "t", "selector": ".tile", "all": true, "selected": ".is-selected" },
-		{ "id": "verify", "selector": "button.verify", "labelFromText": true }
-	]
-}
+```mermaid
+flowchart LR
+  scan["🔍 Scan every frame<br/><sub>adapters find the challenge</sub>"] --> settle{"⏳ At rest?"}
+  settle -- "loading, animating" --> scan
+  settle -- yes --> solve["🧠 Solve<br/><sub>model or image analysis</sub>"]
+  solve --> act["🖱️ Act like a person<br/><sub>trusted input, human tracks</sub>"]
+  act --> verdict{"Verdict"}
+  verdict -- "error: tell the model" --> scan
+  verdict -- "twice wrong: new puzzle" --> scan
+  verdict -- passed --> done(["✅ solved"])
 ```
 
-The `kind` field takes one of these values:
+Each round, the challenge is scanned in every frame, scrolled into view and uncovered (cookie banners and the like). Once it has stopped loading and animating, it is solved by the cheapest method that is sure. The answer is acted out as trusted input, and the widget's verdict is read. Errors go back to the model with the earlier rounds. → [Architecture](docs/architecture.md) · [**Try it on real challenges in the interactive explainer**](https://samuelscheit.github.io/llm-captcha/how-it-works.html)
 
-- `checkbox`: click it, no model. Without targets, the adapter only recognizes a check that runs by itself (Anubis, Cloudflare's interstitial): the session waits for it, or ends on a refusal.
-- `hold`: press the `handle` and keep holding, with slight pointer movement, until the widget is done (Press & Hold). It waits for the widget to arm first and retries when its progress never starts.
-- `select`: pick targets.
-- `text`: read and type; several inputs (`input1`, `input2`…) each take their own answer.
-- `point`: click or drag positions; captured as 3 frames by default, to see animations.
-- `slider`: drag the `handle`; no model involved. It has two modes:
-  - **Puzzle**: until the `piece` image fits the gap in the `background` image (Tencent, GeeTest, AliyunCaptcha, Yidun, Shumei, Dingxiang). The gap is found by image analysis, since the drop must land within a few pixels. The images may be `<img>`, `<canvas>` or CSS backgrounds and are measured as shown. Dark and light gaps both work. The drag starts with a short nudge, reads where the piece went, and corrects the rest, so pieces that lag their handle land too. An ambiguous gap, or the same puzzle after a failed slide, gets a new puzzle (`reload`) instead of a guess. Images that only show under the pointer (float mode) are revealed by hovering the handle.
-  - **Slide to end**: without a piece, the handle goes past the end of its `rail` (Aliyun nocaptcha and slide, GNAME, DataDome simple, kit gates) on a human track that never goes back.
+### What the model sees
 
-  A refused slider that shows only a `reload` ("error, click to refresh") gets it clicked.
+<img src="docs/img/method-vision.png" alt="Real rounds of reCAPTCHA, hCaptcha and Arkose: the screen, the labeled view the model gets, and its answer">
 
-A `select` adapter can also declare a `carousel` (Arkose's "use the arrows" games). The engine then pages through all options, shows the model one contact sheet with the options labeled `o1`…`oN`, goes to its pick and submits.
+Animated challenges come as a burst of frames with what moved outlined, and earlier rounds come back with the errors they caused. Answers are checked against the challenge before anything is clicked.
 
-Two more declarations hand a part of the work to image analysis:
+### Slide puzzles: found, not guessed
 
-- `shiftedGrid: N` (a `point` adapter, DogWAF): the root is a clean reference image, and the `challenge` target is the same picture rolled by whole squares of an N × N grid and noised. The model points into the reference; the roll is measured by correlating the two images, and the matching challenge square is clicked, scrolled into view first if needed. An unclear roll gets a new challenge (`refresh`) instead of a guess.
-- `stamps: { size, wobble }` (a `text` adapter, DogWAF's compat page): each `image` target shows copies of one small picture pasted over noise, its columns moved down by up to `wobble - 1` pixels, and the `input` after it takes how many. The picture is learned from the columns that recur across the images, and copies are counted by peeling: the copy pasted last fits exactly, and once found, its pixels stop counting against the copies under it. Without a learnable picture the model counts instead.
+<img src="docs/img/method-slider.png" alt="A real Tencent puzzle: the piece, the contrast score at every offset, and the gap it lands in">
 
-Custom adapters go in the options page; the built-ins are in `src/core/adapters/`, one file per provider.
+Dark gaps and light ones alike. The drag nudges first, reads where the piece went, and corrects the rest, so pieces that lag their handle land too.
 
-## Development
+### DogWAF: a model where it helps, code where it does not
 
-```sh
-bun install
-bun run build        # dist/page.js, dist/extension/, dist/cdp/
-bun run typecheck
-bun run test         # unit tests
-bun run e2e          # local challenge pages and real vendor test widgets × {extension, Playwright, Puppeteer}, mock model
-bun run check        # all of the above
-bun run live         # real widgets over the network (third parties: not part of check)
-bun run explore --vendor recaptcha   # every frame's element tree, HTML and a screenshot → out/explore/
-bun run explore <url> --fill "input[name=email]=a@example.com" --click "a.get_code"
-```
+<img src="docs/img/method-shift.png" alt="A DogWAF challenge: the reference, the noisy rolled copy, the correlation of every roll, and the copy rolled back">
 
-`explore` is where a new adapter starts. Its vendor recipes (`src/tools/vendor-pages.ts`) bring up each real challenge:
+The model only finds Lulu's nose in the clean reference; the roll decides which square of the noisy copy gets the click.
 
-- the reCAPTCHA and hCaptcha demos, and Turnstile forced interactive;
-- Tencent under its own domain (vendors bind site keys to domains, so our page is served at a URL of that domain);
-- Aliyun's `nc` slider with the public test appkey of Aliyun's demos;
-- AliyunCaptcha 2.0 on Alibaba Cloud's password reset page, where it shows without any trigger;
-- the forms that guard GNAME's and Eranet's sliders (filled with a black-hole address).
+<img src="docs/img/method-stamps.png" alt="DogWAF's counting challenge: a noisy image, the picture learned from all five, and the copies found pass by pass">
 
-`capture --vendor <name>` and the live tests use the same recipes. The live suite currently solves:
+No model involved. Where the picture cannot be learned (the original DogWAF drops half of every copy's pixels), the model counts instead.
 
-- the real Tencent puzzle (valid ticket);
-- AliyunCaptcha 2.0 on Alibaba Cloud ("Verified");
-- Aliyun's `nc` slider (Aliyun's server passes the first slide);
-- GNAME's and Eranet's form sliders (accepted and closed).
+### Moving like a person
 
-`BROWSER=chromium` runs the tools and tests with patchright's bundled Chromium instead of the installed Chrome (`bunx patchright install chromium` once).
+<img src="docs/img/method-gestures.svg" width="860" alt="Pointer tracks from the real gesture code: an eased approach to a click, a minimum-jerk drag, a held press">
 
-The e2e tests run headful local Chrome. Branded Chrome ignores `--load-extension`, so the harness loads the extension through CDP `Extensions.loadUnpacked`.
+Every click, drag and hold is a trusted CDP input event on a track planned by [`src/core/mouse.ts`](src/core/mouse.ts). Drags never go back before their overshoot: track-scoring sliders refuse a pointer that does.
 
-### Fixtures: replayable real challenges
+## Documentation
 
-The model's accuracy is what matters most, so real challenges are kept as fixtures:
+- **[Interactive explainer](https://samuelscheit.github.io/llm-captcha/how-it-works.html)**: step through real challenges, puzzles and image analysis.
+- **[Architecture](docs/architecture.md)**: drivers, the solve round, recovery, self-improvement.
+- **[Adapters](docs/adapters.md)**: describe a new challenge: fields, kinds, carousels, shifted grids, stamps.
+- **[Development](docs/development.md)**: build, tests, real challenges on demand, fixtures, the benchmark.
+- **[AGENTS.md](AGENTS.md)**: the playbook for agents that run and improve this project.
 
-```sh
-bun run capture --vendor recaptcha --sessions 3      # or any URL
-bun run capture --accept --vendor geetest-v4-nine --vendor yidun --sessions 3
-#   → fixtures/captured/<provider>/<time>-<adapter>-r<round>/
-#     fixture.json, frame-N.png, labeled.png
-```
+## Contributing
 
-With `--accept`, what the vendor itself accepted is labeled automatically and goes straight into `fixtures/<provider>/`, while everything else stays in `fixtures/captured/` for a person:
+Unsolved challenges are reported as issues with replayable fixtures. A fix starts from a captured failure and ends with that failure passing (`bun run eval`) and nothing else regressing (`bun run check`). [AGENTS.md](AGENTS.md) walks through it.
 
-- **Model rounds:** in a session the vendor passed, every round it did not object to, with the model's answer as the expected one.
-- **Slide puzzles:** the passing slide, as a slider fixture with both images as measured.
+> [!NOTE]
+> This project is for agents acting on behalf of their users: accessibility, testing your own sites, automating your own accounts. Respect the terms of the sites you visit.
 
-Each captured round holds the view, the frames, what the model saw, its decision and the errors the widget showed afterwards. To label one, look at the frames, write `expected` and `notes` into `fixture.json`, and move the directory to `fixtures/<provider>/<name>/` (for example `fixtures/recaptcha/dynamic-bus-1/`). The provider is the first segment of the adapter id. Fixtures you are unsure about keep `"expected": null` and a note; eval skips them. The `expected` field is one of these forms:
-
-- `{"clicks": ["t2", "t5", "verify"]}`
-- `{"text": "XK4P9"}`
-- `{"points": [{"x": 120, "y": 80, "r": 30}], "clicks": ["submit"]}` (CSS px relative to the region)
-
-More fixture kinds need no model:
-
-- **Slide puzzles** (`fixtures/tencent/`): `background.png`, `piece.png`, and a `fixture.json` with `kind: "slider"`, the piece's `origin` and the `expected` gap `offset`, in background pixels. `eval` checks them.
-- **Shifted grids** (`fixtures/dogwaf/shift-*`): `reference.png`, `challenge.png`, and a `fixture.json` with `kind: "shift"`, the `grid` and the `expected` roll `{ dx, dy }` the server issued or accepted. `eval` checks them.
-- **Stamp counts** (`fixtures/dogwaf/compat-*`): `image-1.png`…, and a `fixture.json` with `kind: "count"`, the `stamps` shape and the `expected` `counts`. With `counted: false`, image analysis must decline and leave the images to the model. `eval` checks them.
-- **Page fixtures** (`fixtures/generic/`, `fixtures/dogwaf/page-*`): `page.html`, a real challenge page saved as captured (links to elsewhere rewritten to local stand-ins), and a `fixture.json` with `kind: "page"` and the `expected` outcome (`state`, `navigatesTo`). The e2e suite serves them and solves them under every driver. Files next to `page.html` are served at the paths the page asks for (`/dogcaptcha/compat.png?i=2` is `compat-2.png`). Pages that answer by navigating declare `redirects`: the query of the right answer and where it leads. `model` gives the mock model's answer to the challenge's `instruction`.
-
-```sh
-bun run eval                       # replay all labeled fixtures through the model, score them
-bun run eval --filter recaptcha/ --runs 3    # filter by "<provider>/<name>" substring
-bun run bench                                # every model in benchmarks/models.json → BENCHMARK.md
-```
-
-The live model for capture and eval is set by `LLM_PROVIDER`, `LLM_BASE_URL`, `LLM_API_KEY` and `LLM_MODEL`.
+[MIT](LICENSE)

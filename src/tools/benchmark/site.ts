@@ -6,7 +6,44 @@ import { categoryOf, count, usd, type Cell, type Row } from "./benchmark";
 import { verificationLabel, type CoverageRow } from "./coverage";
 import type { StoredFixture } from "../fixtures";
 
-const esc = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+export const esc = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+
+export const REPO_URL = "https://github.com/samuelscheit/llm-captcha";
+/** The site's address, GitHub Pages of REPO_URL: link previews need absolute URLs. */
+export const SITE_URL = (([owner, repo]) => `https://${owner}.github.io/${repo}/`)(new URL(REPO_URL).pathname.slice(1).split("/"));
+
+/** Link-preview tags (Open Graph, X) for a page, with the social banner publish.ts copies to social.png. */
+export const socialMeta = (page: string, title: string, description: string) => `<meta property="og:type" content="website">
+<meta property="og:site_name" content="LLM Captcha Solver">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(description)}">
+<meta property="og:url" content="${SITE_URL}${page}">
+<meta property="og:image" content="${SITE_URL}social.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta property="og:image:alt" content="LLM Captcha Solver: a labeled reCAPTCHA, a slide puzzle's gap and DogWAF's roll heatmap">
+<meta name="twitter:card" content="summary_large_image">`;
+
+/** Colours, type and the top bar every page of the site shares. */
+export const THEME_CSS = `:root{color-scheme:light dark;--bg:#f6f6f4;--surface:#fff;--text:#1b1b1a;--muted:#6b6a66;--line:#e3e2de;--good:#1a7f4b;--mid:#b7791f;--bad:#c53030;--good-bg:#e7f4ec;--mid-bg:#fbf1dc;--bad-bg:#fbe7e7}
+@media (prefers-color-scheme:dark){:root{--bg:#161615;--surface:#1f1f1e;--text:#ecebe7;--muted:#9b9a95;--line:#33332f;--good:#5cc98a;--mid:#e9b45a;--bad:#ff8a80;--good-bg:#173323;--mid-bg:#3a2e15;--bad-bg:#3d1c1a}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,sans-serif}
+a{color:inherit}
+.topnav{border-bottom:1px solid var(--line);background:var(--surface)}
+.topnav div{max-width:1040px;margin:0 auto;padding:0 20px;display:flex;gap:4px;align-items:center;height:52px;overflow-x:auto}
+.topnav b{margin-right:auto;font-size:15px;white-space:nowrap}
+.topnav a{text-decoration:none;color:var(--muted);font-size:14px;padding:6px 10px;border-radius:8px;white-space:nowrap}
+.topnav a:hover{color:var(--text);background:var(--bg)}.topnav a[aria-current]{color:var(--text);font-weight:600;background:var(--bg)}`;
+
+/** The site's top bar; `current` is the page it is on. */
+export const siteNav = (current: "index.html" | "how-it-works.html") =>
+  `<nav class="topnav" aria-label="Site"><div><b>LLM Captcha Solver</b>${[
+    ["index.html", "Leaderboard"],
+    ["how-it-works.html", "How it works"],
+    [REPO_URL, "GitHub"],
+  ]
+    .map(([href, label]) => `<a href="${href}"${href === current ? ' aria-current="page"' : ""}>${label}</a>`)
+    .join("")}</div></nav>`;
 const rate = (c: Cell | undefined) => (c && c.total ? c.passed / c.total : undefined);
 const pct = (c: Cell | undefined) => (rate(c) === undefined ? "–" : `${Math.round(rate(c)! * 100)}%`);
 
@@ -81,10 +118,9 @@ export function renderSite(rows: Row[], fixtures: StoredFixture[], solverHash: s
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Captcha solving leaderboard</title>
 <meta name="description" content="Which vision models solve real reCAPTCHA, hCaptcha and other challenges, measured on labeled fixtures.">
+${socialMeta("", "AI model captcha leaderboard · LLM Captcha Solver", "Which vision models solve real reCAPTCHA, hCaptcha and other challenges, measured on labeled fixtures.")}
 <style>
-:root{color-scheme:light dark;--bg:#f6f6f4;--surface:#fff;--text:#1b1b1a;--muted:#6b6a66;--line:#e3e2de;--good:#1a7f4b;--mid:#b7791f;--bad:#c53030;--good-bg:#e7f4ec;--mid-bg:#fbf1dc;--bad-bg:#fbe7e7}
-@media (prefers-color-scheme:dark){:root{--bg:#161615;--surface:#1f1f1e;--text:#ecebe7;--muted:#9b9a95;--line:#33332f;--good:#5cc98a;--mid:#e9b45a;--bad:#ff8a80;--good-bg:#173323;--mid-bg:#3a2e15;--bad-bg:#3d1c1a}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,sans-serif}
+${THEME_CSS}
 main{max-width:1040px;margin:0 auto;padding:48px 20px 72px}
 h1{font-size:28px;letter-spacing:-.02em;margin:0 0 8px}p{color:var(--muted);margin:0 0 12px;max-width:720px}
 .meta{font-size:13px}
@@ -97,15 +133,15 @@ tr:last-child td{border-bottom:0}td.rank{color:var(--muted);width:1%}td.model{fo
 td.good b{color:var(--good)}td.mid b{color:var(--mid)}td.bad b{color:var(--bad)}
 td.overall{background:var(--good-bg)}td.overall.mid{background:var(--mid-bg)}td.overall.bad{background:var(--bad-bg)}
 h2{font-size:17px;margin:40px 0 8px}ul{color:var(--muted);padding-left:20px}code{font-size:13px}
-a{color:inherit}
 </style>
 </head>
 <body>
+${siteNav("index.html")}
 <main>
 <h1>Captcha solving leaderboard</h1>
 <p>How often each vision model solves real reCAPTCHA, hCaptcha and other challenges. Every challenge is a fixture captured from a live page and labeled by hand, and is replayed exactly as the solver asks live: same screenshots, target labels, motion analysis and prompt. A run passes when its answer equals the labeled one; every run counts.</p>
 <p>Most labels are answers the vendor itself accepted live, given by the model that captured them (claude-opus-5-5): another equally valid answer (a different click order, a point off the item's centre) can count as a miss. The rest were labeled by hand from the screenshots.</p>
-<p class="meta">${fixtures.length} fixtures · updated ${updatedOf(rows)} · solver <code>${esc(solverHash)}</code></p>
+<p class="meta">${fixtures.length} fixtures · updated ${updatedOf(rows)} · solver <code>${esc(solverHash)}</code> · <a href="how-it-works.html">How the solver works</a></p>
 <div class="card">
 <table>
 <thead><tr><th></th><th>Model</th><th>Overall</th><th>Cost / solve<small>list price</small></th>${cats.map((c) => `<th>${esc(c.name)}<small>${c.count} fixtures</small></th>`).join("")}<th>Median time</th><th>Tokens<small>in / out per run</small></th><th>Cost / run</th></tr></thead>
@@ -121,7 +157,7 @@ ${rows
 </div>
 ${
   covered.length
-    ? `<h2>Coverage</h2>
+    ? `<h2 id="coverage">Coverage</h2>
 <p>Every challenge the solver recognizes, how it gets through it, and when that was last verified against the real widget.</p>
 <div class="card"><table>
 <thead><tr><th>Provider</th><th>Challenge</th><th>Solved by</th><th>Verified on the real widget</th></tr></thead>

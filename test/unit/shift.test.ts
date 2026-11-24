@@ -76,13 +76,13 @@ describe("click on the rolled cell", () => {
 
   it("moves the point to the centre of the matching challenge square, wrapping around", () => {
     // Nose at square (6, 5) of the reference; rolled by (9, 5): square (5, 0) of the challenge.
-    const [click] = toChallengeCell([point(262, 221)], view, frame, { dx: 9, dy: 5, margin: 0.4 }, 10);
+    const [click] = toChallengeCell([point(262, 221)], view, frame, { dx: 9, dy: 5 }, 10);
     // Square (5, 0) of the challenge spans x 300–340, y 500–540 in the page: its centre, relative to the reference.
     expect([click!.x, click!.y]).toEqual([320 - 100, 520 - 50]);
   });
 
   it("maps through the screenshot's scale, keeps points on the edge in the image, and answers once", () => {
-    const actions = toChallengeCell([point(799, 0), point(10, 10)], view, { width: 800, height: 800, scale: 2 }, { dx: 0, dy: 0, margin: 0.4 }, 10);
+    const actions = toChallengeCell([point(799, 0), point(10, 10)], view, { width: 800, height: 800, scale: 2 }, { dx: 0, dy: 0 }, 10);
     expect(actions).toHaveLength(1);
     // Square (9, 0): page x 460–500, y 500–540; in image pixels (scale 2) relative to the reference.
     expect([actions[0]!.x, actions[0]!.y]).toEqual([(480 - 100) * 2, (520 - 50) * 2]);

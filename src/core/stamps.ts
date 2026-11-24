@@ -28,13 +28,13 @@ const MIN_VISIBLE = 30;
 /** A link between two picture columns must be seen this often; once is chance. */
 const MIN_LINK = 2;
 
-interface Grey {
+export interface Grey {
   width: number;
   height: number;
   data: Uint8Array;
 }
 
-const grey = (p: Pixels): Grey => {
+export const grey = (p: Pixels): Grey => {
   const data = new Uint8Array(p.width * p.height);
   for (let i = 0; i < data.length; i++) data[i] = p.data[i * 4]!;
   return { width: p.width, height: p.height, data };
@@ -107,15 +107,27 @@ export function learnStamp(images: Grey[], { size, wobble }: StampShape): Uint8A
   return best ? best.map((key) => Uint8Array.from(key, (c) => c.charCodeAt(0))) : null;
 }
 
+/** Where a copy lies: its left column, and the top row of each of its columns. */
+export interface StampPlacement {
+  x: number;
+  tops: number[];
+}
+
 /** How many copies of `stamp` one image shows, painted over each other included. */
-export function countStamp(image: Grey, stamp: Uint8Array[], { size, wobble }: StampShape): number {
+export function countStamp(image: Grey, stamp: Uint8Array[], shape: StampShape): number {
+  return peelStamps(image, stamp, shape).flat().length;
+}
+
+/** The copies of `stamp` found in each peeling pass, topmost first. */
+export function peelStamps(image: Grey, stamp: Uint8Array[], { size, wobble }: StampShape): StampPlacement[][] {
   const { width, height } = image;
   // Rows below the image are where clipped copies went: unknown, so wildcards.
   const rows = height + size + wobble;
   const wild = new Uint8Array(rows * width);
   wild.fill(1, height * width);
   const value = (x: number, y: number) => (y < height ? image.data[y * width + x]! : 0);
-  const found: { x: number; tops: number[] }[] = [];
+  const found: StampPlacement[] = [];
+  const passes: StampPlacement[][] = [];
   for (;;) {
     // fits[(c * width + x) * height + top]: picture column c fits image column x from row `top`;
     // seen: how many of its pixels are not wildcards.
@@ -161,9 +173,10 @@ export function countStamp(image: Grey, stamp: Uint8Array[], { size, wobble }: S
       const same = (f: { x: number; tops: number[] }) => f.x === candidate.x && f.tops.reduce((s, t, c) => s + Math.abs(t - candidate.tops[c]!), 0) <= (wobble - 1) * size;
       if (!found.some(same) && !fresh.some(same)) fresh.push(candidate);
     }
-    if (!fresh.length) return found.length;
+    if (!fresh.length) return passes;
     for (const { x, tops } of fresh) for (let c = 0; c < size; c++) for (let r = 0; r < size; r++) wild[(tops[c]! + r) * width + x + c] = 1;
     found.push(...fresh);
+    passes.push(fresh.map(({ x, tops }) => ({ x, tops })));
   }
 }
 

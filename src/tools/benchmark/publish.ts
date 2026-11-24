@@ -1,14 +1,16 @@
 /**
  * Render everything the leaderboard publishes from what is stored: BENCHMARK.md (models per
  * challenge category, then coverage per provider), benchmarks/leaderboard.svg (README) and
- * out/site/index.html (GitHub Pages). Shared by bench.ts and record-verified.ts.
+ * out/site/index.html with out/site/how-it-works.html (GitHub Pages). Shared by bench.ts and
+ * record-verified.ts.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { BUILTIN_ADAPTERS } from "../../core/adapters";
 import { loadFixtures } from "../fixtures";
 import { leaderboard, renderLeaderboard, sha, type BenchResults } from "./benchmark";
 import { coverage, renderCoverage, type Verified } from "./coverage";
+import { writeExplainer } from "./explainer";
 import { priceOf } from "./pricing";
 import { renderSite, renderSvg } from "./site";
 
@@ -32,8 +34,13 @@ export function publish(results: BenchResults = loadResults(), notMeasured: stri
   const markdown = `${renderLeaderboard(rows, fixtures, hash, notMeasured.filter((name) => !rows.some((r) => r.model === name)))}\n${renderCoverage(covered)}`;
   writeFileSync(path.join(ROOT, "BENCHMARK.md"), markdown);
   writeFileSync(path.join(ROOT, "benchmarks/leaderboard.svg"), renderSvg(rows, fixtures));
-  mkdirSync(path.join(ROOT, "out/site"), { recursive: true });
-  writeFileSync(path.join(ROOT, "out/site/index.html"), renderSite(rows, fixtures, hash, results.unsupported ?? {}, covered));
+  const site = path.join(ROOT, "out/site");
+  rmSync(path.join(site, "assets"), { recursive: true, force: true });
+  mkdirSync(site, { recursive: true });
+  writeFileSync(path.join(site, "index.html"), renderSite(rows, fixtures, hash, results.unsupported ?? {}, covered));
+  writeExplainer(site, covered);
+  // The link-preview banner (bun run docs) the pages' og:image points at.
+  copyFileSync(path.join(ROOT, "docs/img/social.png"), path.join(site, "social.png"));
   return markdown;
 }
 

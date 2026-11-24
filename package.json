@@ -16,6 +16,7 @@
     "pull-reports": "bun src/tools/pull-reports.ts",
     "bench": "bun run build && bun src/tools/benchmark/bench.ts",
     "explore": "bun run build && bun src/tools/explore.ts",
+    "docs": "bun run build && bun src/tools/docs/index.ts",
     "live": "bun run build && vitest run test/live --reporter=default --reporter=json --outputFile.json=out/reports/live.json; code=$?; bun src/tools/benchmark/record-verified.ts out/reports/live.json; exit $code"
   },
   "dependencies": {

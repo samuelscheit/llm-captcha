@@ -58,7 +58,7 @@ Work from facts, never from guesses: every fix starts from a captured failure an
    - `fixture.json` holds the view (targets, instruction, errors), the model's decision and `observed.errorsAfter`, the widget's verdict;
    - `dom.html` is the challenge frame's markup, closed shadow roots included.
 3. **Label it.**
-   - Set `expected` in `fixture.json` (formats in `README.md`) and write in `notes` what is on the screen and why the answer is right.
+   - Set `expected` in `fixture.json` (formats in `docs/development.md`) and write in `notes` what is on the screen and why the answer is right.
    - Zoom in on the frames before deciding: a label that is wrong is worse than none.
    - When you cannot tell, keep `"expected": null` and say so in `notes`.
    - Move the directory to `fixtures/<provider>/<descriptive-name>/`.

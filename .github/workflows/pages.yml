@@ -1,10 +1,11 @@
 name: Pages
-# The leaderboard page, rendered from the committed results (no model calls): on every push that
-# changes them, by hand, and from the weekly benchmark after it commits new ones.
+# The leaderboard and the "how it works" explainer, rendered from the committed results, fixtures
+# and solver code (no model calls): on every push that changes them, by hand, and from the weekly
+# benchmark after it commits new ones.
 on:
   push:
     branches: [main]
-    paths: [benchmarks/**, fixtures/**, src/tools/benchmark/**, .github/workflows/pages.yml]
+    paths: [benchmarks/**, fixtures/**, src/core/**, src/tools/benchmark/**, docs/img/**, .github/workflows/pages.yml]
   workflow_dispatch:
   workflow_call:
 

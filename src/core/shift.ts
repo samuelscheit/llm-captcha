@@ -12,6 +12,8 @@ export interface GridShift {
   dy: number;
   /** How much better the best roll correlates than the runner-up (0 to 2); low means a guess. */
   margin: number;
+  /** Correlation of every roll, row-major: scores[dy * grid + dx]. */
+  scores: number[];
 }
 
 /** Below this margin the roll is a guess: better ask for another challenge. Real ones score 0.3 and more. */
@@ -56,7 +58,7 @@ export function findGridShift(reference: Pixels, challenge: Pixels, grid: number
       scores.push({ dx, dy, score: dot / (targetNorm * norm(source)) });
     }
   }
-  scores.sort((a, b) => b.score - a.score);
-  const [best, runnerUp] = [scores[0]!, scores[1]];
-  return { dx: best.dx, dy: best.dy, margin: runnerUp ? best.score - runnerUp.score : best.score };
+  const ranked = [...scores].sort((a, b) => b.score - a.score);
+  const [best, runnerUp] = [ranked[0]!, ranked[1]];
+  return { dx: best.dx, dy: best.dy, margin: runnerUp ? best.score - runnerUp.score : best.score, scores: scores.map((s) => s.score) };
 }

@@ -16,6 +16,8 @@ export interface PuzzleGap {
   offset: number;
   /** How much better the gap scores than the best place at least a piece-edge away (0 to 1); low means a guess. */
   margin: number;
+  /** The winning contrast direction's score at every offset tried, [offset, score]: for explaining it. */
+  scores: [number, number][];
 }
 
 /** Pixels of piece outline: the interior is judged this far inside the edge, the surround this far outside. */
@@ -59,11 +61,11 @@ function pieceRegions(piece: Pixels, backgroundWidth: number) {
 }
 
 /** The best offset of one contrast polarity and how clearly it beats the best rival elsewhere. */
-function best(scores: [number, number][]): PuzzleGap & { x: number } {
+function best(scores: [number, number][]): { x: number; margin: number } {
   const top = scores.reduce((a, b) => (b[1] > a[1] ? b : a));
   let rival = 0;
   for (const [x, score] of scores) if (Math.abs(x - top[0]) > RIVAL_DISTANCE_PX && score > rival) rival = score;
-  return { x: top[0], offset: 0, margin: Math.max(0, top[1] - rival) };
+  return { x: top[0], margin: Math.max(0, top[1] - rival) };
 }
 
 /**
@@ -96,6 +98,6 @@ export function findPuzzleGap(background: Pixels, piece: Pixels, origin: { x: nu
   }
   if (!dark.length) throw new Error("The puzzle background has no room right of the piece.");
   const [a, b] = [best(dark), best(light)];
-  const winner = a.margin >= b.margin ? a : b;
-  return { offset: winner.x - origin.x, margin: winner.margin };
+  const [winner, scores] = a.margin >= b.margin ? [a, dark] : [b, light];
+  return { offset: winner.x - origin.x, margin: winner.margin, scores: scores.map(([x, s]) => [x - origin.x, s]) };
 }

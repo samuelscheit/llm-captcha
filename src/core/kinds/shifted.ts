@@ -23,7 +23,7 @@ export function shiftedView(view: ChallengeView): ChallengeView {
  * cell; a click answers the challenge, so further points are dropped. Coordinates stay in the
  * screenshot's image pixels (relative to the reference), as `execute` expects them.
  */
-export function toChallengeCell(actions: Action[], view: ChallengeView, frame: ImageFrame, shift: GridShift, grid: number): Action[] {
+export function toChallengeCell(actions: Action[], view: ChallengeView, frame: ImageFrame, shift: Pick<GridShift, "dx" | "dy">, grid: number): Action[] {
   const point = actions.find((a) => a.kind === "clickPoint");
   const challenge = view.targets.find((t) => t.id === "challenge")?.rect;
   if (!point || !challenge) return actions.filter((a) => a.kind !== "clickPoint");
