@@ -5,5 +5,6 @@
   {"name": "gpt-5.6", "provider": "openai", "model": "gpt-5.6", "baseURL": "${OPENAI_BASE_URL}", "apiKey": "${OPENAI_API_KEY}"},
   {"name": "gemini-3.8-flash", "provider": "google", "model": "gemini-3.8-flash", "baseURL": "${GOOGLE_BASE_URL}", "apiKey": "${GOOGLE_API_KEY}"},
   {"name": "grok-4", "provider": "openai-compatible", "model": "grok-4", "baseURL": "https://api.x.ai/v1", "apiKey": "${XAI_API_KEY}"},
+  {"name": "gemini-4-neon", "provider": "agy", "model": "gemini-4-neon-high", "baseURL": "", "apiKey": ""},
   {"discover": {"baseURL": "${GATEWAY_URL}", "apiKey": "${GATEWAY_KEY}", "exclude": "embed|tts|whisper|transcri|dall-e|image-gen|moderation|-oss-"}}
 ]

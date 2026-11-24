@@ -12,8 +12,7 @@ import { findPuzzleGap } from "../core/puzzle";
 import { findGridShift } from "../core/shift";
 import { countStamps } from "../core/stamps";
 import { formatAction } from "../core/prompt";
-import { createModel } from "../core/solver";
-import { liveModel } from "./model";
+import { liveModel, toolModel } from "./model";
 import { loadCountFixtures, loadFixtures, loadShiftFixtures, loadSliderFixtures } from "./fixtures";
 import { replay } from "./replay";
 
@@ -56,7 +55,7 @@ const config = liveModel();
 const runs = Number(values.runs);
 const jobs = fixtures.flatMap((fixture) => Array.from({ length: runs }, (_, run) => ({ fixture, model: config, run })));
 
-const results = await replay(jobs, createModel, {
+const results = await replay(jobs, toolModel, {
   concurrency: Number(values.concurrency),
   onResult(r) {
     const label = `${r.fixture.name}${runs > 1 ? ` #${r.run + 1}` : ""} (${(r.ms / 1000).toFixed(1)}s)`;

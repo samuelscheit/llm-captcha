@@ -3,11 +3,12 @@
  * category. Pure functions; bench.ts does the I/O.
  */
 import { createHash } from "node:crypto";
-import type { ModelConfig, TokenUsage } from "../../core/types";
+import type { TokenUsage } from "../../core/types";
 import type { StoredFixture } from "../fixtures";
+import { needsKey, type ToolModelConfig } from "../model";
 
 /** A model on the leaderboard. Strings may reference environment variables as ${NAME}. */
-export interface BenchModel extends ModelConfig {
+export interface BenchModel extends ToolModelConfig {
   /** Leaderboard name, unique. */
   name: string;
 }
@@ -53,13 +54,17 @@ export const sha = (...parts: (string | Buffer)[]) => {
 
 export const fillEnv = (s: string, env: Record<string, string | undefined>) => s.replace(/\$\{(\w+)\}/g, (_, name: string) => env[name] ?? "");
 
-/** Replace ${NAME} with the environment's value; a model whose key stays empty is skipped. */
-export function resolveModels(models: BenchModel[], env: Record<string, string | undefined>): { ready: BenchModel[]; skipped: string[] } {
+/**
+ * Replace ${NAME} with the environment's value; a model whose key stays empty is skipped, and so is
+ * an `agy` model on a machine without the agy CLI.
+ */
+export function resolveModels(models: BenchModel[], env: Record<string, string | undefined>, installed: { agy: boolean }): { ready: BenchModel[]; skipped: string[] } {
   const fill = (s: string) => fillEnv(s, env);
   const resolved = models.map((m) => ({ ...m, baseURL: fill(m.baseURL ?? ""), apiKey: fill(m.apiKey ?? ""), model: fill(m.model) }));
+  const usable = (m: BenchModel) => (needsKey(m) ? !!m.apiKey : installed.agy);
   return {
-    ready: resolved.filter((m) => m.apiKey),
-    skipped: resolved.filter((m) => !m.apiKey).map((m) => m.name),
+    ready: resolved.filter(usable),
+    skipped: resolved.filter((m) => !usable(m)).map((m) => m.name),
   };
 }
 

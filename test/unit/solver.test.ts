@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { imageFrame, labelsOf, pickChallenge, withSubmit } from "../../src/core/engine";
-import { buildPrompt } from "../../src/core/prompt";
+import { buildPrompt, SYSTEM_PROMPT } from "../../src/core/prompt";
 import { score } from "../../src/core/score";
 import { recoverDecision, sanitize } from "../../src/core/solver";
 import type { Action, ChallengeView } from "../../src/core/types";
@@ -57,6 +57,10 @@ describe("prompt", () => {
     expect(prompt).toContain("- t2: x=135 y=125 w=130 h=130, SELECTED");
     expect(prompt).toContain('- verify: x=292 y=530 w=100 h=42, label "Verify"');
     expect(prompt).not.toContain("Previous rounds");
+  });
+  it("never names the widget: some models refuse what is called a captcha", () => {
+    const prompt = buildPrompt(grid, imageFrame(grid.region), []);
+    expect(`${SYSTEM_PROMPT}\n${prompt}`).not.toMatch(/captcha|verification|recaptcha-images/i);
   });
   it("feeds earlier rounds and their errors back", () => {
     const prompt = buildPrompt({ ...grid, errors: ["Please select all matching images."] }, imageFrame(grid.region), [

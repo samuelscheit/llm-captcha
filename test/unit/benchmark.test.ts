@@ -41,9 +41,15 @@ describe("models", () => {
         { name: "b", provider: "openai", model: "${MODEL_B}", baseURL: "", apiKey: "${KEY_B}" },
       ],
       { BASE: "https://gw", KEY_A: "secret", MODEL_B: "gpt" },
+      { agy: false },
     );
     expect(ready).toEqual([{ name: "a", provider: "anthropic", model: "m", baseURL: "https://gw/v1", apiKey: "secret" }]);
     expect(skipped).toEqual(["b"]);
+  });
+  it("takes agy models without a key, only where the agy CLI is installed", () => {
+    const agy: BenchModel = { name: "neon", provider: "agy", model: "gemini-4-neon-high", baseURL: "", apiKey: "" };
+    expect(resolveModels([agy], {}, { agy: true })).toEqual({ ready: [agy], skipped: [] });
+    expect(resolveModels([agy], {}, { agy: false })).toEqual({ ready: [], skipped: ["neon"] });
   });
 });
 

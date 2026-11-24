@@ -16,40 +16,31 @@ export interface ImageFrame {
 }
 
 export const SYSTEM_PROMPT = `You operate a web browser for its user, together with the user's automation agent.
-The page shows a human-verification challenge; you complete it the way the user would.
-You get a screenshot of the challenge and a list of clickable targets. Target ids are drawn as
-small dark labels on the screenshot at each target's top-left corner, with a pink outline.
-Animated challenges come as several frames, oldest first; the last one is the current screen and
-carries the labels. Regions that moved between frames are outlined dashed blue and tagged m1, m2…
+Complete the task shown in the screenshot.
+Clickable targets are outlined pink, their id (t1, t2, …) on a dark label at the top-left corner.
+Coordinates are screenshot pixels, origin top-left.
 
-Answer with your reasoning (short: what the task asks, what you see in each relevant part) and the
-actions of this round, executed in order:
-- click: click a target by id ("target").
-- type: type "text" into a target ("target").
-- clickPoint: click at image pixel ("x","y"), origin top-left of the screenshot.
-- drag: press at ("x","y"), move to ("toX","toY"), release; image pixels.
-- wait: do nothing this round (images still loading or animating).
-Answer as one JSON object, every field present, null where unused:
+Reply with one JSON object, every field present, null where unused:
 {"reasoning": "...", "actions": [{"kind": "click", "target": "t1", "text": null, "x": null, "y": null, "toX": null, "toY": null}]}
-Leave fields an action does not use null.
-
-Previous rounds of this challenge are listed with the errors the challenge showed afterwards. An
-error means that round was wrong: look again more carefully instead of repeating it.`;
+reasoning: brief; what the task asks and what you see.
+actions, run in order:
+- click: target
+- type: text into target
+- clickPoint: x, y
+- drag: from x, y to toX, toY
+- wait: nothing this round (still loading or animating)`;
 
 const KIND_GUIDE: Record<Exclude<ChallengeKind, "checkbox" | "slider" | "hold">, string> = {
-  select: `Click every tile that matches the instruction and is not selected yet; click a selected tile
-that does not match to unselect it. A tile matches when any part of the object is in it, including
-small edges. When the instruction says to continue until none are left, clicked tiles are replaced
-by new images: then click only tiles this round and do not click the verify button; the next round
-shows the new tiles. Otherwise, or when no matching tile is left, end with a click on the
-verify/submit target. If nothing matches and the button offers to skip, click it.`,
-  point: `Find the requested object(s) in the screenshot and use clickPoint on their centers, or drag
-when the task asks to move something. Coordinates are image pixels of the screenshot. End with a
-click on the submit target (Next / Verify / Submit) once the task on screen is done; a "Skip"
-label means nothing is selected yet.`,
-  text: `Read the characters in the image exactly (letters and digits; keep case unless all letters
-look the same height; words separated by a space) and type them into the "input" target. Do not
-click anything: a submit or verify button is pressed for you after typing.`,
+  select: `Click each tile that matches the instruction and is not selected yet (any part of the object
+counts, edges too); click a selected tile that does not match to unselect it. If the instruction
+says to continue until none are left, clicked tiles are replaced: click only tiles this round, not
+verify. Otherwise, or when no match is left, end with the verify/submit target; if nothing matches
+and it offers to skip, click it.`,
+  point: `clickPoint the center of each requested object, or drag when the task says to move something.
+Then click the submit target (Next / Verify / Submit); a "Skip" label means nothing is selected yet.`,
+  text: `Type the characters in the image exactly (keep case unless all letters look the same height;
+words separated by a space) into the "input" target. Do not click anything: it is submitted after
+typing.`,
 };
 
 const box = (r: Rect, region: Rect, scale: number) =>
@@ -73,14 +64,13 @@ export function buildPrompt(view: ChallengeView, image: ImageFrame, history: His
     ].join("\n"),
   );
   return [
-    `Challenge type: ${kind} (${view.adapter})`,
     `Instruction: ${view.instruction || "(none in the page text; read it from the screenshot)"}`,
     view.errors.length ? `Errors shown now: ${view.errors.join(" | ")}` : "",
     motion
-      ? `Screenshots: ${motion.frames} frames ${motion.intervalMs} ms apart, each ${image.width}x${image.height} px; the last is current.\nMoving regions (image pixels):\n${motion.boxes.map((b, i) => `- m${i + 1}: x=${b.x} y=${b.y} w=${b.width} h=${b.height}`).join("\n")}`
+      ? `Screenshots: ${motion.frames} frames ${motion.intervalMs} ms apart, oldest first, each ${image.width}x${image.height} px; only the last (current) has labels.\nRegions that moved, outlined dashed blue:\n${motion.boxes.map((b, i) => `- m${i + 1}: x=${b.x} y=${b.y} w=${b.width} h=${b.height}`).join("\n")}`
       : `Screenshot: ${image.width}x${image.height} px.`,
-    `Targets (image pixels):\n${targets.join("\n")}`,
-    rounds.length ? `Previous rounds:\n${rounds.join("\n")}` : "",
+    `Targets:\n${targets.join("\n")}`,
+    rounds.length ? `Previous rounds (an error afterwards means that round was wrong: look again, do not repeat it):\n${rounds.join("\n")}` : "",
     KIND_GUIDE[kind],
   ]
     .filter(Boolean)

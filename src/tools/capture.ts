@@ -16,11 +16,10 @@
 import { parseArgs } from "node:util";
 import { BUILTIN_ADAPTERS } from "../core/adapters";
 import { solve } from "../core/engine";
-import { createModel } from "../core/solver";
 import { CdpDriver } from "../cdp/driver";
 import { playwrightHost } from "../cdp/playwright";
 import { launch } from "./browser";
-import { liveModel } from "./model";
+import { liveModel, toolModel } from "./model";
 import { acceptedExpected } from "../core/fixture";
 import type { SlideRecord } from "../core/engine";
 import { saveRound, saveSlide } from "./fixtures";
@@ -37,7 +36,7 @@ const { values, positionals } = parseArgs({
 const pages: VendorPage[] = [...values.vendor!.map(vendorPage), ...positionals.map((url) => ({ url }))];
 if (!pages.length) throw new Error("Usage: bun run capture --vendor <name>... | <url>... [--sessions N]");
 const config = liveModel();
-const model = createModel(config);
+const model = toolModel(config);
 const browser = await launch();
 const page = browser.context.pages()[0] ?? (await browser.context.newPage());
 try {

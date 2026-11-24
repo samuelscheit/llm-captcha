@@ -4,12 +4,11 @@
 import { describe, expect, it } from "vitest";
 import { BUILTIN_ADAPTERS } from "../../src/core/adapters";
 import { solve, type SolveResult } from "../../src/core/engine";
-import { createModel } from "../../src/core/solver";
 import { CdpDriver } from "../../src/cdp/driver";
 import { playwrightHost } from "../../src/cdp/playwright";
 import { launch } from "../../src/tools/browser";
 import { saveRound } from "../../src/tools/fixtures";
-import { liveModel } from "../../src/tools/model";
+import { liveModel, toolModel } from "../../src/tools/model";
 import { openVendorPage, VENDOR_PAGES, vendorPassed, type VendorName } from "../../src/tools/vendor-pages";
 
 /** "[a] [b]": adapter tags in a test title, for the coverage table. */
@@ -24,7 +23,7 @@ async function liveSolve(vendor: VendorName, withModel: boolean): Promise<{ resu
     try {
       const result = await solve(new CdpDriver(host), {
         adapters: BUILTIN_ADAPTERS,
-        models: withModel ? [createModel(liveModel())] : [],
+        models: withModel ? [toolModel(liveModel())] : [],
         maxRounds: withModel ? 8 : 4,
         timeoutMs: withModel ? 180_000 : 90_000,
       });

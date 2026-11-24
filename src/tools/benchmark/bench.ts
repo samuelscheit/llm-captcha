@@ -12,8 +12,8 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
-import { createModel } from "../../core/solver";
 import { loadFixtures } from "../fixtures";
+import { toolModel } from "../model";
 import { expandSources, isPermanent, record, resolveModels, staleJobs, untested, type BenchModel, type BenchResults, type ModelSource } from "./benchmark";
 import { replay } from "../replay";
 import { loadResults, publish, RESULTS_FILE as RESULTS, ROOT as root, solverHash as currentSolver } from "./publish";
@@ -35,7 +35,7 @@ const { values } = parseArgs({
 const configFile = existsSync(path.join(dir, "models.local.json")) ? "models.local.json" : "models.json";
 const sources = JSON.parse(readFileSync(path.join(dir, configFile), "utf8")) as ModelSource[];
 const expanded = await expandSources(sources, process.env);
-const resolved = resolveModels(expanded.models.filter((m) => !values.model || m.name === values.model), process.env);
+const resolved = resolveModels(expanded.models.filter((m) => !values.model || m.name === values.model), process.env, { agy: !!Bun.which("agy") });
 const skipped = [...expanded.skipped, ...resolved.skipped];
 const fixtures = loadFixtures();
 const solverHash = currentSolver();
@@ -53,12 +53,12 @@ if (values["list-new"]) {
 
 const stale = staleJobs(results, ready, fixtures, solverHash, runs);
 console.log(`${configFile}: ${ready.length} models to measure, ${fixtures.length} fixtures, solver ${solverHash}; ${stale.reduce((n, j) => n + j.missing, 0)} runs to do`);
-if (skipped.length) console.log(`skipped (no API key): ${skipped.join(", ")}`);
+if (skipped.length) console.log(`skipped (no API key, or no agy CLI): ${skipped.join(", ")}`);
 
 const save = () => writeFileSync(RESULTS, `${JSON.stringify(results, null, 1)}\n`);
 const jobs = stale.flatMap(({ model, fixture, missing }) => Array.from({ length: missing }, (_, run) => ({ model, fixture, run })));
 // Results are saved as they land: an interrupted benchmark resumes where it stopped.
-await replay(jobs, (m: BenchModel) => createModel(m), {
+await replay(jobs, (m: BenchModel) => toolModel(m), {
   concurrency: Number(values.concurrency),
   onResult(r) {
     if (r.infra) {
