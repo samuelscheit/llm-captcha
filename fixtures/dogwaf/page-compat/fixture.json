@@ -1,0 +1,25 @@
+{
+  "kind": "page",
+  "source": "dogwaf-fork run locally with config.example.toml and neverServeCompat = false, for a Chrome 100 user agent",
+  "capturedAt": "2026-11-24",
+  "expected": {
+    "state": "solved",
+    "navigatesTo": "/landed"
+  },
+  "redirects": [
+    {
+      "query": {
+        "dogcaptcha-compat-0": "8",
+        "dogcaptcha-compat-1": "2",
+        "dogcaptcha-compat-2": "7",
+        "dogcaptcha-compat-3": "7",
+        "dogcaptcha-compat-4": "7"
+      },
+      "to": "/landed"
+    }
+  ],
+  "verifies": [
+    "dogwaf-compat"
+  ],
+  "notes": "The compat page as served, tokens replaced, with its five images. True counts from the decrypted token: [8, 2, 7, 7, 7]. Counted by image analysis, without the model."
+}

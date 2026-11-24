@@ -53,6 +53,7 @@ describe("without a model", () => {
     ["altcha", ["altcha"]],
     ["mcaptcha", ["mcaptcha"]],
     ["anubis", ["anubis"]],
+    ["dogwaf", ["dogwaf-auto"]],
     ["human", ["human-press-hold"]],
   ] as [VendorName, string[]][]).map(([vendor, ids]) => [vendor, tags(ids)] as const))("%s %s", async (vendor, _tags) => {
     const { result, passed } = await liveSolve(vendor, false);
@@ -66,6 +67,7 @@ describe.skipIf(!process.env.LLM_API_KEY)("with the live model", () => {
     ["yandex", ["yandex-text"]],
     ["mtcaptcha", ["mtcaptcha"]],
     ["arkose", ["arkose-game"]],
+    ["dogwaf-captcha", ["dogwaf-shifted"]],
   ] as [VendorName, string[]][]).map(([vendor, ids]) => [vendor, tags(ids)] as const))("%s %s", async (vendor, _tags) => {
     const { result, passed } = await liveSolve(vendor, true);
     expect(passed, `${result.state}: ${result.detail}`).toBe(true);

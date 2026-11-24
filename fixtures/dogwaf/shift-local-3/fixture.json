@@ -1,0 +1,10 @@
+{
+  "kind": "shift",
+  "source": "DogWAF v1.1 (git.miningtcup.me/MiningTcup/dogwaf), run locally with its config.toml",
+  "grid": 10,
+  "expected": {
+    "dx": 8,
+    "dy": 9
+  },
+  "notes": "Roll read from the decrypted challenge token (correctX, correctY): the challenge image is the reference rolled right by dx and down by dy squares, with renderGrid lines and intensity noise."
+}

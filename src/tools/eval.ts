@@ -9,30 +9,47 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 import { PNG } from "pngjs";
 import { findPuzzleGap } from "../core/puzzle";
+import { findGridShift } from "../core/shift";
+import { countStamps } from "../core/stamps";
 import { formatAction } from "../core/prompt";
 import { createModel } from "../core/solver";
 import { liveModel } from "./model";
-import { loadFixtures, loadSliderFixtures } from "./fixtures";
+import { loadCountFixtures, loadFixtures, loadShiftFixtures, loadSliderFixtures } from "./fixtures";
 import { replay } from "./replay";
 
 const { values } = parseArgs({
   options: { filter: { type: "string" }, runs: { type: "string", default: "1" }, concurrency: { type: "string", default: "4" } },
 });
 const fixtures = loadFixtures(values.filter);
-const sliders = loadSliderFixtures(values.filter);
-if (!fixtures.length && !sliders.length) throw new Error("No labeled fixtures (fixtures/<provider>/<name>/fixture.json with `expected`).");
-
-// Slide puzzles: deterministic, no model. Tencent accepts a few pixels off; 2 is the bar here.
-let slidersPassed = 0;
-for (const f of sliders) {
-  const gap = findPuzzleGap(PNG.sync.read(f.background), PNG.sync.read(f.piece), f.origin);
-  const pass = Math.abs(gap.offset - f.expected.offset) <= 2;
-  slidersPassed += pass ? 1 : 0;
-  console.log(`${pass ? "PASS" : "FAIL"} ${f.name} gap ${gap.offset} (expected ${f.expected.offset}), margin ${gap.margin.toFixed(2)}`);
+// Image analysis: deterministic, no model. Each check says whether it passed and what it found.
+const analyses: (() => { pass: boolean; name: string; found: string })[] = [
+  // Tencent accepts a few pixels off; 2 is the bar here.
+  ...loadSliderFixtures(values.filter).map((f) => () => {
+    const gap = findPuzzleGap(PNG.sync.read(f.background), PNG.sync.read(f.piece), f.origin);
+    return { pass: Math.abs(gap.offset - f.expected.offset) <= 2, name: f.name, found: `gap ${gap.offset} (expected ${f.expected.offset}), margin ${gap.margin.toFixed(2)}` };
+  }),
+  ...loadShiftFixtures(values.filter).map((f) => () => {
+    const shift = findGridShift(PNG.sync.read(f.reference), PNG.sync.read(f.challenge), f.grid);
+    const pass = shift.dx === f.expected.dx && shift.dy === f.expected.dy;
+    return { pass, name: f.name, found: `roll ${shift.dx},${shift.dy} (expected ${f.expected.dx},${f.expected.dy}), margin ${shift.margin.toFixed(2)}` };
+  }),
+  // Images beyond image analysis pass when it declines, leaving them to the model.
+  ...loadCountFixtures(values.filter).map((f) => () => {
+    const counts = countStamps(f.images.map((png) => PNG.sync.read(png)), f.stamps);
+    const pass = f.counted ? JSON.stringify(counts) === JSON.stringify(f.expected.counts) : counts === null;
+    return { pass, name: f.name, found: `counts ${counts?.join(" ") ?? "declined"} (expected ${f.expected.counts.join(" ")}${f.counted ? "" : ", declined"})` };
+  }),
+];
+if (!fixtures.length && !analyses.length) throw new Error("No labeled fixtures (fixtures/<provider>/<name>/fixture.json with `expected`).");
+let analysesPassed = 0;
+for (const check of analyses) {
+  const { pass, name, found } = check();
+  analysesPassed += pass ? 1 : 0;
+  console.log(`${pass ? "PASS" : "FAIL"} ${name} ${found}`);
 }
-if (sliders.length) console.log(`slide puzzles: ${slidersPassed}/${sliders.length} passed\n`);
+if (analyses.length) console.log(`image analysis: ${analysesPassed}/${analyses.length} passed\n`);
 if (!fixtures.length) {
-  process.exitCode = slidersPassed === sliders.length ? 0 : 1;
+  process.exitCode = analysesPassed === analyses.length ? 0 : 1;
   process.exit();
 }
 const config = liveModel();
@@ -53,4 +70,4 @@ const results = await replay(jobs, createModel, {
 });
 const passed = results.filter((r) => r.pass).length;
 console.log(`\n${config.model}: ${passed}/${results.length} passed`);
-process.exitCode = passed === results.length && slidersPassed === sliders.length ? 0 : 1;
+process.exitCode = passed === results.length && analysesPassed === analyses.length ? 0 : 1;

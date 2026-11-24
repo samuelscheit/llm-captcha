@@ -62,9 +62,9 @@ export function methodOf(adapter: AdapterSpec): string {
     case "select":
       return "vision model: pick tiles";
     case "point":
-      return "vision model: click points";
+      return adapter.shiftedGrid ? "vision model + image analysis: click a cell" : "vision model: click points";
     case "text":
-      return "vision model: read text";
+      return adapter.stamps ? "image analysis: count (vision model as fallback)" : "vision model: read text";
   }
 }
 

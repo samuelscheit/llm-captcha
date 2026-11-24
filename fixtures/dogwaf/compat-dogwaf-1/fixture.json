@@ -1,0 +1,19 @@
+{
+  "kind": "count",
+  "source": "DogWAF v1.1 (git.miningtcup.me/MiningTcup/dogwaf), run locally with its config.toml",
+  "stamps": {
+    "size": 20,
+    "wobble": 4
+  },
+  "expected": {
+    "counts": [
+      9,
+      0,
+      1,
+      5,
+      5
+    ]
+  },
+  "counted": false,
+  "notes": "Counts read from the decrypted challenge token (ObjectCounts). Each copy keeps only about half its pixels (randomBool per pixel): image analysis declines and the model counts."
+}

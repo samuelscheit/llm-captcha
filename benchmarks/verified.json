@@ -27,6 +27,26 @@
     "passedAt": "2026-11-20T21:07:35.823Z",
     "passedBy": "without a model dingxiang [dingxiang-button] [dingxiang-slider]"
   },
+  "dogwaf-auto": {
+    "passedAt": "2026-11-24T00:11:57.392Z",
+    "passedBy": "puppeteer driver on page fixtures dogwaf/page-auto [dogwaf-auto]"
+  },
+  "dogwaf-blocked": {
+    "passedAt": "2026-11-24T00:11:57.392Z",
+    "passedBy": "puppeteer driver on page fixtures dogwaf/page-blocked [dogwaf-blocked]"
+  },
+  "dogwaf-compat": {
+    "passedAt": "2026-11-24T00:11:57.392Z",
+    "passedBy": "puppeteer driver on page fixtures dogwaf/page-compat [dogwaf-compat]"
+  },
+  "dogwaf-grid": {
+    "passedAt": "2026-11-24T00:11:57.392Z",
+    "passedBy": "puppeteer driver on page fixtures dogwaf/page-grid [dogwaf-grid]"
+  },
+  "dogwaf-shifted": {
+    "passedAt": "2026-11-24T00:11:57.392Z",
+    "passedBy": "puppeteer driver on page fixtures dogwaf/page-shifted [dogwaf-shifted]"
+  },
   "friendlycaptcha-v1": {
     "passedAt": "2026-11-20T21:07:35.823Z",
     "passedBy": "without a model friendlycaptcha-v1 [friendlycaptcha-v1]"

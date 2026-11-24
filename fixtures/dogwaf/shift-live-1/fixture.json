@@ -1,0 +1,10 @@
+{
+  "kind": "shift",
+  "source": "https://git.miningtcup.me/ (DogWAF v1.1)",
+  "grid": 10,
+  "expected": {
+    "dx": 9,
+    "dy": 5
+  },
+  "notes": "git.miningtcup.me accepted square (5, 0) for this challenge (303 with a dogcaptcha-pass cookie): the nose sits at square (6, 5) of the reference, so the roll is (9, 5)."
+}

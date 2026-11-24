@@ -1,5 +1,6 @@
 import type { AssistRequest } from "../page/assist";
 import type { PuzzleMeasure } from "../page/puzzle";
+import type { GridShift } from "./shift";
 import type { MouseStep } from "./mouse";
 import type { AdapterSpec, ChallengeView, PageState, Rect } from "./types";
 
@@ -64,6 +65,10 @@ export interface Driver {
    * its images load. `withImages` also returns the images as measured (slider fixtures).
    */
   puzzle(view: ChallengeView, adapter: AdapterSpec, withImages?: boolean): Promise<PuzzleMeasure | null>;
+  /** Shifted grid (`shiftedGrid`): how far its challenge image is rolled from the reference; null while they load. */
+  gridShift(view: ChallengeView, adapter: AdapterSpec): Promise<GridShift | null>;
+  /** Stamp counts (`stamps`) per image, in order; null while they load or when they cannot be counted. */
+  countStamps(view: ChallengeView, adapter: AdapterSpec): Promise<number[] | null>;
   /** HTML of the frame a view came from, closed shadow roots included (failure reports). */
   snapshot(view: ChallengeView): Promise<string>;
   /**

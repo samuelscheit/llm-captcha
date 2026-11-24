@@ -5,6 +5,8 @@ import { approach, between, clickSteps, dragSteps, heldSteps, pressSteps, type P
 import { MIN_MARGIN } from "./puzzle";
 import { hold, HOLD_READY_MS } from "./kinds/hold";
 import { answer as answerCarousel, browse, optionsOf, sheetLayout, sheetView } from "./kinds/carousel";
+import { shiftedView, toChallengeCell } from "./kinds/shifted";
+import { MIN_SHIFT_MARGIN, type GridShift } from "./shift";
 import { AnswerError, answerHelp, parseAnswer } from "./answer";
 import { sanitize } from "./solver";
 import type { AssistRequest } from "../page/assist";
@@ -290,7 +292,7 @@ async function solveLoop(
   let lookingSince: number | undefined = Date.now();
   /** Rounds in a row the widget rejected, per challenge. */
   const rejections = new Map<string, number>();
-  /** Slide or hold attempts per widget, and the gap of its last slide. */
+  /** Slide, hold or count attempts per widget, and the gap of its last slide. */
   const slides = new Map<string, number>();
   const lastGap = new Map<string, number>();
   /** When each challenge was first worked on, and (hold) when it is armed. */
@@ -414,6 +416,20 @@ async function solveLoop(
     }
 
     session.last = view;
+    // Counted by image analysis; when the images cannot be counted, the model answers below.
+    if (spec.stamps) {
+      const key = keyOf(view);
+      const counts = await driver.countStamps(view, spec);
+      const inputs = view.targets.filter((t) => /^input\d+$/.test(t.id));
+      if (counts && counts.length === inputs.length) {
+        if ((slides.get(key) ?? 0) >= maxRounds) return finish("failed", `${view.adapter}: not solved in ${maxRounds} counts`);
+        slides.set(key, (slides.get(key) ?? 0) + 1);
+        const typed = counts.map((n, i): Action => ({ ...WAIT, kind: "type", target: inputs[i]!.id, text: String(n) }));
+        pointer = await execute(driver, view, imageFrame(view.region), withSubmit(view, typed), random, signal, pointer);
+        await sleep(2200, signal);
+        continue;
+      }
+    }
     if (view.kind === "hold") {
       const key = keyOf(view);
       const last = lastClick.get(key);
@@ -543,9 +559,25 @@ async function solveLoop(
     histories.set(key, history);
     const started = Date.now();
     const rescan = async () => (await scan()).find((v) => keyOf(v) === key);
+    // A shifted grid is answered on its reference image, once the roll of its challenge is known.
+    let shift: GridShift | undefined;
+    if (spec.shiftedGrid) {
+      const measured = await driver.gridShift(view, spec);
+      if (!measured) {
+        await sleep(400, signal);
+        continue;
+      }
+      // An unclear roll would make any answer a guess: ask for another challenge.
+      if (measured.margin < MIN_SHIFT_MARGIN && reload) {
+        pointer = await click(driver, center(reload.rect), Math.min(reload.rect.width, reload.rect.height) / 6, random, pointer);
+        await sleep(1500, signal);
+        continue;
+      }
+      shift = measured;
+    }
     // A carousel is answered from a contact sheet of all its options; anything else from its frames.
     const carousel = spec.carousel && optionsOf(view, spec).length > 1;
-    let asked = view;
+    let asked = shift ? shiftedView(view) : view;
     let frames: string[];
     if (carousel) {
       const shot = imageFrame(view.region);
@@ -611,7 +643,7 @@ async function solveLoop(
     }
 
     // The model took seconds: act only if the challenge is still where it was.
-    const now = (await scan()).find((v) => keyOf(v) === key);
+    let now = (await scan()).find((v) => keyOf(v) === key);
     if (!now || drift(now.region, view.region) > MAX_DRIFT) {
       record.error = now ? "challenge moved while the model thought; answer dropped" : "challenge gone while the model thought";
       options.onRound?.(record);
@@ -619,7 +651,18 @@ async function solveLoop(
     }
     options.onRound?.(record);
 
-    pointer = await execute(driver, view, frame, withSubmit(view, decision.actions), random, signal, pointer);
+    let actions = withSubmit(view, decision.actions);
+    if (shift) {
+      // The challenge image may lie below the reference, out of view: bring it in before clicking.
+      const challenge = spec.targets.find((t) => t.id === "challenge")!;
+      if (!contains(await driver.input.viewport(), now.targets.find((t) => t.id === "challenge")!.rect)) {
+        await driver.reveal(now, { ...spec, root: challenge.selector });
+        await sleep(400, signal);
+        now = (await rescan()) ?? now;
+      }
+      actions = toChallengeCell(actions, now, frame, shift, spec.shiftedGrid!);
+    }
+    pointer = await execute(driver, now, frame, actions, random, signal, pointer);
     const entry: HistoryEntry = { instruction: view.instruction, decision, errorsAfter: [] };
     history.push(entry);
     previous = { key, entry, record };

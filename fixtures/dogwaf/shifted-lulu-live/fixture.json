@@ -1,0 +1,49 @@
+{
+  "source": "https://git.miningtcup.me/?dogcaptcha-token=x",
+  "capturedAt": "2026-11-23T23:49:49.145Z",
+  "view": {
+    "adapter": "dogwaf-shifted",
+    "kind": "point",
+    "status": "pending",
+    "region": {
+      "x": 230.5703125,
+      "y": 138.375,
+      "width": 400,
+      "height": 400
+    },
+    "instruction": "Click on the square with Lulu's nose in the challenge image. [The screenshot is the clean reference image; the challenge image is the same picture shifted and noised. Click the spot in the reference image with clickPoint; the matching square of the challenge image is clicked for you.]",
+    "errors": [],
+    "targets": [],
+    "visible": true,
+    "frame": "5117A85DD9BDBE93991E17E94C24F627"
+  },
+  "history": [],
+  "expected": {
+    "points": [
+      {
+        "x": 260,
+        "y": 220,
+        "r": 20
+      }
+    ]
+  },
+  "notes": "git.miningtcup.me (DogWAF v1.1). The model sees the clean 400x400 reference image (Lulu, a tan and white dog with her tongue out); the noised challenge image is rolled and is clicked by the engine. The nose (dark brown, right of centre) is at about (258, 218), in square (6, 5) of the 10x10 grid (x 240-280, y 200-240); the server accepted that square (303, pass cookie). A click within 20 px of (260, 220) stays in the square.",
+  "observed": {
+    "model": "assist",
+    "decision": {
+      "reasoning": "answered in assist mode: 260,220",
+      "actions": [
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 260,
+          "y": 220,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "source": "http://localhost:18003/?dogcaptcha-token=aCEUbnPsU0_Pv0N5ARDGJwBcVC6-24mv3Nb_rR1G5nQUFc6mhRyXjUlJ2XmsaWMz5fNbfV-0KrNB5dQUAw81-B9lD5AXzvVLEwcBpC4D-pWJwNvfcWq2ZL_vPqk1egQB2oSZQqxX2z-e24QnCc5zByRi1RKK8q-VvXE9V9cwETZJnJExGZnGSh7FxQRsKOZ9xu3GQVYU-ZHa2BFuptjsbsf3xZ4OAZR0aJkD7CMLuCLbyzNNQFhBJGkcTL7SPlQlFXA8mlBo_7oCq32n9e5NhsDTkS1DL7DVqwNopPJmcVZYKT3hNabrJy96RYO-2Jrvur41QBMgiJqGjK5A4cGtqXwvGvnNSPjOdSpYrrqgVQU706SbSF3a57IkESkVDtkhJMtAGQWbhMol9PN9PyueOpwIQJu_Fifhb_EfdG3e1-v7Gj7jqZn9LsN6y6bzPPNfAM_RVBoUcJrVkJvJC9Afz95OXYsFs0fkCXO_Ki3RsZPR7pTanlTRIQopHaEa74xut3UGt6NXYTInl484NogfxfZv0XGPm0-VUeELp0tz4Nktf1faQiSMgTZt2Jvy6N19KK6k87sUj1pFPorZDLZZLryv_HgyQslkmYijQOWG680kGZzmSzylWgaRIMdFvqRrkqm9oIgm76APm46Rd8EeYKoqReQHkcjR5Z7QbnvyFGku5iMbsMZau2tmQYHoHdm2nOfmV6YZ2SK8bysMVBsLC5WnHDR3zxfx-VWxsH-IkHiF1wYZR8NT5Li1HirNaNMeiD621J-o25_LT6-CoUCiXN9YLfHVXDQh6yBkJzIWw0Yj6A13JP9iwCvdNb9VQsZk2b1F7NArzqGeyef2lsaJubhMdBGKgbk3CTold_dy-1IbE6S_ctq5b7i2KpWCGxfoaWbdOqo8l1GEPMj2b2AbHRNVP5iYMjxP2pGmOEw4AWh9hlD03NvbpLk86pqfsJ-1iJF8uR-OmG1yvjXuRDqenrtfEu5MQRfyroRU-p9hsrwLb7sBLoPnoKUlHwptx8UXadnRqTomDcYPmVzazTcam4-VX-M69vIbPNqsc7WoqlF2l7sEFzHuhE9DlLB5hogj64-mLy9YwFJZf0cwNbnraNQZzINynqPp4RF9de8JGVHZURI-KsXZ6m0T7nGZxb0guDwTkE79d9TkoSPProRIsS24d2gltxYwkpivTNmqrqB-ZWlmCmOLm55nkxIdLJ1nQ9qI40yaQMRdYtuCxr3X9UsPK5Rq_Q9iH-KhNhIXDCnax5Ncp_PBfrgxsD_GWv3h4vHBOC-wIWbkDPSHF7UEti0brt0m7pkaW3-y65k14hGmOXOo5u8=",
+  "capturedAt": "2026-11-23T23:50:11.239Z",
+  "view": {
+    "adapter": "dogwaf-grid",
+    "kind": "point",
+    "status": "pending",
+    "region": {
+      "x": 440,
+      "y": 122.875,
+      "width": 400,
+      "height": 400
+    },
+    "instruction": "Click the dog's NOSE.",
+    "errors": [],
+    "targets": [
+      {
+        "id": "refresh",
+        "rect": {
+          "x": 571.3671875,
+          "y": 626.375,
+          "width": 133.2578125,
+          "height": 18.5
+        }
+      }
+    ],
+    "visible": true,
+    "frame": "8A13E9E500305D2DE98AB38C76C4527D"
+  },
+  "history": [],
+  "expected": {
+    "points": [
+      {
+        "x": 260,
+        "y": 220,
+        "r": 20
+      }
+    ]
+  },
+  "notes": "dogwaf-fork run locally with config.example.toml ('Click the dog's NOSE.'). One darkened, slightly warped 400x400 image of Lulu; each of its 10x10 squares is an image-map link. The nose is at about (258, 218), in square (6, 5) (x 240-280, y 200-240), the configured correctX/correctY; the server accepted it. A click within 20 px of (260, 220) stays in the square.",
+  "observed": {
+    "model": "assist",
+    "decision": {
+      "reasoning": "answered in assist mode: 262,222",
+      "actions": [
+        {
+          "kind": "clickPoint",
+          "target": null,
+          "text": null,
+          "x": 262,
+          "y": 222,
+          "toX": null,
+          "toY": null
+        }
+      ]
+    },
+    "errorsAfter": []
+  }
+}

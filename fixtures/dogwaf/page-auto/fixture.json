@@ -1,0 +1,21 @@
+{
+  "kind": "page",
+  "source": "DogWAF v1.1 run locally with its config.toml, for a Chrome 150 request with browser headers",
+  "capturedAt": "2026-11-24",
+  "expected": {
+    "state": "solved",
+    "navigatesTo": "/landed"
+  },
+  "redirects": [
+    {
+      "query": {
+        "dogcaptcha-token": "TOKEN"
+      },
+      "to": "/landed"
+    }
+  ],
+  "verifies": [
+    "dogwaf-auto"
+  ],
+  "notes": "The automatic check as served: CSS media probes and a meta refresh back with the token, which the server answers with the site (here /landed) when the probes came in. Nothing to click: the solver waits."
+}

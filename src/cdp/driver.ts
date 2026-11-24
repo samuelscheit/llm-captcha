@@ -5,6 +5,7 @@ import type { AdapterSpec, ChallengeView, PageState } from "../core/types";
 import type { AssistRequest } from "../page/assist";
 import { nestOffset, placeView, responseSelectors, TOP_FRAME, type FrameOffset, type OwnerState } from "../page/cover";
 import type { PuzzleMeasure } from "../page/puzzle";
+import type { GridShift } from "../core/shift";
 import { PAGE_SOURCE } from "./page-source.generated";
 
 /** One CDP session: the page's, or an out-of-process frame's. */
@@ -116,6 +117,18 @@ export class CdpDriver implements Driver {
     const frame = this.frames.get(view.frame ?? "");
     if (!frame) return null;
     return (await this.call(frame, (spec: AdapterSpec, images: boolean) => (globalThis as any).__captcha.measurePuzzle(spec, images), adapter, withImages)) as PuzzleMeasure | null;
+  }
+
+  async gridShift(view: ChallengeView, adapter: AdapterSpec): Promise<GridShift | null> {
+    const frame = this.frames.get(view.frame ?? "");
+    if (!frame) return null;
+    return (await this.call(frame, (spec: AdapterSpec) => (globalThis as any).__captcha.measureGridShift(spec), adapter)) as GridShift | null;
+  }
+
+  async countStamps(view: ChallengeView, adapter: AdapterSpec): Promise<number[] | null> {
+    const frame = this.frames.get(view.frame ?? "");
+    if (!frame) return null;
+    return (await this.call(frame, (spec: AdapterSpec) => (globalThis as any).__captcha.measureStamps(spec), adapter)) as number[] | null;
   }
 
   /** Every frame's URL, visible element tree and HTML (closed shadow roots included), for writing adapters. */

@@ -160,6 +160,18 @@ export interface AdapterSpec {
    * (tiles fading in) and the round waits. Default: true for point challenges.
    */
   animated?: boolean;
+  /**
+   * The root is a clean reference image and the `challenge` target the same picture rolled by
+   * whole cells of a `shiftedGrid` × `shiftedGrid` grid and noised (DogWAF). The model points into
+   * the reference; the engine measures the roll and clicks the matching challenge cell.
+   */
+  shiftedGrid?: number;
+  /**
+   * Each `image` target shows copies of one small picture pasted over noise, and the `input`
+   * target after it takes how many (DogWAF's compat challenge): counted by image analysis
+   * (`countStamps`). When the picture cannot be learned from the images, the model answers.
+   */
+  stamps?: { size: number; wobble: number };
 }
 
 export interface TargetSpec {

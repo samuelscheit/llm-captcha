@@ -69,6 +69,11 @@ Every challenge the solver recognizes, how it gets through it, and when that was
 | altcha | `altcha-code` | vision model: read text | not yet |
 | mcaptcha | `mcaptcha` | checkbox click | ✅ 2026-11-20 |
 | anubis | `anubis` | recognized: a refusal | ✅ 2026-11-20 |
+| dogwaf | `dogwaf-shifted` | vision model + image analysis: click a cell | ✅ 2026-11-24 |
+| dogwaf | `dogwaf-grid` | vision model: click points | ✅ 2026-11-24 |
+| dogwaf | `dogwaf-compat` | image analysis: count (vision model as fallback) | ✅ 2026-11-24 |
+| dogwaf | `dogwaf-auto` | waits for its own check | ✅ 2026-11-24 |
+| dogwaf | `dogwaf-blocked` | recognized: a refusal | ✅ 2026-11-24 |
 | gname | `gname-slider` | slide to end | ✅ 2026-11-20 |
 | generic | `generic-drag-verify` | slide to end | ✅ 2026-11-20 |
 | generic | `generic-kit-slider` | slide to end | ✅ 2026-11-20 |

@@ -3,7 +3,7 @@ import path from "node:path";
 import type { SlideRecord } from "../core/engine";
 import { fixtureFiles, providerOf, roundDir, type Fixture, type FixtureFile } from "../core/fixture";
 import type { Expected } from "../core/score";
-import type { RoundRecord } from "../core/types";
+import type { Action, RoundRecord } from "../core/types";
 
 /** fixtures/<provider>/<name>/ for labeled ones, fixtures/captured/<provider>/<time>-…/ for new captures. */
 export const FIXTURES_DIR = path.resolve(import.meta.dirname, "../../fixtures");
@@ -58,10 +58,13 @@ function fixtureDirs(filter?: string) {
     .map(({ name, dir }) => ({ name, dir, json: JSON.parse(readFileSync(path.join(dir, "fixture.json"), "utf8")) as Record<string, unknown> }));
 }
 
+/** Fixtures of challenges solved without a model, by image analysis, or real pages; the rest are model rounds. */
+const WITHOUT_MODEL = ["slider", "shift", "count", "page"];
+
 /** Labeled model fixtures (a view, frames and a non-null `expected`), filtered by "<provider>/<name>" substring. */
 export function loadFixtures(filter?: string): StoredFixture[] {
   return fixtureDirs(filter)
-    .filter(({ json }) => json.kind !== "slider" && json.kind !== "page")
+    .filter(({ json }) => !WITHOUT_MODEL.includes(json.kind as string))
     .map(({ name, dir, json }) => ({
       ...(json as unknown as Fixture),
       name,
@@ -102,6 +105,10 @@ export interface PageFixture {
    * snapshot that no longer reacts (scripts stripped), what the scan finds (`views`).
    */
   expected: { state?: "solved"; navigatesTo?: string; views?: { adapter: string; status: string; targets: string[] }[] };
+  /** Pages that answer by navigating: a request whose query has all these values is redirected (the right answer). */
+  redirects?: { query: Record<string, string>; to: string }[];
+  /** What the mock model answers to a prompt with this instruction: the right answer, known from the capture. */
+  model?: { instruction: string; actions: Action[] };
   html: string;
 }
 
@@ -144,5 +151,64 @@ export function loadSliderFixtures(filter?: string): SliderFixture[] {
       dir,
       background: readFileSync(path.join(dir, "background.png")),
       piece: readFileSync(path.join(dir, "piece.png")),
+    }));
+}
+
+/**
+ * A shifted grid (DogWAF): reference.png, challenge.png and the roll the server issued (from its
+ * decrypted token) or accepted, in squares of a `grid` × `grid` grid.
+ */
+export interface ShiftFixture {
+  name: string;
+  dir: string;
+  source: string;
+  grid: number;
+  expected: { dx: number; dy: number };
+  notes: string;
+  /** PNG files. */
+  reference: Buffer;
+  challenge: Buffer;
+}
+
+export function loadShiftFixtures(filter?: string): ShiftFixture[] {
+  return fixtureDirs(filter)
+    .filter(({ json }) => json.kind === "shift")
+    .map(({ name, dir, json }) => ({
+      ...(json as unknown as Omit<ShiftFixture, "name" | "dir" | "reference" | "challenge">),
+      name,
+      dir,
+      reference: readFileSync(path.join(dir, "reference.png")),
+      challenge: readFileSync(path.join(dir, "challenge.png")),
+    }));
+}
+
+/**
+ * Stamp counting (DogWAF's compat challenge): image-1.png … image-N.png and their true counts.
+ * `counted: false` marks images beyond image analysis, where it must decline and leave the count
+ * to the model.
+ */
+export interface CountFixture {
+  name: string;
+  dir: string;
+  source: string;
+  stamps: { size: number; wobble: number };
+  expected: { counts: number[] };
+  counted: boolean;
+  notes: string;
+  /** PNG files, in order. */
+  images: Buffer[];
+}
+
+export function loadCountFixtures(filter?: string): CountFixture[] {
+  return fixtureDirs(filter)
+    .filter(({ json }) => json.kind === "count")
+    .map(({ name, dir, json }) => ({
+      ...(json as unknown as Omit<CountFixture, "name" | "dir" | "images">),
+      name,
+      dir,
+      images: readdirSync(dir)
+        .filter((f) => /^image-\d+\.png$/.test(f))
+        .sort((a, b) => parseInt(a.slice(6)) - parseInt(b.slice(6)))
+        .map((f) => readFileSync(path.join(dir, f))),
     }));
 }

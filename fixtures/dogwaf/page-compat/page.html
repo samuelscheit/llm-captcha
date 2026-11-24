@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Prove You&#39;re Human</title>
+		<meta name="darkreader-lock">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="/dogcaptcha/style.css">
+		<link rel="icon" href="/dogcaptcha/favicon.ico">
+		<style>
+			body {
+				background: #000000;
+				background: var(--bg);
+				color: #ffffff;
+				color: var(--fg);
+			}
+			
+			main {
+				padding: 16px;
+			}
+			
+			#feedback {
+				color: #ff0000;
+				font-weight: bold;
+				margin-left: 16px;
+			}
+			
+			.challenge {
+				display: inline-block;
+				margin-bottom: 16px;
+			}
+			
+			input {
+				background: #222228;
+				background: var(--bg-1);
+				color: #ffffff;
+				color: var(--fg);
+				width: 100%;
+			}
+			
+			img {
+				margin-bottom: 4px;
+				width: 200px;
+				max-width: 100%;
+				height: auto;
+			}
+			
+			form {
+				max-width: min(650px, 90vw);
+			}
+			
+			.lnk {
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<main>
+			<h1>Prove You&#39;re Human</h1>
+			<p class="details">You&#39;ve been tasked with a more difficult challenge because your browser is unsupported or because your IP address is suspicious. Enter the number of objects you see into the input field below each image. Cookies are required.</p>
+			
+			<form>
+				
+				<div class="challenge">
+					<img src="/dogcaptcha/compat.png?i=0&token=TOKEN" alt="Challenge Image 0">
+					<input type="number" min="0" max="10" name="dogcaptcha-compat-0" placeholder="Number of objects">
+				</div>
+				
+				<div class="challenge">
+					<img src="/dogcaptcha/compat.png?i=1&token=TOKEN" alt="Challenge Image 1">
+					<input type="number" min="0" max="10" name="dogcaptcha-compat-1" placeholder="Number of objects">
+				</div>
+				
+				<div class="challenge">
+					<img src="/dogcaptcha/compat.png?i=2&token=TOKEN" alt="Challenge Image 2">
+					<input type="number" min="0" max="10" name="dogcaptcha-compat-2" placeholder="Number of objects">
+				</div>
+				
+				<div class="challenge">
+					<img src="/dogcaptcha/compat.png?i=3&token=TOKEN" alt="Challenge Image 3">
+					<input type="number" min="0" max="10" name="dogcaptcha-compat-3" placeholder="Number of objects">
+				</div>
+				
+				<div class="challenge">
+					<img src="/dogcaptcha/compat.png?i=4&token=TOKEN" alt="Challenge Image 4">
+					<input type="number" min="0" max="10" name="dogcaptcha-compat-4" placeholder="Number of objects">
+				</div>
+				
+				<input type="hidden" name="dogcaptcha-token" value="TOKEN">
+				<input type="submit" value="Submit">
+			</form>
+		</main>
+		<footer>
+			DogWAF-fork | JavaScript-Free |
+			<a href="/dogcaptcha/LICENSE">License</a>
+			|
+			<a href="https://codeberg.org/mv12star/dogwaf-fork">Source</a>
+			<a href="/llms.txt" class="lnk" tabindex="-1">Navigation help for LLMs</a>
+		</footer>
+	</body>
+</html>

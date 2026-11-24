@@ -10,6 +10,7 @@ import { AWS } from "./aws";
 import { CHINA } from "./china";
 import { CLOUDFLARE } from "./cloudflare";
 import { DATADOME } from "./datadome";
+import { DOGWAF } from "./dogwaf";
 import { GEETEST } from "./geetest";
 import { GENERIC } from "./generic";
 import { GOOGLE } from "./google";
@@ -35,5 +36,6 @@ export const BUILTIN_ADAPTERS: AdapterSpec[] = [
   ...MTCAPTCHA,
   ...HUMAN,
   ...POW,
+  ...DOGWAF,
   ...GENERIC,
 ];

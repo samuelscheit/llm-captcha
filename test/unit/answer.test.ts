@@ -56,4 +56,25 @@ describe("assist answers", () => {
     expect(answerHelp(grid, { width: 400, height: 300, scale: 1 })).toContain('"t2 t5 verify"');
     expect(answerHelp(view("point", ["submit"]), { width: 446, height: 349, scale: 1 })).toContain("points of the image (446x349)");
   });
+
+  // DogWAF's compat page: five images, an input under each.
+  const counts = view("text", ["input1", "input2", "input3", "submit"]);
+
+  it("types one value into each of several inputs, in order", () => {
+    expect(parseAnswer(" 3 0  7 ", counts).actions.map((a) => [a.kind, a.target, a.text])).toEqual([
+      ["type", "input1", "3"],
+      ["type", "input2", "0"],
+      ["type", "input3", "7"],
+    ]);
+    expect(() => parseAnswer("3 0", counts)).toThrow("Give 3 values, one per input (input1 input2 input3)");
+    expect(answerHelp(counts, { width: 400, height: 300, scale: 1 })).toContain("Answer with 3 values separated by spaces");
+  });
+
+  it("names only the targets drawn on the image as labeled, and says none when there are none", () => {
+    const outside = { ...view("point", ["refresh"]), targets: [{ id: "refresh", rect: { x: 0, y: 500, width: 80, height: 20 } }] };
+    const help = answerHelp(outside, { width: 400, height: 300, scale: 1 });
+    expect(help).not.toContain("labeled on the image");
+    expect(help).toContain("Targets outside the image: refresh.");
+    expect(answerHelp(view("point", []), { width: 400, height: 300, scale: 1 })).not.toContain("Targets");
+  });
 });

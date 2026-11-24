@@ -53,7 +53,8 @@ export const GENERIC: AdapterSpec[] = [
     id: "generic-text-image",
     kind: "text",
     url: `^(?!.*(${PROVIDER_FRAMES}))`,
-    root: ["img", "canvas"].flatMap((tag) => ["src", "alt", "id", "class", "name"].map((attr) => `${tag}[${attr}*="captcha" i]`)).join(", "),
+    // DogWAF's images live under /dogcaptcha/: its own adapters read them.
+    root: ["img", "canvas"].flatMap((tag) => ["src", "alt", "id", "class", "name"].map((attr) => `${tag}[${attr}*="captcha" i]:not([src^="/dogcaptcha/"])`)).join(", "),
     targets: [
       {
         id: "input",

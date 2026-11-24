@@ -5,6 +5,8 @@ import { isVisible, queryAll, seededShadows, shadowOf } from "./dom";
 import { ask, ASSIST_HOST_ID } from "./assist";
 import { compose, crop, label, motion } from "./image";
 import { measurePuzzle } from "./puzzle";
+import { measureGridShift } from "./shift";
+import { measureStamps } from "./stamps";
 import { skeleton } from "./skeleton";
 import { scanFrame } from "./scan";
 
@@ -30,6 +32,8 @@ export interface PageApi {
   /** This frame's document as HTML, closed shadow roots included, for fixing adapters offline. */
   snapshot(): string;
   measurePuzzle: typeof measurePuzzle;
+  measureGridShift: typeof measureGridShift;
+  measureStamps: typeof measureStamps;
   ask: typeof ask;
   /** Visible element tree, for writing adapters (`bun run explore`). */
   skeleton: typeof skeleton;
@@ -60,6 +64,8 @@ export const pageApi: PageApi = {
     window.dispatchEvent(new CustomEvent("captcha-state", { detail: JSON.stringify({ state, detail }) }));
   },
   measurePuzzle,
+  measureGridShift,
+  measureStamps,
   ask,
   skeleton,
   snapshot() {

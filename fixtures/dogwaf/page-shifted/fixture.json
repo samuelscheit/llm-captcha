@@ -1,0 +1,36 @@
+{
+  "kind": "page",
+  "source": "https://git.miningtcup.me/?dogcaptcha-token=x (DogWAF v1.1; a failed automatic check serves the captcha)",
+  "capturedAt": "2026-11-24",
+  "expected": {
+    "state": "solved",
+    "navigatesTo": "/landed"
+  },
+  "redirects": [
+    {
+      "query": {
+        "dogcaptcha-x": "0",
+        "dogcaptcha-y": "7"
+      },
+      "to": "/landed"
+    }
+  ],
+  "model": {
+    "instruction": "Click on the square with Lulu's nose in the challenge image.",
+    "actions": [
+      {
+        "kind": "clickPoint",
+        "target": null,
+        "text": null,
+        "x": 260,
+        "y": 220,
+        "toX": null,
+        "toY": null
+      }
+    ]
+  },
+  "verifies": [
+    "dogwaf-shifted"
+  ],
+  "notes": "The captcha page as served, tokens replaced, with its reference and challenge images. The challenge is the reference rolled by (4, 2) squares; git.miningtcup.me accepted square (0, 7) (303 with a pass cookie), here it redirects to /landed. The mock model points at the nose of the reference, (260, 220)."
+}

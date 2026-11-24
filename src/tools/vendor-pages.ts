@@ -160,6 +160,10 @@ export const VENDOR_PAGES = {
   },
   /** Anubis's own deployment: a proof-of-work interstitial in front of its docs. */
   anubis: { url: "https://anubis.techaro.lol/" },
+  /** DogWAF's author's Forgejo: a real browser passes its automatic (CSS) check by itself. */
+  dogwaf: { url: "https://git.miningtcup.me/" },
+  /** The same, with a token that fails the automatic check: DogWAF then serves its click-the-nose captcha. */
+  "dogwaf-captcha": { url: "https://git.miningtcup.me/?dogcaptcha-token=x" },
   /** HUMAN (PerimeterX) Press & Hold on Walmart's block page. */
   human: { url: "https://www.walmart.com/blocked", passed: ".fetching-volume.draw, #checkmark.draw" },
   /** Eranet's phishing report form: "Send Code" opens its slider. Same black-hole address. */

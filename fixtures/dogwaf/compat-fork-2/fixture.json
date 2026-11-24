@@ -1,0 +1,19 @@
+{
+  "kind": "count",
+  "source": "dogwaf-fork (codeberg.org/mv12star/dogwaf-fork), run locally with config.example.toml",
+  "stamps": {
+    "size": 20,
+    "wobble": 4
+  },
+  "expected": {
+    "counts": [
+      9,
+      3,
+      6,
+      2,
+      0
+    ]
+  },
+  "counted": true,
+  "notes": "Counts read from the decrypted challenge token (ObjectCounts). Whole 20 x 20 copies of the challenge picture over noise, later copies painting over earlier ones."
+}

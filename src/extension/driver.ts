@@ -3,6 +3,7 @@ import type { Driver, ImageTools } from "../core/driver";
 import type { AdapterSpec, ChallengeView, PageState } from "../core/types";
 import type { AssistRequest } from "../page/assist";
 import type { PuzzleMeasure } from "../page/puzzle";
+import type { GridShift } from "../core/shift";
 import { compose, crop, label, motion } from "../page/image";
 import type { ContentApi } from "./content";
 
@@ -57,6 +58,24 @@ export class ExtensionDriver implements Driver {
       args: [adapter, withImages],
     });
     return (result?.result as PuzzleMeasure | null | undefined) ?? null;
+  }
+
+  async gridShift(view: ChallengeView, adapter: AdapterSpec): Promise<GridShift | null> {
+    const [result] = await chrome.scripting.executeScript({
+      target: { tabId: this.tabId, frameIds: [Number(view.frame)] },
+      func: (spec: AdapterSpec) => (globalThis as unknown as { __captcha: Api }).__captcha.measureGridShift(spec),
+      args: [adapter],
+    });
+    return (result?.result as GridShift | null | undefined) ?? null;
+  }
+
+  async countStamps(view: ChallengeView, adapter: AdapterSpec): Promise<number[] | null> {
+    const [result] = await chrome.scripting.executeScript({
+      target: { tabId: this.tabId, frameIds: [Number(view.frame)] },
+      func: (spec: AdapterSpec) => (globalThis as unknown as { __captcha: Api }).__captcha.measureStamps(spec),
+      args: [adapter],
+    });
+    return (result?.result as number[] | null | undefined) ?? null;
   }
 
   async snapshot(view: ChallengeView): Promise<string> {

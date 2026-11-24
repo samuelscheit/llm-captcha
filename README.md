@@ -10,6 +10,7 @@ Solves verification challenges with a vision model of your choice, for AI agents
 - **Slide puzzles and sliders:** GeeTest v3/v4 (and its icon, nine-grid, match and gobang tasks), Tencent TCaptcha, AliyunCaptcha and Aliyun nocaptcha, NetEase Yidun, Shumei, Dingxiang, DataDome, GNAME, drag-verify and phishing-kit gates.
 - **Press & hold:** HUMAN/PerimeterX.
 - **Proof-of-work checks and interstitials:** Friendly Captcha, ALTCHA, mCaptcha, Anubis, Cloudflare's "Just a moment…".
+- **JavaScript-free walls:** DogWAF and its forks (dogwaf-fork): the automatic check, "click the square with the dog's nose" (the shifted image's roll found by image analysis) and the compat count (counted by image analysis).
 - **Anything else** you describe with an adapter.
 
 Which of these were verified against the real widget, and when, is in the [leaderboard's coverage table](BENCHMARK.md#coverage).
@@ -141,7 +142,7 @@ The `kind` field takes one of these values:
 - `checkbox`: click it, no model. Without targets, the adapter only recognizes a check that runs by itself (Anubis, Cloudflare's interstitial): the session waits for it, or ends on a refusal.
 - `hold`: press the `handle` and keep holding, with slight pointer movement, until the widget is done (Press & Hold). It waits for the widget to arm first and retries when its progress never starts.
 - `select`: pick targets.
-- `text`: read and type.
+- `text`: read and type; several inputs (`input1`, `input2`…) each take their own answer.
 - `point`: click or drag positions; captured as 3 frames by default, to see animations.
 - `slider`: drag the `handle`; no model involved. It has two modes:
   - **Puzzle**: until the `piece` image fits the gap in the `background` image (Tencent, GeeTest, AliyunCaptcha, Yidun, Shumei, Dingxiang). The gap is found by image analysis, since the drop must land within a few pixels. The images may be `<img>`, `<canvas>` or CSS backgrounds and are measured as shown. Dark and light gaps both work. The drag starts with a short nudge, reads where the piece went, and corrects the rest, so pieces that lag their handle land too. An ambiguous gap, or the same puzzle after a failed slide, gets a new puzzle (`reload`) instead of a guess. Images that only show under the pointer (float mode) are revealed by hovering the handle.
@@ -150,6 +151,11 @@ The `kind` field takes one of these values:
   A refused slider that shows only a `reload` ("error, click to refresh") gets it clicked.
 
 A `select` adapter can also declare a `carousel` (Arkose's "use the arrows" games). The engine then pages through all options, shows the model one contact sheet with the options labeled `o1`…`oN`, goes to its pick and submits.
+
+Two more declarations hand a part of the work to image analysis:
+
+- `shiftedGrid: N` (a `point` adapter, DogWAF): the root is a clean reference image, and the `challenge` target is the same picture rolled by whole squares of an N × N grid and noised. The model points into the reference; the roll is measured by correlating the two images, and the matching challenge square is clicked, scrolled into view first if needed. An unclear roll gets a new challenge (`refresh`) instead of a guess.
+- `stamps: { size, wobble }` (a `text` adapter, DogWAF's compat page): each `image` target shows copies of one small picture pasted over noise, its columns moved down by up to `wobble - 1` pixels, and the `input` after it takes how many. The picture is learned from the columns that recur across the images, and copies are counted by peeling: the copy pasted last fits exactly, and once found, its pixels stop counting against the copies under it. Without a learnable picture the model counts instead.
 
 Custom adapters go in the options page; the built-ins are in `src/core/adapters/`, one file per provider.
 
@@ -208,10 +214,12 @@ Each captured round holds the view, the frames, what the model saw, its decision
 - `{"text": "XK4P9"}`
 - `{"points": [{"x": 120, "y": 80, "r": 30}], "clicks": ["submit"]}` (CSS px relative to the region)
 
-Two more fixture kinds need no model:
+More fixture kinds need no model:
 
 - **Slide puzzles** (`fixtures/tencent/`): `background.png`, `piece.png`, and a `fixture.json` with `kind: "slider"`, the piece's `origin` and the `expected` gap `offset`, in background pixels. `eval` checks them.
-- **Page fixtures** (`fixtures/generic/`): `page.html`, a real challenge page saved as captured (links to elsewhere rewritten to local stand-ins), and a `fixture.json` with `kind: "page"` and the `expected` outcome (`state`, `navigatesTo`). The e2e suite serves them and solves them under every driver.
+- **Shifted grids** (`fixtures/dogwaf/shift-*`): `reference.png`, `challenge.png`, and a `fixture.json` with `kind: "shift"`, the `grid` and the `expected` roll `{ dx, dy }` the server issued or accepted. `eval` checks them.
+- **Stamp counts** (`fixtures/dogwaf/compat-*`): `image-1.png`…, and a `fixture.json` with `kind: "count"`, the `stamps` shape and the `expected` `counts`. With `counted: false`, image analysis must decline and leave the images to the model. `eval` checks them.
+- **Page fixtures** (`fixtures/generic/`, `fixtures/dogwaf/page-*`): `page.html`, a real challenge page saved as captured (links to elsewhere rewritten to local stand-ins), and a `fixture.json` with `kind: "page"` and the `expected` outcome (`state`, `navigatesTo`). The e2e suite serves them and solves them under every driver. Files next to `page.html` are served at the paths the page asks for (`/dogcaptcha/compat.png?i=2` is `compat-2.png`). Pages that answer by navigating declare `redirects`: the query of the right answer and where it leads. `model` gives the mock model's answer to the challenge's `instruction`.
 
 ```sh
 bun run eval                       # replay all labeled fixtures through the model, score them

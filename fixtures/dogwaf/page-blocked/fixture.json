@@ -1,0 +1,10 @@
+{
+  "kind": "page",
+  "source": "DogWAF v1.1 run locally with its config.toml, after a burst of scripted requests from one address",
+  "capturedAt": "2026-11-24",
+  "expected": {
+    "views": [{ "adapter": "dogwaf-blocked", "status": "blocked", "targets": [] }]
+  },
+  "verifies": ["dogwaf-blocked"],
+  "notes": "\"You've Been Blocked\": the address is blocked for a configured time (blocklist, scraper or bot detection). Nothing to solve; the session must fail at once instead of waiting."
+}

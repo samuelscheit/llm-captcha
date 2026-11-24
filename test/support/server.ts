@@ -3,7 +3,9 @@
  * that ground truth. Challenge widgets are served from 127.0.0.1 and embedded in pages on
  * localhost, so Chrome renders them out of process like real vendor iframes.
  */
+import { existsSync, readFileSync } from "node:fs";
 import http from "node:http";
+import path from "node:path";
 import type { AddressInfo } from "node:net";
 import { BUILTIN_ADAPTERS } from "../../src/core/adapters";
 import type { AdapterSpec, Decision } from "../../src/core/types";
@@ -256,7 +258,24 @@ function mockDecision(state: ServerState, mock: MockBehaviour, prompt: string): 
   if (prompt.includes("(generic-text-image)")) {
     return { reasoning: "mock text", actions: [action("type", { target: "input", text: wrong ? "WRONG1" : state.text })] };
   }
+  // A page fixture's own answer, for its challenge's instruction.
+  const fixture = PAGE_FIXTURES.find((f) => f.model && prompt.includes(f.model.instruction));
+  if (fixture) return { reasoning: "mock: the page fixture's answer", actions: fixture.model!.actions };
   return { reasoning: "mock: unknown challenge", actions: [] };
+}
+
+/**
+ * A page fixture's own file, at the absolute path its page asks for (DogWAF's /dogcaptcha/…), from
+ * the directory of the fixture that asked, by file name; an `i` parameter picks one of several
+ * (`compat.png?i=2` is compat-2.png).
+ */
+function fixtureFile(req: http.IncomingMessage, url: URL): string | undefined {
+  const asker = PAGE_FIXTURES.find((f) => (req.headers.referer ?? "").includes(`/fixture/${f.name}/`));
+  if (!asker) return undefined;
+  const { name, ext } = path.parse(url.pathname);
+  const index = url.searchParams.get("i");
+  const file = path.join(asker.dir, `${name}${index === null ? "" : `-${index}`}${ext}`);
+  return ext && existsSync(file) ? file : undefined;
 }
 
 export async function startServer(): Promise<TestServer> {
@@ -451,7 +470,12 @@ load();
     // Page fixtures as they were captured: /fixture/<provider>/<name>[/<their original path>].
     const fixture = /^\/fixture\/([\w-]+\/[\w-]+)(\/.*)?$/.exec(url.pathname);
     const pageFixture = fixture && PAGE_FIXTURES.find((f) => f.name === fixture[1]);
+    // A page that answers by navigating (DogWAF's links and forms): the right answer's query moves on.
+    const redirect = pageFixture?.redirects?.find((r) => Object.entries(r.query).every(([key, value]) => url.searchParams.get(key) === value));
+    if (redirect) return void res.writeHead(303, { location: redirect.to }).end();
     if (pageFixture) return void res.writeHead(200, { "content-type": "text/html" }).end(pageFixture.html);
+    const file = fixtureFile(req, url);
+    if (file) return void res.writeHead(200, { "content-type": "image/png" }).end(readFileSync(file));
     const image = /^\/tencent\/img\/(\d+)\/(background|piece)\.png$/.exec(url.pathname);
     if (image) return void res.writeHead(200, { "content-type": "image/png" }).end(TENCENT_PUZZLES[Number(image[1])]![image[2] as "background" | "piece"]);
     const route = routes[url.pathname];

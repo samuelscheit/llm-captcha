@@ -1,0 +1,36 @@
+{
+  "kind": "page",
+  "source": "dogwaf-fork (codeberg.org/mv12star/dogwaf-fork) run locally with config.example.toml",
+  "capturedAt": "2026-11-24",
+  "expected": {
+    "state": "solved",
+    "navigatesTo": "/landed"
+  },
+  "redirects": [
+    {
+      "query": {
+        "dogcaptcha-x": "6",
+        "dogcaptcha-y": "5"
+      },
+      "to": "/landed"
+    }
+  ],
+  "model": {
+    "instruction": "Click the dog's NOSE.",
+    "actions": [
+      {
+        "kind": "clickPoint",
+        "target": null,
+        "text": null,
+        "x": 260,
+        "y": 220,
+        "toX": null,
+        "toY": null
+      }
+    ]
+  },
+  "verifies": [
+    "dogwaf-grid"
+  ],
+  "notes": "The captcha page as served, tokens replaced, with its challenge image. The fork does not roll the image: the answer is square (6, 5), the configured correctX/correctY, where the nose is. The mock model points at the nose, (260, 220)."
+}

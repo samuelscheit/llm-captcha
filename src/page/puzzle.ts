@@ -45,7 +45,7 @@ export async function pixelsOf(el: Element): Promise<Pixels | null> {
 }
 
 /** Pixels resampled to `width` × `height`: the size the element is shown at. */
-async function resample(pixels: Pixels, width: number, height: number): Promise<Pixels> {
+export async function resample(pixels: Pixels, width: number, height: number): Promise<Pixels> {
   if (pixels.width === width && pixels.height === height) return pixels;
   const bitmap = await createImageBitmap(new ImageData(new Uint8ClampedArray(pixels.data), pixels.width, pixels.height));
   const canvas = new OffscreenCanvas(width, height);

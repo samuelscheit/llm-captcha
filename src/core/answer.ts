@@ -6,19 +6,30 @@
  *   120,80                click a point of the image (image pixels)
  *   drag 10,20 200,20     drag between two points of the image
  *   type XK4P9            type into the input target (for text challenges the bare text works too)
+ *   3 0 7                 several inputs (input1, input2…): one value each, in order
  *   wait                  do nothing this round
  */
+import { intersects } from "./geometry";
 import type { ImageFrame } from "./prompt";
 import type { Action, ChallengeView, Decision } from "./types";
 
 const action = (kind: Action["kind"], fields: Partial<Action> = {}): Action => ({ kind, target: null, text: null, x: null, y: null, toX: null, toY: null, ...fields });
 const POINT = /^(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)$/;
 
+/** Numbered inputs of a challenge with several (`input1`, `input2`…), in order. */
+const inputsOf = (view: ChallengeView) => view.targets.filter((t) => /^input\d+$/.test(t.id));
+
 export class AnswerError extends Error {}
 
 export function parseAnswer(answer: string, view: ChallengeView): Decision {
   const text = answer.trim();
   const reasoning = `answered in assist mode: ${text}`;
+  const inputs = inputsOf(view);
+  if (inputs.length) {
+    const values = text.split(/\s+/).filter(Boolean);
+    if (values.length !== inputs.length) throw new AnswerError(`Give ${inputs.length} values, one per input (${inputs.map((t) => t.id).join(" ")}), separated by spaces.`);
+    return { reasoning, actions: values.map((value, i) => action("type", { target: inputs[i]!.id, text: value })) };
+  }
   const input = view.targets.find((t) => t.id === "input");
   const typed = /^type\s+(.+)$/is.exec(text);
   if (typed) {
@@ -51,11 +62,17 @@ export function parseAnswer(answer: string, view: ChallengeView): Decision {
 
 /** What the person or agent answering is told, besides the instruction and the image. */
 export function answerHelp(view: ChallengeView, frame: ImageFrame): string {
-  const ids = view.targets.map((t) => t.id).join(" ");
-  const lines = [`Targets (labeled on the image): ${ids}.`];
+  const inputs = inputsOf(view);
+  // Text challenges stay unlabeled, as the model sees them.
+  const labeled = view.kind === "text" ? [] : view.targets.filter((t) => intersects(t.rect, view.region)).map((t) => t.id);
+  const outside = view.targets.filter((t) => !labeled.includes(t.id) && !inputs.includes(t)).map((t) => t.id);
+  const lines: string[] = [];
+  if (labeled.length) lines.push(`Targets (labeled on the image): ${labeled.join(" ")}.`);
+  if (outside.length) lines.push(`Targets outside the image: ${outside.join(" ")}.`);
   if (view.kind === "select" || view.kind === "checkbox") lines.push("Answer with the ids to click, in order, e.g. \"t2 t5 verify\".");
   if (view.kind === "point") lines.push(`Answer with points of the image (${frame.width}x${frame.height}), e.g. "120,80 submit", or "drag 10,20 200,20".`);
-  if (view.kind === "text") lines.push("Answer with the characters in the image.");
+  if (view.kind === "text")
+    lines.push(inputs.length ? `Answer with ${inputs.length} values separated by spaces, one per input from left to right and top to bottom.` : "Answer with the characters in the image.");
   lines.push('"wait" if the image is still loading.');
   return lines.join(" ");
 }

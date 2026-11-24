@@ -24,6 +24,13 @@ export function nameOf(el: Element): string {
   return `${el.tagName.toLowerCase()}${id}${cls}`;
 }
 
+/** Hit tests on an image map find its `<area>`, which is part of the image that uses the map. */
+function shownBy(hit: Element | null): Element | null {
+  if (!(hit instanceof HTMLAreaElement)) return hit;
+  const map = hit.closest("map");
+  return (map?.name && hit.ownerDocument.querySelector(`img[usemap="#${CSS.escape(map.name)}"]`)) || hit;
+}
+
 /**
  * The element on top at one of `el`'s points inside the viewport that is neither `el`, inside it,
  * nor one of its ancestors (those only show through where `el` lets clicks pass). Points outside
@@ -38,7 +45,7 @@ export function coveredBy(el: Element): Element | null {
       const x = r.x + r.width * fx;
       const y = r.y + r.height * fy;
       if (x < 0 || y < 0 || x >= clientWidth || y >= clientHeight) continue;
-      const hit = doc.elementFromPoint(x, y);
+      const hit = shownBy(doc.elementFromPoint(x, y));
       if (!hit || within(hit, el) || within(el, hit) || hit.id === ASSIST_HOST_ID) continue;
       return hit;
     }
